@@ -1,6 +1,13 @@
 [versions]
-
+timingframework-swing = "7.3.1"
+animation-timing = "1.0-201002281504"
+swing-worker = "1.1"
 
 [libraries]
+# Or https://github.com/akuhtz/timingframework
+#    net.java.timingframework:timingframework-swing : 7.3.1
+timingframework-swing = { module = "net.java.timingframework:timingframework-swing", version.ref = "timingframework-swing" }
+jdesktop-animation-timing = { module = "com.kenai.nbpwr:org-jdesktop-animation-timing", version.ref = "animation-timing" }
+jdesktop-swing-worker = { module = "org.jdesktop:swing-worker", version.ref = "swing-worker" }
 
 [bundles]

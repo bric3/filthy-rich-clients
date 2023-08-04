@@ -12,6 +12,7 @@ rootProject.name = "filthy-rich-clients"
 includeBuild("build-logic")
 
 include(
+    "java-net:animated-transitions-swing",
     "AnimatedTransitions:ImageBrowser",
     "AnimatedTransitions:SearchTransition",
     "Animation:AnimatedGraphics",
