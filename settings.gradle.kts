@@ -1,7 +1,3 @@
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-import java.nio.file.StandardOpenOption
-
 plugins {
     `gradle-enterprise`
     id("org.gradle.toolchains.foojay-resolver-convention") version ("0.6.0")
