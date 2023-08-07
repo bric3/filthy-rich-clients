@@ -27,6 +27,10 @@ tasks {
         // Need to set the toolchain https://github.com/gradle/gradle/issues/16791
         javaLauncher.set(javaToolchainLauncher)
 
+
+        // for lib/AnimatedTransitions.jar
+        // making JComponent::setFlag accessible
+        jvmArgs("--add-opens=java.desktop/javax.swing=ALL-UNNAMED")
     }
 
     withType<JavaCompile>().configureEach {
