@@ -3,5 +3,10 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.jdesktop.animation.timing)
+    implementation(files("lib/TimingFramework-0.54.jar"))
+    // implementation(libs.jdesktop.animation.timing)
+}
+
+application {
+    mainClass.set("MorphingDemo")
 }
