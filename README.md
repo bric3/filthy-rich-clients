@@ -177,10 +177,15 @@ https://web.archive.org/web/20220118193103/http://filthyrichclients.org/)
 
 The original code required an old Netbeans distribution; also the projects
 had jars directly under the project structure (under `lib/`), sources and resources
-under the same `src` folder. And finally, the java version ranged from 1.4 to 1.6.
+under the same `src` folder. Some classes were using Netbeans/JDesktop classes that 
+made it in Java 1.6. One class had dependency on a `SwingWorker` jar that also made 
+it in the JDK. 
+And finally, the java version ranged from 1.4 to 1.6.
 
 This fork is now configured with Gradle, using standard Java project structure
 (`src/main/java`, `src/main/resources`), as well as the latest Java version: 20.
+Now uses the Swing's `GroupLayout` and `SwingWorker` instead of Netbeans/JDesktop 
+and th swing worker jar.
 
 Note, however, dependency sources were on the defunct http://java.net, and are hard
 to come by in the same version. For now the jars are left in place.
@@ -197,3 +202,20 @@ To discover the available projects, use
 ./gradlew projects
 ```
 
+### TODO
+
+* Remove jars
+    * AnimatedTransitions/ImageBrowser/lib/AnimatedTransitions.jar
+    * AnimatedTransitions/ImageBrowser/lib/TimingFramework-0.55.jar
+    * AnimatedTransitions/SearchTransition/lib/AnimatedTransitions.jar
+    * AnimatedTransitions/SearchTransition/lib/TimingFramework-0.55.jar
+    * DynamicEffects/Fading/lib/TimingFramework-0.54.jar
+    * DynamicEffects/Morphing/lib/TimingFramework-0.54.jar
+    * DynamicEffects/Motion/lib/TimingFramework-0.54.jar
+    * DynamicEffects/Pulse/lib/TimingFramework-0.54.jar
+    * DynamicEffects/PulseField/lib/TimingFramework-0.54.jar
+    * DynamicEffects/Spring/lib/TimingFramework-0.54.jar
+    * StaticEffects/Blur/lib/TimingFramework.jar
+* Fix drag and drop of `GlassPane/GlassDragAndDrop`
+* `RepaintManager/RepaintManager` has a depenency on some quicktime code
+* `DynamicEffects/BloomOpenGL` has dependency on `javax.media.opengl.GL`, etc 
