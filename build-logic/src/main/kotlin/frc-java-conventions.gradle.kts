@@ -1,5 +1,3 @@
-import gradle.kotlin.dsl.accessors._c2ac4b82f2f662e9adada5da2971f76a.java
-
 plugins {
     `java-library`
     application
@@ -27,13 +25,13 @@ tasks {
         // Need to set the toolchain https://github.com/gradle/gradle/issues/16791
         javaLauncher.set(javaToolchainLauncher)
 
-
         // for lib/AnimatedTransitions.jar
         // making JComponent::setFlag accessible
         jvmArgs("--add-opens=java.desktop/javax.swing=ALL-UNNAMED")
     }
 
     withType<JavaCompile>().configureEach {
+        options.release.set(20)
         options.compilerArgs = listOf("-Xlint:deprecation")
         javaCompiler.set(javaToolchainCompiler)
         options.encoding = "UTF-8"
