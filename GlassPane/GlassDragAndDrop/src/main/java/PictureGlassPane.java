@@ -29,13 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -50,6 +46,9 @@ public class PictureGlassPane extends JComponent {
     }
     
     public void moveIt(Point location) {
+        if (image == null || this.location == null) {
+            return;
+        }
         Point oldLocation = this.location;
         SwingUtilities.convertPointFromScreen(location, this);
         this.location = location;
