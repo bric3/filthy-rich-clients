@@ -33,8 +33,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.transitions.EffectsManager;
 import org.jdesktop.animation.transitions.EffectsManager.TransitionType;
 import org.jdesktop.animation.transitions.ScreenTransition;
@@ -42,6 +40,10 @@ import org.jdesktop.animation.transitions.TransitionTarget;
 import org.jdesktop.animation.transitions.effects.CompositeEffect;
 import org.jdesktop.animation.transitions.effects.Move;
 import org.jdesktop.animation.transitions.effects.Scale;
+import org.jdesktop.core.animation.timing.Animator;
+import org.jdesktop.core.animation.timing.TimingTargetAdapter;
+import org.jdesktop.core.animation.timing.interpolators.AccelerationInterpolator;
+import org.jdesktop.swing.animation.timing.sources.SwingTimerTimingSource;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -55,6 +57,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /// This demo of the AnimatedTransitions library uses a layout manager
 /// to assist in setting up the next screen that the application
@@ -72,8 +75,16 @@ public class ImageBrowser extends JComponent
     private static final int SLIDER_INCREMENT = 50;
     private final int numPictures = 40;
     private final JLabel[] label;
-    private final Animator animator = new Animator(500);
-    private final ScreenTransition transition = new ScreenTransition(this, this, animator);
+    private final SwingTimerTimingSource timingSource = createTimingSource();
+    private final Animator animator = new Animator.Builder(timingSource)
+            .setDuration(500, TimeUnit.MILLISECONDS)
+            .setInterpolator(new AccelerationInterpolator(.1f, .4f))
+            .build();
+    private final EffectsManager effectsManager = new EffectsManager();
+    private final ScreenTransition transition = new ScreenTransition.Builder(this, this)
+            .setAnimator(animator)
+            .setEffectsManager(effectsManager)
+            .build();
     private boolean transitionPending;
     private final List<ImageHolder> images = new ArrayList<>();
     private static int currentSize = 50;
@@ -86,11 +97,9 @@ public class ImageBrowser extends JComponent
     /// Creates a new instance of ImageBrowser
     public ImageBrowser() {
         setOpaque(true);
-        animator.setAcceleration(.1f);
-        animator.setDeceleration(.4f);
         animator.addTarget(new TimingTargetAdapter() {
             @Override
-            public void end() {
+            public void end(Animator source) {
                 // Animator clears its running flag after end callbacks return.
                 SwingUtilities.invokeLater(ImageBrowser.this::startPendingTransition);
             }
@@ -114,8 +123,14 @@ public class ImageBrowser extends JComponent
             var comp = new CompositeEffect(move);
             comp.addEffect(scale);
             comp.setRenderComponent(false);
-            EffectsManager.setEffect(label[i], comp, TransitionType.CHANGING);
+            effectsManager.setEffect(label[i], comp, TransitionType.CHANGING);
         }
+    }
+
+    private static SwingTimerTimingSource createTimingSource() {
+        var timingSource = new SwingTimerTimingSource();
+        timingSource.init();
+        return timingSource;
     }
 
     /// Paints a gradient in the background of this component
