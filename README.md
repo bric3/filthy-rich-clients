@@ -204,18 +204,18 @@ To discover the available projects, use
 
 ### TODO
 
-* Remove jars
-    * AnimatedTransitions/ImageBrowser/lib/AnimatedTransitions.jar
-    * AnimatedTransitions/ImageBrowser/lib/TimingFramework-0.55.jar
-    * AnimatedTransitions/SearchTransition/lib/AnimatedTransitions.jar
-    * AnimatedTransitions/SearchTransition/lib/TimingFramework-0.55.jar
-    * DynamicEffects/Fading/lib/TimingFramework-0.54.jar
-    * DynamicEffects/Morphing/lib/TimingFramework-0.54.jar
-    * DynamicEffects/Motion/lib/TimingFramework-0.54.jar
-    * DynamicEffects/Pulse/lib/TimingFramework-0.54.jar
-    * DynamicEffects/PulseField/lib/TimingFramework-0.54.jar
-    * DynamicEffects/Spring/lib/TimingFramework-0.54.jar
-    * StaticEffects/Blur/lib/TimingFramework.jar
-* Fix drag and drop of `GlassPane/GlassDragAndDrop`
-* `RepaintManager/RepaintManager` has a depenency on some quicktime code
-* `DynamicEffects/BloomOpenGL` has dependency on `javax.media.opengl.GL`, etc 
+* [ ] Remove jars
+    * [ ] AnimatedTransitions/ImageBrowser/lib/AnimatedTransitions.jar
+    * [ ] AnimatedTransitions/ImageBrowser/lib/TimingFramework-0.55.jar
+    * [ ] AnimatedTransitions/SearchTransition/lib/AnimatedTransitions.jar
+    * [ ] AnimatedTransitions/SearchTransition/lib/TimingFramework-0.55.jar
+    * [ ] DynamicEffects/Fading/lib/TimingFramework-0.54.jar
+    * [ ] DynamicEffects/Morphing/lib/TimingFramework-0.54.jar
+    * [ ] DynamicEffects/Motion/lib/TimingFramework-0.54.jar
+    * [ ] DynamicEffects/Pulse/lib/TimingFramework-0.54.jar
+    * [ ] DynamicEffects/PulseField/lib/TimingFramework-0.54.jar
+    * [ ] DynamicEffects/Spring/lib/TimingFramework-0.54.jar
+    * [ ] StaticEffects/Blur/lib/TimingFramework.jar
+* [ ] Fix drag and drop of `GlassPane/GlassDragAndDrop`
+* [ ] `RepaintManager/RepaintManager` has a depenency on some quicktime code
+* [ ] `DynamicEffects/BloomOpenGL` has dependency on `javax.media.opengl.GL`, etc 
