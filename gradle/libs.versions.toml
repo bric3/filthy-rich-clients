@@ -1,7 +1,6 @@
 [versions]
 timingframework-swing = "7.3.1"
 animation-timing = "1.0-201002281504"
-swing-worker = "1.1"
 jogamp = "2.5.0"
 
 [libraries]
@@ -9,7 +8,6 @@ jogamp = "2.5.0"
 #    net.java.timingframework:timingframework-swing : 7.3.1
 timingframework-swing = { module = "net.java.timingframework:timingframework-swing", version.ref = "timingframework-swing" }
 jdesktop-animation-timing = { module = "com.kenai.nbpwr:org-jdesktop-animation-timing", version.ref = "animation-timing" }
-jdesktop-swing-worker = { module = "org.jdesktop:swing-worker", version.ref = "swing-worker" }
 
 jogmap-jogl = { module = "org.jogamp.jogl:jogl-all-main", version.ref = "jogamp" }
 jogmap-gluegen = { module = "org.jogamp.gluegen:gluegen-rt-main", version.ref = "jogamp" }
