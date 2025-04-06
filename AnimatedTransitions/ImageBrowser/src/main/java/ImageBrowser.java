@@ -1,27 +1,3 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.transitions.Effect;
 import org.jdesktop.animation.transitions.EffectsManager;
 import org.jdesktop.animation.transitions.EffectsManager.TransitionType;
@@ -30,9 +6,23 @@ import org.jdesktop.animation.transitions.TransitionTarget;
 import org.jdesktop.animation.transitions.effects.CompositeEffect;
 import org.jdesktop.animation.transitions.effects.Move;
 import org.jdesktop.animation.transitions.effects.Scale;
+import org.jdesktop.core.animation.timing.Animator;
+import org.jdesktop.core.animation.timing.interpolators.AccelerationInterpolator;
+import org.jdesktop.swing.animation.timing.sources.SwingTimerTimingSource;
 import org.jdesktop.tools.io.FileTreeWalk;
 import org.jdesktop.tools.io.FileTreeWalker;
 import org.jdesktop.tools.io.UnixGlobFileFilter;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 /*
  * ImageBrowser.java
  *
@@ -72,7 +62,7 @@ import org.jdesktop.tools.io.UnixGlobFileFilter;
  * This demo of the AnimatedTransitions library uses a layout manager
  * to assist in setting up the next screen that the application
  * transitions to.
- *
+ * <p>
  * The slider in the window controls the picture thumbnail size. The
  * standard FlowLayout manager organizes the pictures according to
  * the thumbnail sizes. The transition animates the change from
@@ -80,28 +70,34 @@ import org.jdesktop.tools.io.UnixGlobFileFilter;
  *
  * @author Chet
  */
-public class ImageBrowser extends JComponent 
+public class ImageBrowser extends JComponent
         implements TransitionTarget, ChangeListener {
-    
+
     private static final int SLIDER_INCREMENT = 50;
     int numPictures = 40;
     JLabel label[];
-    Animator animator = new Animator(500);
-    ScreenTransition transition = new ScreenTransition(this, this, animator);
+    Animator animator = new Animator.Builder(new SwingTimerTimingSource())
+            .setDuration(500, TimeUnit.MILLISECONDS)
+            .setInterpolator(new AccelerationInterpolator(0.1f, 0.4f))
+            .build();
+    ScreenTransition transition = new ScreenTransition.Builder(this, this)
+            .setAnimator(animator)
+            .build();
+    private final EffectsManager effectsManager = new EffectsManager();
     Dimension newSize = new Dimension();
     List<ImageHolder> images = new ArrayList<ImageHolder>();
     static int currentSize = 50;
     GradientPaint bgGradient = null;
     int prevHeight = 0;
-    static JSlider slider = new JSlider(1, 400 / SLIDER_INCREMENT, 
+    static JSlider slider = new JSlider(1, 400 / SLIDER_INCREMENT,
             1 + currentSize / SLIDER_INCREMENT);
     static int numImages = 0;
-    
-    /** Creates a new instance of ImageBrowser */
+
+    /**
+     * Creates a new instance of ImageBrowser
+     */
     public ImageBrowser() {
         setOpaque(true);
-        animator.setAcceleration(.1f);
-        animator.setDeceleration(.4f);
         setLayout(new FlowLayout());
         loadImages();
         label = new JLabel[images.size()];
@@ -121,7 +117,7 @@ public class ImageBrowser extends JComponent
             CompositeEffect comp = new CompositeEffect(move);
             comp.addEffect(scale);
             comp.setRenderComponent(false);
-            EffectsManager.setEffect(label[i], comp, TransitionType.CHANGING);
+            effectsManager.setEffect(label[i], comp, TransitionType.CHANGING);
         }
     }
 
@@ -132,13 +128,13 @@ public class ImageBrowser extends JComponent
     protected void paintComponent(Graphics g) {
         if (getHeight() != prevHeight) {
             prevHeight = getHeight();
-            bgGradient = new GradientPaint(0, 0, 
+            bgGradient = new GradientPaint(0, 0,
                     new Color(0xEBF4FA), 0, prevHeight, new Color(0xBBD9EE));
         }
-        ((Graphics2D)g).setPaint(bgGradient);
+        ((Graphics2D) g).setPaint(bgGradient);
         g.fillRect(0, 0, getWidth(), prevHeight);
     }
-    
+
     /**
      * Loads all images found in the directory "images" (which therefore must
      * be found in the folder in which this app runs).
@@ -146,7 +142,7 @@ public class ImageBrowser extends JComponent
     private void loadImages() {
         try {
             File imagesDir = new File("images");
-            FileTreeWalker walker = new FileTreeWalker(imagesDir, 
+            FileTreeWalker walker = new FileTreeWalker(imagesDir,
                     new UnixGlobFileFilter("*.jpg"));
             walker.walk(new FileTreeWalk() {
                 public void walk(File path) {
@@ -163,7 +159,7 @@ public class ImageBrowser extends JComponent
             System.out.println("Problem loading images: " + e);
         }
     }
-        
+
     /**
      * TransitionTarget implementation: The setup for the next screen entails
      * merely assigning a new icon to each JLabel with the new thumbnail
@@ -176,7 +172,7 @@ public class ImageBrowser extends JComponent
         // revalidation is necessary for the LayoutManager to do its job
         revalidate();
     }
-    
+
     /**
      * This method handles changes in slider state, which can come from either
      * mouse manipulation of the slider or right/left keyboard events. This
@@ -188,18 +184,18 @@ public class ImageBrowser extends JComponent
         currentSize = slider.getValue() * 25;
         transition.start();
     }
-    
+
     private static void createAndShowGUI() {
-	JFrame f = new JFrame("Image Browser");
+        JFrame f = new JFrame("Image Browser");
         f.setLayout(new BorderLayout());
-	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	f.setSize(500, 400);
-	ImageBrowser component = new ImageBrowser();
-	f.add(component, BorderLayout.CENTER);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setSize(500, 400);
+        ImageBrowser component = new ImageBrowser();
+        f.add(component, BorderLayout.CENTER);
         f.add(slider, BorderLayout.SOUTH);
         slider.setBackground(new Color(0xBBD9EE));
         slider.addChangeListener(component);
-	f.setVisible(true);
+        f.setVisible(true);
     }
 
     /**
@@ -217,12 +213,12 @@ public class ImageBrowser extends JComponent
         } catch (UnsupportedLookAndFeelException ex) {
             ex.printStackTrace();
         }
-	Runnable doCreateAndShowGUI = new Runnable() {
-	    public void run() {
-		createAndShowGUI();
-	    }
-	};
-	SwingUtilities.invokeLater(doCreateAndShowGUI);
+        Runnable doCreateAndShowGUI = new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        };
+        SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
 }
 
@@ -236,7 +232,7 @@ public class ImageBrowser extends JComponent
 class ImageHolder {
     private List<BufferedImage> scaledImages = new ArrayList<BufferedImage>();
     private static final int MIN_SIZE = 50;
-   
+
     /**
      * Given any image, this constructor creates and stores down-scaled
      * versions of this image down to some MIN_SIZE
@@ -259,7 +255,7 @@ class ImageHolder {
             scaledImages.add(scaledImage);
         }
     }
-    
+
     /**
      * This method returns an image with the specified width. It finds
      * the pre-scaled size with the closest/larger width and scales
@@ -280,8 +276,8 @@ class ImageHolder {
                     // Create new version scaled to this width
                     // Set the width at this width, scale the
                     // height proportional to the image width
-                    float scaleFactor = (float)width / scaledW;
-                    int scaledH = (int)(scaledImage.getHeight() * 
+                    float scaleFactor = (float) width / scaledW;
+                    int scaledH = (int) (scaledImage.getHeight() *
                             scaleFactor + .5f);
                     BufferedImage image = new BufferedImage(width,
                             scaledH, scaledImage.getType());
@@ -289,7 +285,7 @@ class ImageHolder {
                     g2d.setRenderingHint(
                             RenderingHints.KEY_INTERPOLATION,
                             RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                    g2d.drawImage(scaledImage, 0, 0, 
+                    g2d.drawImage(scaledImage, 0, 0,
                             width, scaledH, null);
                     g2d.dispose();
                     scaledImage = image;
