@@ -15,3 +15,13 @@ dependencies {
 application {
     mainClass.set("ImageBrowser")
 }
+
+tasks {
+    withType<JavaExec>().configureEach {
+        // for lib/AnimatedTransitions.jar
+        // making JComponent::setFlag accessible
+        jvmArgs("--add-opens=java.desktop/javax.swing=ALL-UNNAMED")
+
+        workingDir = projectDir
+    }
+}
