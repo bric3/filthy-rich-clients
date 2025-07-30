@@ -37,13 +37,11 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Access the drag-and-drop content to show a preview of the dragged image.
@@ -54,7 +52,7 @@ import java.util.List;
  * @author Romain Guy
  */
 public class ApplicationFrame extends javax.swing.JFrame {
-    private PictureGlassPane glassPane = new PictureGlassPane();
+    private final PictureGlassPane glassPane = new PictureGlassPane();
     
     public ApplicationFrame() {
         setContentPane(new JPanel(new BorderLayout()) {
@@ -93,10 +91,16 @@ public class ApplicationFrame extends javax.swing.JFrame {
         
         setGlassPane(glassPane);
         imageList.setModel(new DefaultListModel());
-        imageList.setTransferHandler(new FileDropHandler());
-        imageList.addPropertyChangeListener("dropLocation", new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-                glassPane.moveIt(MouseInfo.getPointerInfo().getLocation());
+        var fileDropHandler = new FileDropHandler();
+        imageList.setTransferHandler(fileDropHandler);
+        imageList.addPropertyChangeListener("dropLocation", event -> {
+            if (event.getNewValue() == null) {
+                fileDropHandler.reset();
+            } else {
+                var pointerInfo = MouseInfo.getPointerInfo();
+                if (pointerInfo != null) {
+                    glassPane.moveIt(pointerInfo.getLocation());
+                }
             }
         });
     }
@@ -259,69 +263,83 @@ public class ApplicationFrame extends javax.swing.JFrame {
             if (files == null || files.isEmpty()) {
                 return null;
             }
-            List<File> imageFiles = new ArrayList<File>(3);
+            List<BufferedImage> thumbnails = new ArrayList<>(3);
             for (File file : files) {
-                if (file.getName().endsWith(".png") ||
-                    file.getName().endsWith(".jpg")) {
-                    imageFiles.add(file);
-                    if (imageFiles.size() == 3) {
-                        break;
-                    }
+                if (!isSupportedImage(file)) {
+                    continue;
+                }
+
+                GraphicsUtilities.loadCompatibleImage(file)
+                        .map(image -> GraphicsUtilities.createThumbnail(image, 60, 45))
+                        .ifPresent(thumbnails::add);
+
+                if (thumbnails.size() == 3) {
+                    break;
                 }
             }
 
-            int width = 60 + (imageFiles.size() - 1) * 10;
-            int height = 45 + (imageFiles.size() - 1) * 10;
+            if (thumbnails.isEmpty()) {
+                return null;
+            }
+
+            int width = 60 + (thumbnails.size() - 1) * 10;
+            int height = 45 + (thumbnails.size() - 1) * 10;
             
             BufferedImage image =
                     GraphicsUtilities.createCompatibleTranslucentImage(width, height);
             Graphics2D g2 = image.createGraphics();
             
-            for (int i = 0; i < imageFiles.size(); i++) {
-                File imageFile = imageFiles.get(i);
-                BufferedImage externalImage = null;
-                try {
-                    externalImage = GraphicsUtilities.loadCompatibleImage(imageFile.toURI().toURL());
-                } catch (MalformedURLException ex) {
-                    ex.printStackTrace();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                externalImage = GraphicsUtilities.createThumbnail(externalImage, 60, 45);
-                g2.drawImage(externalImage, i * 10, i * 10, null);
+            for (int i = 0; i < thumbnails.size(); i++) {
+                g2.drawImage(thumbnails.get(i), i * 10, i * 10, null);
             }
             
             g2.dispose();
             return image;
         }
-        
-        public boolean importData(TransferSupport support) {
-            if (!canImport(support)) {
-                return false;
-            }
-            
-            if (!support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-                return false;
-            }
-            
-            for (int i = 0; i < fileList.size(); i++) {
-                File imageFile = fileList.get(i);
-                BufferedImage externalImage = null;
-                try {
-                    externalImage = GraphicsUtilities.loadCompatibleImage(imageFile.toURI().toURL());
-                    externalImage = GraphicsUtilities.createThumbnail(externalImage, 120);
-                } catch (MalformedURLException ex) {
-                    ex.printStackTrace();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                ((DefaultListModel) imageList.getModel()).add(0, new ImageIcon(externalImage));
-            }
 
+        private boolean isSupportedImage(File file) {
+            String name = file.getName().toLowerCase(Locale.ROOT);
+            return name.endsWith(".png") ||
+                    name.endsWith(".jpg") ||
+                    name.endsWith(".jpeg");
+        }
+
+        public boolean importData(TransferSupport support) {
+            try {
+                if (!canImport(support)) {
+                    return false;
+                }
+
+                if (fileList == null ||
+                        !support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    return false;
+                }
+
+                boolean importedAny = false;
+                for (File imageFile : fileList) {
+                    if (!isSupportedImage(imageFile)) {
+                        continue;
+                    }
+
+                    var image = GraphicsUtilities.loadCompatibleImage(imageFile)
+                            .map(source -> GraphicsUtilities.createThumbnail(source, 120));
+                    if (image.isPresent()) {
+                        ((DefaultListModel) imageList.getModel()).add(
+                                0, new ImageIcon(image.get()));
+                        importedAny = true;
+                    }
+                }
+
+                return importedAny;
+            } finally {
+                reset();
+            }
+        }
+
+        private void reset() {
             glassPane.hideIt();
             imported = false;
-
-            return true;
+            fileList = null;
         }
     }
     
