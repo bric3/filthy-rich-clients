@@ -30,15 +30,18 @@
  */
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 /**
  *
  * @author Romain Guy
  */
-public class ApplicationFrame extends javax.swing.JFrame {
+public class ApplicationFrame extends JFrame {
     private static final int MAX_DELAY = 300;
     
-    private ProgressGlassPane glassPane;
+    private final ProgressGlassPane glassPane;
     
     public ApplicationFrame() {
         initComponents();
@@ -53,28 +56,20 @@ public class ApplicationFrame extends javax.swing.JFrame {
      * It is not anymore generated.
      */
     private void initComponents() {
-        javax.swing.JButton buttonDownload;
-        javax.swing.JLabel jLabel1;
-        javax.swing.JScrollPane jScrollPane1;
-
-        jLabel1 = new javax.swing.JLabel();
-        buttonDownload = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        filesTable = new javax.swing.JTable();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Glass Pane Painting");
         setResizable(false);
-        jLabel1.setText("Pick a file for download");
 
+
+        var pickFileLabel = new JLabel();
+        pickFileLabel.setText("Pick a file for download");
+
+        var buttonDownload = new JButton();
         buttonDownload.setText("Start Download");
-        buttonDownload.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonDownloadActionPerformed(evt);
-            }
-        });
+        buttonDownload.addActionListener(this::buttonDownloadActionPerformed);
 
-        filesTable.setModel(new javax.swing.table.DefaultTableModel(
+        var filesTable = new JTable();
+        filesTable.setModel(new DefaultTableModel(
             new Object [][] {
                 {"aerith.png", "/www/progx/images/", "PNG", "5/17/2006"},
                 {"blog.html", "/www/progx", "HTML", "3/1/2006"},
@@ -85,9 +80,10 @@ public class ApplicationFrame extends javax.swing.JFrame {
                 "Name", "Path", "Type", "Date"
             }
         ));
-        jScrollPane1.setViewportView(filesTable);
 
-        GroupLayout layout = new GroupLayout(getContentPane());
+        var jScrollPane = new JScrollPane(filesTable);
+
+        var layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -99,48 +95,46 @@ public class ApplicationFrame extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                             .addContainerGap()
-                            .addComponent(jLabel1))
+                            .addComponent(pickFileLabel))
                         .addGroup(layout.createSequentialGroup()
                             .addContainerGap()
-                            .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane, GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jLabel1)
+                .addComponent(pickFileLabel)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 275, GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane, GroupLayout.PREFERRED_SIZE, 275, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonDownload)
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((screenSize.width-553)/2, (screenSize.height-394)/2, 553, 394);
     }
 
     private void buttonDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadActionPerformed
         getGlassPane().setVisible(true);
         startDownloadThread();
-    }//GEN-LAST:event_buttonDownloadActionPerformed
-    
+    }
+
     private void startDownloadThread() {
-        Thread downloader = new Thread(new Runnable() {
-            public void run() {
-                int i = 0;
-                do {
-                    try {
-                        Thread.sleep(30 + (int) (Math.random() * MAX_DELAY));
-                    } catch (InterruptedException ex) {
-                        // who cares here?
-                    }
-                    i += (int) (Math.random() * 5);
-                    glassPane.setProgress(i);
-                } while (i < 100);
-                glassPane.setVisible(false);
-                glassPane.setProgress(0);
-            }
+        var downloader = new Thread(() -> {
+            int i = 0;
+            do {
+                try {
+                    Thread.sleep(30 + (int) (Math.random() * MAX_DELAY));
+                } catch (InterruptedException ex) {
+                    // who cares here?
+                }
+                i += (int) (Math.random() * 5);
+                glassPane.setProgress(i);
+            } while (i < 100);
+            glassPane.setVisible(false);
+            glassPane.setProgress(0);
         });
         downloader.start();
     }
@@ -148,16 +142,7 @@ public class ApplicationFrame extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ApplicationFrame().setVisible(true);
-            }
-        });
+    public static void main(String... args) {
+        EventQueue.invokeLater(() -> new ApplicationFrame().setVisible(true));
     }
-    
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable filesTable;
-    // End of variables declaration//GEN-END:variables
-    
 }

@@ -33,15 +33,11 @@ import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Composite;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Field;
+import java.util.Objects;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -49,25 +45,23 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *
  * @author Romain Guy
  */
 public class AlphaCompositesApplication extends JFrame {
-    private CompositePainter painter;
+    private final CompositePainter painter;
     private JSlider opacity;
-    private JComboBox composites;
+    private final JComboBox<String> composites;
     
     public AlphaCompositesApplication() {
         super("Alpha Composites");
         
         add(painter = new CompositePainter(), BorderLayout.CENTER);
-        
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-        panel.add(buildCompositeSelector());
+
+        var panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        panel.add(composites = buildCompositeSelector());
         panel.add(buildOpacitySelector());
         add(panel, BorderLayout.SOUTH);
         
@@ -78,63 +72,49 @@ public class AlphaCompositesApplication extends JFrame {
     
     private Component buildOpacitySelector() {
         opacity = new JSlider(0, 100, 50);
-        opacity.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent changeEvent) {
-                changeComposite();
-            }
-        });
-        JPanel panel = new JPanel();
+        opacity.addChangeListener(_ -> changeComposite());
+        var panel = new JPanel();
         panel.add(new JLabel("0%"));
         panel.add(opacity);
         panel.add(new JLabel("100%"));
         return panel;
     }
     
-    private Component buildCompositeSelector() {
-        composites = new JComboBox(new String[] {
+    private JComboBox<String> buildCompositeSelector() {
+        var composites = new JComboBox<>(new String[] {
             "CLEAR",
             "DST", "DST_ATOP", "DST_IN", "DST_OUT", "DST_OVER",
             "SRC", "SRC_ATOP", "SRC_IN", "SRC_OUT", "SRC_OVER",
             "XOR"
         });
         composites.setSelectedItem("SRC");
-        composites.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                changeComposite();
-            }
-        });
+        composites.addActionListener(_ -> changeComposite());
         return composites;
     }
     
     private void changeComposite() {
-        String rule = composites.getSelectedItem().toString();
+        var rule = Objects.requireNonNull(composites.getSelectedItem()).toString();
         try {
-            Field ruleField = AlphaComposite.class.getDeclaredField(rule);
-            AlphaComposite composite = AlphaComposite.getInstance(ruleField.getInt(null),
+            var ruleField = AlphaComposite.class.getDeclaredField(rule);
+            var composite = AlphaComposite.getInstance(ruleField.getInt(null),
                 (float) opacity.getValue() / 100.0f);
             painter.setComposite(composite);
-        } catch (SecurityException ex) {
-            ex.printStackTrace();
-        } catch (NoSuchFieldException ex) {
-            ex.printStackTrace();
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
+        } catch (SecurityException
+                 | NoSuchFieldException
+                 | IllegalArgumentException
+                 | IllegalAccessException ex) {
             ex.printStackTrace();
         }
     }
     
-    private final class CompositePainter extends JComponent {
-        private AlphaComposite composite = AlphaComposite.getInstance(
-            AlphaComposite.SRC, 0.5f);
+    private static final class CompositePainter extends JComponent {
+        private AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f);
 
         @Override
         protected void paintComponent(Graphics g) {
-            BufferedImage image = new BufferedImage(getWidth(), getHeight(),
-                BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2 = image.createGraphics();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+            var image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+            var g2 = image.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             
             g2.setColor(Color.BLUE);
             g2.fillRect(4 + (getWidth() / 4), 4, getWidth() / 2, getHeight() - 8);
@@ -153,10 +133,6 @@ public class AlphaCompositesApplication extends JFrame {
     }
     
     public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new AlphaCompositesApplication().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new AlphaCompositesApplication().setVisible(true));
     }
 }

@@ -53,20 +53,13 @@ public class MultiStopsGradient extends JFrame {
     public static void main(String... args) {
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
+        } catch (UnsupportedLookAndFeelException
+                 | InstantiationException
+                 | IllegalAccessException
+                 | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-        
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new MultiStopsGradient().setVisible(true);
-            }
-        });
+
+      SwingUtilities.invokeLater(() -> new MultiStopsGradient().setVisible(true));
     }
 }

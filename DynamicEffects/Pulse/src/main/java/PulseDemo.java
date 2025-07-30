@@ -71,9 +71,9 @@ public class PulseDemo extends JFrame {
         return new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                
-                Rectangle clip = g2.getClipBounds();
+                var g2 = (Graphics2D) g.create();
+
+                var clip = g2.getClipBounds();
                 g2.setPaint(new GradientPaint(0.0f, 0.0f, new Color(0x666f7f).darker(),
                         0.0f, getHeight(), new Color(0x262d3d).darker()));
                 
@@ -152,8 +152,7 @@ public class PulseDemo extends JFrame {
             repaint();
         }
         
-        public static ConvolveOp getGaussianBlurFilter(int radius,
-                boolean horizontal) {
+        public static ConvolveOp getGaussianBlurFilter(int radius, boolean horizontal) {
             if (radius < 1) {
                 throw new IllegalArgumentException("Radius must be >= 1");
             }
@@ -175,23 +174,16 @@ public class PulseDemo extends JFrame {
 
             for (int i = 0; i < data.length; i++) {
                 data[i] /= total;
-            }        
-
-            Kernel kernel = null;
-            if (horizontal) {
-                kernel = new Kernel(size, 1, data);
-            } else {
-                kernel = new Kernel(1, size, data);
             }
+
+            var kernel = horizontal ?
+                    new Kernel(size, 1, data) :
+                    new Kernel(1, size, data);
             return new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
         }
     }
     
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new PulseDemo().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new PulseDemo().setVisible(true));
     }
 }

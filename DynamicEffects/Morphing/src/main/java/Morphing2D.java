@@ -28,8 +28,8 @@ import java.awt.geom.Rectangle2D;
  */
 public class Morphing2D implements Shape {
     private double morph;
-    private Geometry startGeometry;
-    private Geometry endGeometry;
+    private final Geometry startGeometry;
+    private final Geometry endGeometry;
 
     /**
      * <p>Creates a new morphing shape. A morphing shape can be used to turn
@@ -38,7 +38,6 @@ public class Morphing2D implements Shape {
      *
      * @param startShape the shape to morph from
      * @param endShape   the shape to morph to
-     *
      * @throws IllegalPathStateException if the shapes do not have the same
      *                                   winding rule
      * @see #getMorphing()
@@ -48,12 +47,11 @@ public class Morphing2D implements Shape {
         startGeometry = new Geometry(startShape);
         endGeometry = new Geometry(endShape);
         if (startGeometry.getWindingRule() != endGeometry.getWindingRule()) {
-            throw new IllegalPathStateException("shapes must use same " +
-                                                "winding rule");
+            throw new IllegalPathStateException("shapes must use same winding rule");
         }
-        double tvals0[] = startGeometry.getTvals();
-        double tvals1[] = endGeometry.getTvals();
-        double masterTvals[] = mergeTvals(tvals0, tvals1);
+        double[] tvals0 = startGeometry.getTvals();
+        double[] tvals1 = endGeometry.getTvals();
+        double[] masterTvals = mergeTvals(tvals0, tvals1);
         startGeometry.setTvals(masterTvals);
         endGeometry.setTvals(masterTvals);
     }
@@ -62,7 +60,6 @@ public class Morphing2D implements Shape {
      * <p>Returns the morphing value between the two shapes.</p>
      *
      * @return the morphing value between the two shapes
-     *
      * @see #setMorphing(double)
      */
     public double getMorphing() {
@@ -78,7 +75,6 @@ public class Morphing2D implements Shape {
      * is clamped in the appropriate range.</p>
      *
      * @param morph the morphing value between the two shapes
-     *
      * @see #getMorphing()
      */
     public void setMorphing(double morph) {
@@ -97,7 +93,7 @@ public class Morphing2D implements Shape {
         return (v0 + ((v1 - v0) * t));
     }
 
-    private static double[] mergeTvals(double tvals0[], double tvals1[]) {
+    private static double[] mergeTvals(double[] tvals0, double[] tvals1) {
         int i0 = 0;
         int i1 = 0;
         int numtvals = 0;
@@ -112,7 +108,7 @@ public class Morphing2D implements Shape {
             }
             numtvals++;
         }
-        double newtvals[] = new double[numtvals];
+        double[] newtvals = new double[numtvals];
         i0 = 0;
         i1 = 0;
         numtvals = 0;
@@ -132,28 +128,24 @@ public class Morphing2D implements Shape {
         return newtvals;
     }
 
-    /**
-     * @{inheritDoc}
-     */
+    @Override
     public Rectangle getBounds() {
         return getBounds2D().getBounds();
     }
 
-    /**
-     * @{inheritDoc}
-     */
+    @Override
     public Rectangle2D getBounds2D() {
         int n = startGeometry.getNumCoords();
         double xmin, ymin, xmax, ymax;
         xmin = xmax = interp(startGeometry.getCoord(0), endGeometry.getCoord(0),
-                             morph);
+                morph);
         ymin = ymax = interp(startGeometry.getCoord(1), endGeometry.getCoord(1),
-                             morph);
+                morph);
         for (int i = 2; i < n; i += 2) {
             double x = interp(startGeometry.getCoord(i),
-                              endGeometry.getCoord(i), morph);
+                    endGeometry.getCoord(i), morph);
             double y = interp(startGeometry.getCoord(i + 1),
-                              endGeometry.getCoord(i + 1), morph);
+                    endGeometry.getCoord(i + 1), morph);
             if (xmin > x) {
                 xmin = x;
             }
@@ -170,58 +162,42 @@ public class Morphing2D implements Shape {
         return new Rectangle2D.Double(xmin, ymin, xmax - xmin, ymax - ymin);
     }
 
-    /**
-     * @{inheritDoc}
-     */
+    @Override
     public boolean contains(double x, double y) {
         throw new InternalError("unimplemented");
     }
 
-    /**
-     * @{inheritDoc}
-     */
+    @Override
     public boolean contains(Point2D p) {
         return contains(p.getX(), p.getY());
     }
 
-    /**
-     * @{inheritDoc}
-     */
+    @Override
     public boolean intersects(double x, double y, double w, double h) {
         throw new InternalError("unimplemented");
     }
 
-    /**
-     * @{inheritDoc}
-     */
+    @Override
     public boolean intersects(Rectangle2D r) {
         return intersects(r.getX(), r.getY(), r.getWidth(), r.getHeight());
     }
 
-    /**
-     * @{inheritDoc}
-     */
+    @Override
     public boolean contains(double x, double y, double w, double h) {
         throw new InternalError("unimplemented");
     }
 
-    /**
-     * @{inheritDoc}
-     */
+    @Override
     public boolean contains(Rectangle2D r) {
         return contains(r.getX(), r.getY(), r.getWidth(), r.getHeight());
     }
 
-    /**
-     * @{inheritDoc}
-     */
+    @Override
     public PathIterator getPathIterator(AffineTransform at) {
         return new Iterator(at, startGeometry, endGeometry, morph);
     }
 
-    /**
-     * @{inheritDoc}
-     */
+    @Override
     public PathIterator getPathIterator(AffineTransform at, double flatness) {
         return new FlatteningPathIterator(getPathIterator(at), flatness);
     }
@@ -229,10 +205,10 @@ public class Morphing2D implements Shape {
     private static class Geometry {
         static final double THIRD = (1.0 / 3.0);
         static final double MIN_LEN = 0.001;
-        double bezierCoords[];
+        double[] bezierCoords;
         int numCoords;
         int windingrule;
-        double myTvals[];
+        double[] myTvals;
 
         public Geometry(Shape s) {
             // Multiple of 6 plus 2 more for initial moveto
@@ -244,7 +220,7 @@ public class Morphing2D implements Shape {
                 // It will have 8 coordinates (2 for moveto, 6 for cubic)
                 numCoords = 8;
             }
-            double coords[] = new double[6];
+            double[] coords = new double[6];
             int type = pi.currentSegment(coords);
             pi.next();
             if (type != PathIterator.SEG_MOVETO) {
@@ -258,7 +234,7 @@ public class Morphing2D implements Shape {
                 if (numCoords + 6 > bezierCoords.length) {
                     // Keep array size to a multiple of 6 plus 2
                     int newsize = (numCoords - 2) * 2 + 2;
-                    double newCoords[] = new double[newsize];
+                    double[] newCoords = new double[newsize];
                     System.arraycopy(bezierCoords, 0, newCoords, 0, numCoords);
                     bezierCoords = newCoords;
                 }
@@ -267,8 +243,7 @@ public class Morphing2D implements Shape {
                         throw new InternalError(
                                 "Cannot handle multiple subpaths");
                     case PathIterator.SEG_CLOSE:
-                        if (curx == bezierCoords[0] && cury == bezierCoords[1])
-                        {
+                        if (curx == bezierCoords[0] && cury == bezierCoords[1]) {
                             break;
                         }
                         coords[0] = bezierCoords[0];
@@ -345,12 +320,12 @@ public class Morphing2D implements Shape {
             // rotate the points so that it is...
             if (minPt > 0) {
                 // Keep in mind that first 2 coords == last 2 coords
-                double newCoords[] = new double[numCoords];
+                double[] newCoords = new double[numCoords];
                 // Copy all coordinates from minPt to the end of the
                 // array to the beginning of the new array
                 System.arraycopy(bezierCoords, minPt,
-                                 newCoords, 0,
-                                 numCoords - minPt);
+                        newCoords, 0,
+                        numCoords - minPt);
                 // Now we do not want to copy 0,1 as they are duplicates
                 // of the last 2 coordinates which we just copied.  So
                 // we start the source copy at index 2, but we still
@@ -359,8 +334,8 @@ public class Morphing2D implements Shape {
                 // of the array, thus ensuring that thew new array starts
                 // and ends with the same pair of coordinates...
                 System.arraycopy(bezierCoords, 2,
-                                 newCoords, numCoords - minPt,
-                                 minPt);
+                        newCoords, numCoords - minPt,
+                        minPt);
                 bezierCoords = newCoords;
             }
             /* Clockwise enforcement:
@@ -452,7 +427,7 @@ public class Morphing2D implements Shape {
 
             // assert(numCoords >= 8);
             // assert(((numCoords - 2) % 6) == 0);
-            double tvals[] = new double[(numCoords - 2) / 6 + 1];
+            double[] tvals = new double[(numCoords - 2) / 6 + 1];
 
             // First calculate total "length" of path
             // Length of each segment is averaged between
@@ -526,10 +501,10 @@ public class Morphing2D implements Shape {
             return (myTvals = tvals);
         }
 
-        public void setTvals(double newTvals[]) {
-            double oldCoords[] = bezierCoords;
-            double newCoords[] = new double[2 + (newTvals.length - 1) * 6];
-            double oldTvals[] = getTvals();
+        public void setTvals(double[] newTvals) {
+            double[] oldCoords = bezierCoords;
+            double[] newCoords = new double[2 + (newTvals.length - 1) * 6];
+            double[] oldTvals = getTvals();
             int oldci = 0;
             double x0, xc0, xc1, x1;
             double y0, yc0, yc1, y1;
@@ -603,23 +578,17 @@ public class Morphing2D implements Shape {
             this.t = t;
         }
 
-        /**
-         * @{inheritDoc}
-         */
+        @Override
         public int getWindingRule() {
             return g0.getWindingRule();
         }
 
-        /**
-         * @{inheritDoc}
-         */
+        @Override
         public boolean isDone() {
             return (cindex > g0.getNumCoords());
         }
 
-        /**
-         * @{inheritDoc}
-         */
+        @Override
         public void next() {
             if (cindex == 0) {
                 cindex = 2;
@@ -628,11 +597,9 @@ public class Morphing2D implements Shape {
             }
         }
 
-        double dcoords[];
+        double[] dcoords;
 
-        /**
-         * @{inheritDoc}
-         */
+        @Override
         public int currentSegment(float[] coords) {
             if (dcoords == null) {
                 dcoords = new double[6];
@@ -651,9 +618,7 @@ public class Morphing2D implements Shape {
             return type;
         }
 
-        /**
-         * @{inheritDoc}
-         */
+        @Override
         public int currentSegment(double[] coords) {
             int type;
             int n;
@@ -670,8 +635,8 @@ public class Morphing2D implements Shape {
             if (n > 0) {
                 for (int i = 0; i < n; i++) {
                     coords[i] = interp(g0.getCoord(cindex + i),
-                                       g1.getCoord(cindex + i),
-                                       t);
+                            g1.getCoord(cindex + i),
+                            t);
                 }
                 if (at != null) {
                     at.transform(coords, 0, coords, 0, n / 2);

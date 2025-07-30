@@ -3,5 +3,5 @@ plugins {
 }
 
 application {
-    mainClass.set("MouseCursor")
+    mainClass.set("ApplicationFrame")
 }

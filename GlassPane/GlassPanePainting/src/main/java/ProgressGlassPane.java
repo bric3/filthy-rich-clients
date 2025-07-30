@@ -31,15 +31,11 @@
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LinearGradientPaint;
-import java.awt.Paint;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import javax.swing.JComponent;
 
@@ -63,7 +59,7 @@ public class ProgressGlassPane extends JComponent {
     private static final Color GRADIENT_COLOR2 = Color.WHITE;
     private static final Color GRADIENT_COLOR1 = Color.GRAY;
 
-    private String message = "Downloading file...";
+    private final String message = "Downloading file...";
     private int progress = 0;
     
     public ProgressGlassPane() {
@@ -80,7 +76,7 @@ public class ProgressGlassPane extends JComponent {
         this.progress = progress;
         
         // computes the damaged area
-        FontMetrics metrics = getGraphics().getFontMetrics(getFont()); 
+        var metrics = getGraphics().getFontMetrics(getFont());
         int w = (int) (BAR_WIDTH * ((float) oldProgress / 100.0f));
         int x = w + (getWidth() - BAR_WIDTH) / 2;
         int y = (getHeight() - BAR_HEIGHT) / 2;
@@ -95,16 +91,16 @@ public class ProgressGlassPane extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         // enables anti-aliasing
-        Graphics2D g2 = (Graphics2D) g;
+        var g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
         
         // gets the current clipping area
-        Rectangle clip = g.getClipBounds();
+        var clip = g.getClipBounds();
         
         // sets a 65% translucent composite
-        AlphaComposite alpha = AlphaComposite.SrcOver.derive(0.65f);
-        Composite composite = g2.getComposite();
+        var alpha = AlphaComposite.SrcOver.derive(0.65f);
+        var composite = g2.getComposite();
         g2.setComposite(alpha);
         
         // fills the background
@@ -112,7 +108,7 @@ public class ProgressGlassPane extends JComponent {
         g2.fillRect(clip.x, clip.y, clip.width, clip.height);
         
         // centers the progress bar on screen
-        FontMetrics metrics = g.getFontMetrics();        
+        var metrics = g.getFontMetrics();
         int x = (getWidth() - BAR_WIDTH) / 2;
         int y = (getHeight() - BAR_HEIGHT - metrics.getDescent()) / 2;
         
@@ -128,18 +124,18 @@ public class ProgressGlassPane extends JComponent {
         int h = BAR_HEIGHT;
         
         // draws the content of the progress bar
-        Paint paint = g2.getPaint();
+        var paint = g2.getPaint();
         
         // bar's background
-        Paint gradient = new GradientPaint(x, y, GRADIENT_COLOR1,
+        var gradient = new GradientPaint(x, y, GRADIENT_COLOR1,
                 x, y + h, GRADIENT_COLOR2);
         g2.setPaint(gradient);
         g2.fillRect(x, y, BAR_WIDTH, BAR_HEIGHT);
         
         // actual progress
-        gradient = new LinearGradientPaint(x, y, x, y + h,
+        var progressGradient = new LinearGradientPaint(x, y, x, y + h,
                 GRADIENT_FRACTIONS, GRADIENT_COLORS);
-        g2.setPaint(gradient);
+        g2.setPaint(progressGradient);
         g2.fillRect(x, y, w, h);
         
         g2.setPaint(paint);

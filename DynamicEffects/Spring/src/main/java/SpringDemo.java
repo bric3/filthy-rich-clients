@@ -45,6 +45,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Objects;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultListCellRenderer;
@@ -55,7 +56,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import org.jdesktop.animation.timing.Animator;
+
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
 /**
@@ -63,7 +64,7 @@ import org.jdesktop.animation.timing.interpolation.PropertySetter;
  * @author Romain Guy <romain.guy@mac.com>
  */
 public class SpringDemo extends JFrame {
-    private JList list;
+    private JList<Application> list;
     private SpringGlassPane glassPane;
 
     public SpringDemo() {
@@ -90,14 +91,14 @@ public class SpringDemo extends JFrame {
     }
     
     private JComponent buildList() {
-        Application[] elements = new Application[] {
-            new Application("Address Book", "x-office-address-book.png"),
-            new Application("Calendar",     "x-office-calendar.png"),
-            new Application("Presentation", "x-office-presentation.png"),
-            new Application("Spreadsheet",  "x-office-spreadsheet.png"),
+        var elements = new Application[] {
+            Application.of("Address Book", "x-office-address-book.png"),
+            Application.of("Calendar",     "x-office-calendar.png"),
+            Application.of("Presentation", "x-office-presentation.png"),
+            Application.of("Spreadsheet",  "x-office-spreadsheet.png"),
         };
         
-        list = new JList(elements);
+        list = new JList<>(elements);
         list.setCellRenderer(new ApplicationListCellRenderer());
         list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         list.setVisibleRowCount(2);
@@ -113,13 +114,12 @@ public class SpringDemo extends JFrame {
                      location.y -= 13;
                      bounds.setLocation(location);
                      
-                     glassPane.showSpring(bounds,
-                             ((Application) list.getSelectedValue()).icon.getImage());
+                     glassPane.showSpring(bounds, list.getSelectedValue().icon.getImage());
                  }
              }
          });
-        
-        JPanel panel = new JPanel(new GridBagLayout());
+
+        var panel = new JPanel(new GridBagLayout());
         panel.add(new JLabel("Launcher"),
                 new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
                     GridBagConstraints.LINE_START, GridBagConstraints.NONE,
@@ -155,7 +155,7 @@ public class SpringDemo extends JFrame {
                 int x = (bounds.width - width) / 2;
                 int y = (bounds.height - height) / 2;
 
-                Graphics2D g2 = (Graphics2D) g.create();
+                var g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                         RenderingHints.VALUE_INTERPOLATION_BILINEAR);
                 
@@ -168,8 +168,8 @@ public class SpringDemo extends JFrame {
         public void showSpring(Rectangle bounds, Image image) {
             this.bounds = bounds;
             this.image = image;
-            
-            Animator animator = PropertySetter.createAnimator(250, this,
+
+            var animator = PropertySetter.createAnimator(250, this,
                     "zoom", 0.0f, 1.0f);
             animator.setAcceleration(0.2f);
             animator.setDeceleration(0.4f);
@@ -210,21 +210,16 @@ public class SpringDemo extends JFrame {
         }   
     }
     
-    private static class Application {
-        public ImageIcon icon;
-        public String label;
-        
-        public Application(String label, String icon) {
-            this.icon = new ImageIcon(getClass().getResource("images/" + icon));
-            this.label = label;
+    private record Application(ImageIcon icon, String label) {
+        public static Application of(String label, String icon) {
+            return new Application(
+                    new ImageIcon(Objects.requireNonNull(Application.class.getResource("images/" + icon))),
+                    label
+            );
         }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new SpringDemo().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new SpringDemo().setVisible(true));
     }
 }

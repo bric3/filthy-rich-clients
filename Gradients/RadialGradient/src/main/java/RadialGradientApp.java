@@ -52,10 +52,6 @@ public class RadialGradientApp extends JFrame {
     }
     
     public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new RadialGradientApp().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new RadialGradientApp().setVisible(true));
     }
 }

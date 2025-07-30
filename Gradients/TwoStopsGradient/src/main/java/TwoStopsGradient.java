@@ -49,8 +49,8 @@ public class TwoStopsGradient extends JFrame {
     /** Creates a new instance of TwoStopsGradient */
     public TwoStopsGradient() {
         super("Two Stops Gradient");
-        
-        JPanel panel = new JPanel(new GridBagLayout());
+
+        var panel = new JPanel(new GridBagLayout());
         JButton button;
         panel.add(button = new DepthButton("New"),
                 new GridBagConstraints(0, 0, 1, 1,
@@ -75,20 +75,13 @@ public class TwoStopsGradient extends JFrame {
     public static void main(String... args) {
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
+        } catch (IllegalAccessException
+                 | InstantiationException
+                 | UnsupportedLookAndFeelException
+                 | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-        
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new TwoStopsGradient().setVisible(true);
-            }
-        });
+
+      SwingUtilities.invokeLater(() -> new TwoStopsGradient().setVisible(true));
     }
 }

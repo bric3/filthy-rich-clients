@@ -74,14 +74,12 @@ public class SwingTimerDemo implements ActionListener {
             } else {
                 Thread.sleep(PROCESSING_TIME);
             }
-        } catch (Exception e) {}
+        } catch (Exception _) {}
     }
 
-    public SwingTimerDemo() {
-        firstTime = true;
-    }
+    public SwingTimerDemo() {}
     
-    public static void main(String[] args) {        
+    public static void main(String... args) {
         // Run a default fixed-delay timer
         timer = new Timer(DELAY, new SwingTimerDemo());
         startTime = prevTime = System.currentTimeMillis();
@@ -91,7 +89,7 @@ public class SwingTimerDemo implements ActionListener {
         // Sleep for long enough that the first timer ends
         try {
             Thread.sleep(DURATION*2);
-        } catch (Exception e) {}
+        } catch (Exception _) {}
         
         // Run a timer with no coalescing to get fixed-rate behavior
         timer = new Timer(DELAY, new SwingTimerDemo());
@@ -99,7 +97,5 @@ public class SwingTimerDemo implements ActionListener {
         timer.setCoalesce(false);
         System.out.println("\nFixed Rate Times");
         timer.start();
-
     }
-    
 }

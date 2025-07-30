@@ -29,17 +29,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AWTEvent;
 import java.awt.Cursor;
 import java.awt.Graphics;
-import java.awt.Window;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Objects;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -87,7 +83,7 @@ public class WatermarkGlassPane extends JComponent {
     protected void paintComponent(Graphics g) {
         if (image == null) {
             try {
-                image = ImageIO.read(getClass().getResource("watermark.png"));
+                image = ImageIO.read(Objects.requireNonNull(getClass().getResource("watermark.png")));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

@@ -37,6 +37,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.Objects;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -76,20 +77,22 @@ public class MotionDemo extends JFrame {
     }
     
     private void configureAnimations() {
-        Animator leftAnimator = new Animator(200);
+        var leftAnimator = new Animator(200);
         leftAnimator.setAcceleration(0.3f);
         leftAnimator.setDeceleration(0.2f);
         leftAnimator.addTarget(new PropertySetter(
-                saveButton, "location", new Point(16, 16)));
+                saveButton, "location",
+                new Point(16, 16)));
         leftAnimator.addTarget(new PropertySetter(
-                openButton, "location", new Point(16, openButton.getY())));
+                openButton, "location",
+                new Point(16, openButton.getY())));
         leftAnimator.addTarget(new PropertySetter(
                 textArea, "location",
                 new Point(16 + saveButton.getWidth() + 6, 16)));
         
         ActionTrigger.addTrigger(leftLayoutButton, leftAnimator);
-        
-        Animator rightAnimator = new Animator(200);
+
+        var rightAnimator = new Animator(200);
         rightAnimator.setAcceleration(0.3f);
         rightAnimator.setDeceleration(0.2f);
         rightAnimator.addTarget(new PropertySetter(
@@ -103,7 +106,7 @@ public class MotionDemo extends JFrame {
     }
     
     private JComponent buildContentPane() {
-        JPanel panel = new JPanel(null);
+        var panel = new JPanel(null);
         
         int x = 16;
         int y = 16;
@@ -138,7 +141,7 @@ public class MotionDemo extends JFrame {
     }
     
     private JComponent buildToolbar() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING)) {
+        var panel = new JPanel(new FlowLayout(FlowLayout.LEADING)) {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -151,7 +154,7 @@ public class MotionDemo extends JFrame {
         
         leftLayoutButton = new JButton("Left Layout");
         leftLayoutButton.setIcon(new ImageIcon(
-                getClass().getResource("images/left-layout.png")));
+                Objects.requireNonNull(getClass().getResource("images/left-layout.png"))));
         leftLayoutButton.setVerticalTextPosition(JButton.BOTTOM);
         leftLayoutButton.setHorizontalTextPosition(JButton.CENTER);
         leftLayoutButton.setOpaque(false);
@@ -161,16 +164,16 @@ public class MotionDemo extends JFrame {
         
         rightLayoutButton = new JButton("Right Layout");
         rightLayoutButton.setIcon(new ImageIcon(
-                getClass().getResource("images/right-layout.png")));
+                Objects.requireNonNull(getClass().getResource("images/right-layout.png"))));
         rightLayoutButton.setVerticalTextPosition(JButton.BOTTOM);
         rightLayoutButton.setHorizontalTextPosition(JButton.CENTER);
         rightLayoutButton.setOpaque(false);
         rightLayoutButton.setContentAreaFilled(false);
         rightLayoutButton.setBorderPainted(false);
         panel.add(rightLayoutButton);
-        
-        JPanel wrapper = new JPanel(new BorderLayout());
-        JPanel blackPanel = new JPanel(new BorderLayout()) {
+
+        var wrapper = new JPanel(new BorderLayout());
+        var blackPanel = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 g.setColor(Color.BLACK);
@@ -185,10 +188,6 @@ public class MotionDemo extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new MotionDemo().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new MotionDemo().setVisible(true));
     }
 }

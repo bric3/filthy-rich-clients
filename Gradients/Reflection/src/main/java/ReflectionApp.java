@@ -37,7 +37,7 @@ import javax.swing.SwingUtilities;
  * @author Romain Guy
  */
 public class ReflectionApp extends JFrame {
-    
+
     /** Creates a new instance of ReflectionApp */
     public ReflectionApp() {
         super("Reflections");
@@ -49,10 +49,6 @@ public class ReflectionApp extends JFrame {
     }
     
     public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new ReflectionApp().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new ReflectionApp().setVisible(true));
     }
 }

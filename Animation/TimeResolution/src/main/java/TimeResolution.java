@@ -42,8 +42,8 @@ import javax.swing.Timer;
  */
 public class TimeResolution implements ActionListener {
     
-    private static int INCREMENT = 5;
-    private static int MAX = 50;
+    private static final int INCREMENT = 5;
+    private static final int MAX = 50;
     
     /**
      * Measures how much time has elapsed according to both currentTimeMillis()
@@ -60,11 +60,11 @@ public class TimeResolution implements ActionListener {
         long elapsedTimeActual = 0;
         long elapsedTimeMeasured = 0;
         long elapsedNanosMeasured = 0;
-        System.out.printf("sleep   currentTimeMillis   nanoTime\n");
+        System.out.print("sleep   currentTimeMillis   nanoTime\n");
         while (elapsedTimeActual < max) {
             try {
                 Thread.sleep(increment);
-            } catch (Exception e) {}
+            } catch (Exception _) {}
             long currentTime = System.currentTimeMillis();
             long currentNanos = System.nanoTime();
             elapsedTimeActual += increment;
@@ -82,16 +82,15 @@ public class TimeResolution implements ActionListener {
      * inaccuracies of our nanoTime() method for small time differences.
      */
     private void measureSleep() {
-        System.out.printf("                                 measured\n");
-        System.out.printf("sleep time   iterations   total time   per-sleep\n");
+        System.out.print("                                 measured\n");
+        System.out.print("sleep time   iterations   total time   per-sleep\n");
         for (int sleepTime = 0; sleepTime <= 20; ++sleepTime) {
             int iterations = (sleepTime == 0) ? 10000 : (1000 / sleepTime);
             long startTime = System.nanoTime();
             for (int i = 0; i < iterations; ++i) {
                 try {
                     Thread.sleep(sleepTime);
-                } catch (Exception e) {
-                }
+                } catch (Exception _) {}
             }
             long endTime = System.nanoTime();
             long totalTime = (endTime - startTime) / 1000000;
@@ -106,10 +105,10 @@ public class TimeResolution implements ActionListener {
      * wait() method instead of sleep().
      */
     private synchronized void measureWait() {
-        System.out.printf("                                measured\n");
-        System.out.printf("wait time   iterations   total time   per-wait\n");
+        System.out.print("                                measured\n");
+        System.out.print("wait time   iterations   total time   per-wait\n");
         for (int sleepTime = 1; sleepTime <= 20; ++sleepTime) {
-            int iterations = (sleepTime == 0) ? 10000 : (1000 / sleepTime);
+            int iterations = 1000 / sleepTime;
             long startTime = System.nanoTime();
             for (int i = 0; i < iterations; ++i) {
                 try {
@@ -157,8 +156,8 @@ public class TimeResolution implements ActionListener {
      * we see in the other measurement methods.
      */
     public void measureTimer() {
-        System.out.printf("                                  measured\n");
-        System.out.printf("timer delay   iterations   total time   per-delay\n");
+        System.out.print("                                  measured\n");
+        System.out.print("timer delay   iterations   total time   per-delay\n");
         for (sleepTime = 0; sleepTime <= 20; ++sleepTime) {
             iterations = (sleepTime == 0) ? 1000 : (1000 / sleepTime);
             timerIteration = 1;
@@ -168,7 +167,7 @@ public class TimeResolution implements ActionListener {
             while (timerIteration > 0) {
                 try {
                     Thread.sleep(1000);
-                } catch (Exception e) {}
+                } catch (Exception _) {}
             }
         }
     }
@@ -176,7 +175,7 @@ public class TimeResolution implements ActionListener {
     /**
      * Execute the various timer resolution tests.
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         TimeResolution timeResolution = new TimeResolution();
         timeResolution.measureTimer();
         timeResolution.measureTimeFunctions(INCREMENT, MAX);

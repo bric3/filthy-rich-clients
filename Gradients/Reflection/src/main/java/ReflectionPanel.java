@@ -31,15 +31,13 @@
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
@@ -53,7 +51,7 @@ public class ReflectionPanel extends JPanel {
     /** Creates a new instance of ReflectionPanel */
     public ReflectionPanel() {
         try {
-            image = ImageIO.read(getClass().getResource("Mirror Lake.jpg"));
+            image = ImageIO.read(Objects.requireNonNull(getClass().getResource("Mirror Lake.jpg")));
             image = createReflection(image);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -82,7 +80,7 @@ public class ReflectionPanel extends JPanel {
         // Creates the alpha mask
         GradientPaint mask;
         mask = new GradientPaint(0, 0, new Color(1.0f, 1.0f, 1.0f, 0.5f),
-                0, height / 2, new Color(1.0f, 1.0f, 1.0f, 0.0f));
+                                 0, (float) height / 2, new Color(1.0f, 1.0f, 1.0f, 0.0f));
         Paint oldPaint = g2.getPaint();
         g2.setPaint(mask);
         

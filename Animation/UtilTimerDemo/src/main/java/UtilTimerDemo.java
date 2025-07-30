@@ -49,7 +49,7 @@ public class UtilTimerDemo extends TimerTask {
     private static final long INITIAL_PROCESSING_TIME = 2 * DELAY;
     private static Timer timer = null;
     private boolean firstTime = true;
-    private static boolean runningFixedRate = false;
+    private static final boolean runningFixedRate = false;
     
     /** 
      * This method will be called during every tick of the Timers.
@@ -74,12 +74,10 @@ public class UtilTimerDemo extends TimerTask {
             } else {
                 Thread.sleep(PROCESSING_TIME);
             }
-        } catch (Exception e) {}
+        } catch (Exception _) {}
     }
     
-    public UtilTimerDemo() {
-        firstTime = true;
-    }
+    public UtilTimerDemo() {}
     
     public static void main(String[] args) {
         // Start and run a fixed-delay timer
@@ -91,7 +89,7 @@ public class UtilTimerDemo extends TimerTask {
         // Sleep long enough to let the first timer finish
         try {
             Thread.sleep(DURATION*2);
-        } catch (Exception e) {}
+        } catch (Exception _) {}
         
         // Start and run a fixed-rate timer
         timer = new Timer();

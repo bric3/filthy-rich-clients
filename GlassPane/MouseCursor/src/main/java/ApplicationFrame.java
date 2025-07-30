@@ -30,12 +30,14 @@
  */
 
 import javax.swing.*;
+import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 /**
  *
  * @author Romain Guy
  */
-public class ApplicationFrame extends javax.swing.JFrame {
+public class ApplicationFrame extends JFrame {
     public ApplicationFrame() {
         initComponents();
         setGlassPane(new WatermarkGlassPane());
@@ -50,74 +52,65 @@ public class ApplicationFrame extends javax.swing.JFrame {
      * It is not anymore generated.
      */
     private void initComponents() {
-        javax.swing.JLabel jLabel1;
-        javax.swing.JLabel jLabel2;
-        javax.swing.JLabel jLabel3;
-        javax.swing.JLabel jLabel4;
-        javax.swing.JLabel jLabel5;
-        javax.swing.JList jList1;
-        javax.swing.JScrollPane jScrollPane1;
-        javax.swing.JScrollPane jScrollPane2;
-        javax.swing.JTextArea jTextArea1;
-        javax.swing.JTextField jTextField1;
-        javax.swing.JTextField jTextField2;
-        javax.swing.JTextField jTextField3;
-        javax.swing.JTextField jTextField4;
-
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Glass Pane and Mouse Cursor");
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Jean-Baptiste Freymann", "Nicolas Igot", "Matthieu Grandvallet", "Fr\u00e9d\u00e9ric Hofmann" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jList1.setSelectedIndex(0);
-        jScrollPane1.setViewportView(jList1);
 
+
+        var jList = new JList<String>();
+        jList.setModel(new AbstractListModel<>() {
+            final String[] strings = {"Jean-Baptiste Freymann", "Nicolas Igot", "Matthieu Grandvallet", "Fr\u00e9d\u00e9ric Hofmann"};
+
+            public int getSize() {
+                return strings.length;
+            }
+
+            public String getElementAt(int i) {
+                return strings[i];
+            }
+        });
+        jList.setSelectedIndex(0);
+        var listScrollPane1 = new JScrollPane(jList);
+
+        var jLabel1 = new JLabel();
         jLabel1.setText("First Name");
 
+        var jLabel2 = new JLabel();
         jLabel2.setText("Last Name");
 
+        var jLabel3 = new JLabel();
         jLabel3.setText("Phone");
 
+        var jLabel4 = new JLabel();
         jLabel4.setText("Email");
 
+        var jLabel5 = new JLabel();
         jLabel5.setText("Address");
 
+        var jTextField1 = new JTextField();
         jTextField1.setText("Jean-Baptiste");
 
+        var jTextField2 = new JTextField();
         jTextField2.setText("Freymann");
 
+        var jTextField3 = new JTextField();
         jTextField3.setText("(555) 462-1492");
 
+        var jTextField4 = new JTextField();
         jTextField4.setText("roukin@acme.com");
 
-        jTextArea1.setColumns(15);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("462 Park View Drive\n54999 Santa Clara, CA\nUSA");
-        jScrollPane2.setViewportView(jTextArea1);
+        var jTextArea = new JTextArea();
+        jTextArea.setColumns(15);
+        jTextArea.setRows(5);
+        jTextArea.setText("462 Park View Drive\n54999 Santa Clara, CA\nUSA");
+        var textAreaScrollPane = new JScrollPane(jTextArea);
 
-        GroupLayout layout = new GroupLayout(getContentPane());
+        var layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE)
+                .addComponent(listScrollPane1, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5, GroupLayout.Alignment.TRAILING)
@@ -131,11 +124,11 @@ public class ApplicationFrame extends javax.swing.JFrame {
                     .addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 209, GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textAreaScrollPane, GroupLayout.PREFERRED_SIZE, 209, GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
-        layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {jScrollPane2, jTextField1, jTextField2, jTextField3, jTextField4});
+        layout.linkSize(SwingConstants.HORIZONTAL, textAreaScrollPane, jTextField1, jTextField2, jTextField3, jTextField4);
 
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -161,26 +154,18 @@ public class ApplicationFrame extends javax.swing.JFrame {
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
-                            .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
+                            .addComponent(textAreaScrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(listScrollPane1, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds((screenSize.width-489)/2, (screenSize.height-266)/2, 489, 266);
     }
     
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ApplicationFrame().setVisible(true);
-            }
-        });
+    public static void main(String... args) {
+        EventQueue.invokeLater(() -> new ApplicationFrame().setVisible(true));
     }
-    
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
-    
 }
