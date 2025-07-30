@@ -3,5 +3,5 @@ plugins {
 }
 
 application {
-    mainClass.set("BlendCompositesDemo")
+    mainClass.set("composite.BlendCompositeDemo")
 }

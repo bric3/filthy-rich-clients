@@ -34,36 +34,26 @@
 
 package composite;
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Composite;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import java.util.Objects;
 
 /**
- * See {@link org.jdesktop.swingx.graphics.BlendComposite}.
+ * SwingX is now defunct {@link org.jdesktop.swingx.graphics.BlendComposite},
+ * the code was copied here to {@link BlendComposite}
  *
  * @author Romain Guy <romain.guy@mac.com>
  */
 public class BlendCompositeDemo extends JFrame {
-    private CompositeTestPanel compositeTestPanel;
-    private JComboBox combo;
-    private JSlider slider;
+    private final CompositeTestPanel compositeTestPanel;
+    private final JComboBox<BlendComposite.BlendingMode> combo;
+    private final JSlider slider;
 
     public BlendCompositeDemo() {
         super("Blend Composites");
@@ -72,27 +62,22 @@ public class BlendCompositeDemo extends JFrame {
         compositeTestPanel.setComposite(BlendComposite.Average);
         add(compositeTestPanel);
 
-        combo = new JComboBox(BlendComposite.BlendingMode.values());
-        combo.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                compositeTestPanel.setComposite(
-                    BlendComposite.getInstance(
-                        BlendComposite.BlendingMode.valueOf(combo.getSelectedItem().toString()),
-                        slider.getValue() / 100.0f
-                    ));
-            }
-        });
-
         slider = new JSlider(0, 100, 100);
-        slider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                BlendComposite blend = (BlendComposite) compositeTestPanel.getComposite();
-                blend = blend.derive(slider.getValue() / 100.0f);
-                compositeTestPanel.setComposite(blend);
-            }
+        slider.addChangeListener(_ -> {
+            var blend = (BlendComposite) compositeTestPanel.getComposite();
+            blend = blend.derive(slider.getValue() / 100.0f);
+            compositeTestPanel.setComposite(blend);
         });
 
-        JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        combo = new JComboBox<>(BlendComposite.BlendingMode.values());
+        combo.addActionListener(_ -> compositeTestPanel.setComposite(
+                BlendComposite.getInstance(
+                        BlendComposite.BlendingMode.valueOf(Objects.requireNonNull(combo.getSelectedItem()).toString()),
+                        slider.getValue() / 100.0f
+                )));
+
+
+        var controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controls.add(combo);
         controls.add(new JLabel("0%"));
         controls.add(slider);
@@ -130,13 +115,13 @@ public class BlendCompositeDemo extends JFrame {
         protected void paintComponent(Graphics g) {
             if (image == null) {
                 image = new BufferedImage(imageA.getWidth(),
-                                          imageA.getHeight(),
-                                          BufferedImage.TYPE_INT_ARGB);
+                        imageA.getHeight(),
+                        BufferedImage.TYPE_INT_ARGB);
                 repaint = true;
             }
 
             if (repaint) {
-                Graphics2D g2 = image.createGraphics();
+                var g2 = image.createGraphics();
                 g2.setComposite(AlphaComposite.Clear);
                 g2.fillRect(0, 0, image.getWidth(), image.getHeight());
 
@@ -168,10 +153,6 @@ public class BlendCompositeDemo extends JFrame {
     }
 
     public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new BlendCompositeDemo().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new BlendCompositeDemo().setVisible(true));
     }
 }
