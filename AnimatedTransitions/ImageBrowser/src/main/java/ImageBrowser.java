@@ -1,4 +1,5 @@
 import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.transitions.EffectsManager;
 import org.jdesktop.animation.transitions.EffectsManager.TransitionType;
 import org.jdesktop.animation.transitions.ScreenTransition;
@@ -74,6 +75,7 @@ public class ImageBrowser extends JComponent
     private final JLabel[] label;
     private final Animator animator = new Animator(500);
     private final ScreenTransition transition = new ScreenTransition(this, this, animator);
+    private boolean transitionPending;
     private final List<ImageHolder> images = new ArrayList<>();
     private static int currentSize = 50;
     private GradientPaint bgGradient = null;
@@ -89,6 +91,13 @@ public class ImageBrowser extends JComponent
         setOpaque(true);
         animator.setAcceleration(.1f);
         animator.setDeceleration(.4f);
+        animator.addTarget(new TimingTargetAdapter() {
+            @Override
+            public void end() {
+                // Animator clears its running flag after end callbacks return.
+                SwingUtilities.invokeLater(ImageBrowser.this::startPendingTransition);
+            }
+        });
         setLayout(new FlowLayout());
         loadImages();
         label = new JLabel[images.size()];
@@ -179,13 +188,21 @@ public class ImageBrowser extends JComponent
     /**
      * This method handles changes in slider state, which can come from either
      * mouse manipulation of the slider or right/left keyboard events. This
-     * event changes the current thumbnail size and starts the transition.
-     * We will then receive a callback to setupNextScreen() where we set up
-     * the GUI according to this new thumbnail size.
+     * event changes the current thumbnail size and requests a transition.
+     * Changes received during an animation are coalesced into one follow-up
+     * transition to the latest size.
      */
     public void stateChanged(ChangeEvent ce) {
         currentSize = slider.getValue() * 25;
-        transition.start();
+        transitionPending = true;
+        startPendingTransition();
+    }
+
+    private void startPendingTransition() {
+        if (transitionPending && !animator.isRunning()) {
+            transitionPending = false;
+            transition.start();
+        }
     }
 
     private static void createAndShowGUI() {
