@@ -7,9 +7,11 @@ repositories {
     mavenCentral()
 }
 
+val jdkVersion = 25
+
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(20))
+        languageVersion.set(JavaLanguageVersion.of(jdkVersion))
     }
 }
 
@@ -24,14 +26,10 @@ tasks {
 
         // Need to set the toolchain https://github.com/gradle/gradle/issues/16791
         javaLauncher.set(javaToolchainLauncher)
-
-        // for lib/AnimatedTransitions.jar
-        // making JComponent::setFlag accessible
-        jvmArgs("--add-opens=java.desktop/javax.swing=ALL-UNNAMED")
     }
 
     withType<JavaCompile>().configureEach {
-        options.release.set(20)
+        options.release.set(jdkVersion)
         options.compilerArgs = listOf("-Xlint:deprecation")
         javaCompiler.set(javaToolchainCompiler)
         options.encoding = "UTF-8"

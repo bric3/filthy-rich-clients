@@ -183,7 +183,7 @@ it in the JDK.
 And finally, the java version ranged from 1.4 to 1.6.
 
 This fork is now configured with Gradle, using standard Java project structure
-(`src/main/java`, `src/main/resources`), as well as the latest Java version: 20.
+(`src/main/java`, `src/main/resources`), as well as Java 25.
 Now uses the Swing's `GroupLayout` and `SwingWorker` instead of Netbeans/JDesktop 
 and th swing worker jar.
 
