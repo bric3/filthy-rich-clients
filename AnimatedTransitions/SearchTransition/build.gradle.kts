@@ -13,3 +13,11 @@ dependencies {
 application {
     mainClass.set("SearchTransition")
 }
+
+tasks {
+    withType<JavaExec>().configureEach {
+        // for lib/AnimatedTransitions.jar
+        // making JComponent::setFlag accessible
+        jvmArgs("--add-opens=java.desktop/javax.swing=ALL-UNNAMED")
+    }
+}
