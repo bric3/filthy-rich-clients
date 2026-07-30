@@ -217,4 +217,4 @@ To discover the available projects, use
     * [ ] DynamicEffects/Spring/lib/TimingFramework-0.54.jar
     * [ ] StaticEffects/Blur/lib/TimingFramework.jar
 * [ ] `RepaintManager/RepaintManager` has a dependency on some quicktime code
-* [ ] `DynamicEffects/BloomOpenGL` has dependency on `javax.media.opengl.GL`, etc 
+ 

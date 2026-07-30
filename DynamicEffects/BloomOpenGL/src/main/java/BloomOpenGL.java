@@ -33,6 +33,7 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.glu.GLU;
@@ -319,7 +320,7 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         }
 
         int loc = gl.glGetUniformLocationARB(program, "offsets");
-        gl.glUniform2fv(loc, offsets.length, offsets, 0);
+        gl.glUniform2fv(loc, offsets.length / 2, offsets, 0);
 
         float[] values = createGaussianBlurFilter(2);
 
@@ -394,6 +395,15 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         render41x41(gl, width, height);
 
         gl.glDisable(GL.GL_TEXTURE_2D);
+
+        // viewOrtho() pushes temporary projection and model-view matrices.
+        // Restore the previous matrices and avoid exhausting the finite stacks
+        // across repeated display() calls.
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glPopMatrix();
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glPopMatrix();
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glFlush();
     }
 
@@ -448,9 +458,79 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
     }
 
+    /**
+     * Binds a source-image-sized offscreen framebuffer and sets the viewport to
+     * the dimensions of its attached color texture.
+     *
+     * <p>This keeps the downsampled bloom passes inside that texture. Binding an
+     * FBO does not update the OpenGL viewport automatically, so a viewport
+     * previously configured for the larger Retina surface cannot be reused.
+     *
+     * <p>The offscreen framebuffer textures use the dimensions of the source
+     * {@link BufferedImage} ({@link #image}) loaded from {@code /images/screen.png}.
+     * The Swing panel has the same logical preferred size, but its OpenGL surface is
+     * measured in physical pixels and <strong>can be larger on a HiDPI
+     * display</strong>. In this example, the source image and FBO textures are
+     * 512 x 256 pixels, while a 2x Retina surface has a 1024 x 512 viewport.
+     *
+     * <p>The bloom pipeline increases the effective blur radius through the
+     * {@link #render11x11(GL2, int, int)  &frac12;}, {@link #render21x21(GL2, int, int) &frac14;},
+     * and {@link #render41x41(GL2, int, int) &#x215B;} blur passes. They call
+     * {@link #renderBlur(GL2, float, float)} with quads at one half, one quarter,
+     * and one eighth of the source-image size, respectively. With the 2x viewport
+     * still active, the half-size pass's vertical coordinates map to pixel rows
+     * 256 through 512, while the attached texture only has rows 0 through 255.
+     *
+     * <p>After each offscreen pass, {@link #bindDefaultFramebuffer(GL2)} restores
+     * the 1024 x 512 drawable viewport for on-screen composition. Before the next
+     * blur pass, this method switches it back to the 512 x 256 FBO viewport.
+     * Without that switch, clearing the FBO succeeds, but the blur quad is
+     * rasterized outside it and the target remains empty.
+     *
+     * @param gl current OpenGL interface
+     * @param framebuffer source-image-sized framebuffer to render into
+     * @see #bindDefaultFramebuffer(GL2)
+     */
+    private void bindImageFramebuffer(GL2 gl, int framebuffer) {
+        gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, framebuffer);
+        gl.glViewport(0, 0, image.getWidth(), image.getHeight());
+    }
+
+    /**
+     * Restores the draw framebuffer and viewport used by the {@link GLJPanel}
+     * after an offscreen pass.
+     *
+     * <p>Framebuffer binding is persistent OpenGL state. After
+     * {@link #bindImageFramebuffer(GL2, int)} selects an offscreen FBO, later
+     * draw calls continue writing there until another framebuffer is bound.
+     * Rebinding the panel's framebuffer ensures that
+     * {@link #renderTextureOnScreen(GL2, float, float)} and the additive bloom
+     * passes are composed into the panel rather than another offscreen texture.
+     *
+     * <p>Framebuffer {@code 0} is OpenGL's window-system default, but it is not
+     * necessarily the panel's render target. JOGL can compose a {@code GLJPanel} through
+     * an internal FBO, in which case {@link GL#getDefaultDrawFramebuffer()}
+     * returns that <em>non default</em> framebuffer. Its viewport must use the drawable's
+     * physical pixel dimensions accounting for Retina/HiDPI scaling.
+     *
+     * <p>As a side effect, this changes the current viewport from the offscreen
+     * image dimensions to the drawable's physical pixel dimensions. It does not
+     * resize either framebuffer; it changes how subsequent geometry is mapped to
+     * framebuffer pixels. The new viewport remains in effect until another one
+     * is set.
+     *
+     * @param gl current OpenGL interface
+     * @see #bindImageFramebuffer(GL2, int)
+     */
+    private static void bindDefaultFramebuffer(GL2 gl) {
+        gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, gl.getDefaultDrawFramebuffer());
+        GLDrawable drawable = gl.getContext().getGLDrawable();
+        gl.glViewport(0, 0, drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
+    }
+
     private void renderBrightPass(GL2 gl, float width, float height) {
         // Draw into the FBO
-        gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, frameBufferObject1);
+        bindImageFramebuffer(gl, frameBufferObject1);
         gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         enableBrightPassFragmentProgram(gl, brightPassShader, threshold);
@@ -461,12 +541,12 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
         disableFragmentProgram(gl);
 
-        gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, 0);
+        bindDefaultFramebuffer(gl);
     }
 
     private void renderImage(GL2 gl, float width, float height) {
         // Draw into the FBO
-        gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, frameBufferObject2);
+        bindImageFramebuffer(gl, frameBufferObject2);
         gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
@@ -474,12 +554,12 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         renderTexturedQuad(gl, width, height, texture.getMustFlipVertically());
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
-        gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, 0);
+        bindDefaultFramebuffer(gl);
     }
 
     private void renderBlur(GL2 gl, float width, float height) {
         // Draw into the FBO
-        gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, frameBufferObject2);
+        bindImageFramebuffer(gl, frameBufferObject2);
         gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
@@ -491,7 +571,7 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
         disableFragmentProgram(gl);
 
-        gl.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0);
+        bindDefaultFramebuffer(gl);
     }
 
     @Override

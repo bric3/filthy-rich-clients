@@ -1,7 +1,7 @@
 [versions]
 timingframework-swing = "7.3.1"
 animation-timing = "1.0-201002281504"
-jogamp = "2.5.0"
+jogamp = "2.6.0"
 
 [libraries]
 # Or https://github.com/akuhtz/timingframework
