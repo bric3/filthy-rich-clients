@@ -1,0 +1,618 @@
+/*
+ * Copyright (c) 2007, Romain Guy
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above
+ *     copyright notice, this list of conditions and the following
+ *     disclaimer in the documentation and/or other materials provided
+ *     with the distribution.
+ *   * Neither the name of the TimingFramework project nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+import com.jogamp.opengl.*;
+import com.jogamp.opengl.awt.GLJPanel;
+import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
+/// Demonstrate the use of the Jogamp library (OpenGL bindings).
+///
+/// This library was previously known as JOGL.
+///
+/// /!\ The rendering happens in FBOs so that you can get the result back into
+/// a Java 2D image without displaying it on screen through a GLJPanel. This
+/// implementation does not offer the conversion from FBO to a BufferedImage
+/// but you can do it by reading the texture data from frameBufferTexture2.
+///
+/// @author Romain Guy <romain.guy@mac.com>
+/// </romain.guy@mac.com>
+/// @see <a href="https://jogamp.org/">jogamp</a>
+public class BloomOpenGL extends GLJPanel implements GLEventListener {
+    private int frameBufferObject1 = -1;
+    private int frameBufferTexture1 = -1;
+
+    private int frameBufferObject2 = -1;
+    private int frameBufferTexture2 = -1;
+
+    private Texture texture;
+    private BufferedImage image;
+
+    private final GLU glu = new GLU();
+
+    private final String blurShaderSource =
+            """
+                    const int MAX_KERNEL_SIZE = 25;
+                    uniform sampler2D baseImage;
+                    uniform vec2 offsets[MAX_KERNEL_SIZE];
+                    uniform float kernelVals[MAX_KERNEL_SIZE];
+                    
+                    void main(void) {
+                        int i;
+                        vec4 sum = vec4(0.0);
+                    
+                        for (i = 0; i < MAX_KERNEL_SIZE; i++) {
+                            vec4 tmp = texture2D(baseImage,
+                                                 gl_TexCoord[0].st + offsets[i]);
+                            sum += tmp * kernelVals[i];
+                        }
+                    
+                        gl_FragColor = sum;
+                    }""";
+
+    private long blurShader;
+
+    private final String brightPassShaderSource =
+            """
+                    uniform sampler2D baseImage;
+                    uniform float brightPassThreshold;
+                    
+                    void main(void) {
+                        vec3 luminanceVector = vec3(0.2125, 0.7154, 0.0721);
+                        vec4 sample = texture2D(baseImage, gl_TexCoord[0].st);
+                    
+                        float luminance = dot(luminanceVector, sample.rgb);
+                        luminance = max(0.0, luminance - brightPassThreshold);
+                        sample.rgb *= sign(luminance);
+                        sample.a = 1.0;
+                    
+                        gl_FragColor = sample;
+                    }
+                    """;
+
+    private long brightPassShader;
+
+    private float threshold = 0.3f;
+
+    public BloomOpenGL() {
+        super(new GLCapabilities(null));
+        addGLEventListener(this);
+
+        try {
+            image = ImageIO.read(getClass().getResource("/images/screen.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void init(GLAutoDrawable glAutoDrawable) {
+        var gl = glAutoDrawable.getGL().getGL2();
+
+        if (texture == null) {
+            texture = AWTTextureIO.newTexture(
+                    getChosenGLCapabilities().getGLProfile(),
+                    image,
+                    false
+            );
+        }
+
+        // create the blur shader
+        blurShader = createFragmentProgram(gl, new String[]{blurShaderSource});
+        gl.glUseProgramObjectARB(blurShader);
+        var loc = gl.glGetUniformLocationARB(blurShader, "baseImage");
+        gl.glUniform1iARB(loc, 0);
+        gl.glUseProgramObjectARB(0);
+
+        // create the bright-pass shader
+        brightPassShader = createFragmentProgram(gl, new String[]{brightPassShaderSource});
+        gl.glUseProgramObjectARB(brightPassShader);
+        loc = gl.glGetUniformLocationARB(brightPassShader, "baseImage");
+        gl.glUniform1iARB(loc, 0);
+        gl.glUseProgramObjectARB(0);
+
+        // create the FBOs
+        if (gl.isExtensionAvailable("GL_EXT_framebuffer_object")) {
+            var fboId = new int[1];
+            var texId = new int[1];
+
+            createFrameBufferObject(gl, fboId, texId,
+                    image.getWidth(), image.getHeight());
+            frameBufferObject1 = fboId[0];
+            frameBufferTexture1 = texId[0];
+
+            createFrameBufferObject(gl, fboId, texId,
+                    image.getWidth(), image.getHeight());
+            frameBufferObject2 = fboId[0];
+            frameBufferTexture2 = texId[0];
+        }
+    }
+
+    @Override
+    public void dispose(GLAutoDrawable drawable) {
+        // TODO
+    }
+
+    private static void createFrameBufferObject(GL2 gl, int[] frameBuffer,
+                                                int[] colorBuffer, int width,
+                                                int height) {
+        gl.glGenFramebuffers(1, frameBuffer, 0);
+        gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, frameBuffer[0]);
+
+        gl.glGenTextures(1, colorBuffer, 0);
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, colorBuffer[0]);
+        gl.glTexImage2D(GL2.GL_TEXTURE_2D, 0, GL2.GL_RGBA,
+                width, height,
+                0, GL2.GL_RGBA, GL2.GL_UNSIGNED_BYTE,
+                ByteBuffer.allocate(width * height * 4));
+        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
+        gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
+        gl.glFramebufferTexture2D(GL2.GL_FRAMEBUFFER,
+                GL2.GL_COLOR_ATTACHMENT0,
+                GL2.GL_TEXTURE_2D, colorBuffer[0], 0);
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+
+        var status = gl.glCheckFramebufferStatus(GL2.GL_FRAMEBUFFER);
+        if (status == GL2.GL_FRAMEBUFFER_COMPLETE) {
+            gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, 0);
+        } else {
+            throw new IllegalStateException("Frame Buffer Oject not created.");
+        }
+    }
+
+    private static void viewOrtho(GL2 gl, int width, int height) {
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+        gl.glOrtho(0, width, height, 0, -1, 1);
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+    }
+
+    private static void renderTexturedQuad(GL2 gl, float width, float height,
+                                           boolean flip) {
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glTexCoord2f(0.0f, flip ? 1.0f : 0.0f);
+        gl.glVertex2f(0.0f, 0.0f);
+
+        gl.glTexCoord2f(1.0f, flip ? 1.0f : 0.0f);
+        gl.glVertex2f(width, 0.0f);
+
+        gl.glTexCoord2f(1.0f, flip ? 0.0f : 1.0f);
+        gl.glVertex2f(width, height);
+
+        gl.glTexCoord2f(0.0f, flip ? 0.0f : 1.0f);
+        gl.glVertex2f(0.0f, height);
+        gl.glEnd();
+    }
+
+    private static long createFragmentProgram(GL2 gl, String[] fragmentShaderSource) {
+        long fragmentShader;
+        long fragmentProgram;
+        var success = new int[1];
+
+        // create the shader object and compile the shader source code
+        fragmentShader = gl.glCreateShaderObjectARB(GL2.GL_FRAGMENT_SHADER);
+        gl.glShaderSourceARB(fragmentShader, 1, fragmentShaderSource, null);
+        gl.glCompileShaderARB(fragmentShader);
+        gl.glGetObjectParameterivARB(fragmentShader,
+                GL2.GL_OBJECT_COMPILE_STATUS_ARB,
+                success, 0);
+
+        // print the compiler messages, if necessary
+        var infoLogLength = new int[1];
+        var length = new int[1];
+        gl.glGetObjectParameterivARB(fragmentShader,
+                GL2.GL_OBJECT_INFO_LOG_LENGTH_ARB,
+                infoLogLength, 0);
+        if (infoLogLength[0] > 1) {
+            var b = new byte[1024];
+            gl.glGetInfoLogARB(fragmentShader, 1024, length, 0, b, 0);
+            System.out.println("Fragment compile phase = " + new String(b, 0, length[0]));
+        }
+
+        if (success[0] == 0) {
+            gl.glDeleteObjectARB(fragmentShader);
+            return -1;
+        }
+
+        // create the program object and attach it to the shader
+        fragmentProgram = gl.glCreateProgramObjectARB();
+        gl.glAttachObjectARB(fragmentProgram, fragmentShader);
+
+        // it is now safe to delete the shader object
+        gl.glDeleteObjectARB(fragmentShader);
+
+        // link the program
+        gl.glLinkProgramARB(fragmentProgram);
+        gl.glGetObjectParameterivARB(fragmentProgram,
+                GL2.GL_OBJECT_LINK_STATUS_ARB,
+                success, 0);
+
+        gl.glGetObjectParameterivARB(fragmentShader,
+                GL2.GL_OBJECT_INFO_LOG_LENGTH_ARB,
+                infoLogLength, 0);
+        if (infoLogLength[0] > 1) {
+            var b = new byte[1024];
+            gl.glGetInfoLogARB(fragmentShader, 1024, length, 0, b, 0);
+            System.out.println("Fragment link phase = " + new String(b, 0, length[0]));
+        }
+
+        if (success[0] == 0) {
+            gl.glDeleteObjectARB(fragmentProgram);
+            return -1;
+        }
+
+        return fragmentProgram;
+    }
+
+    private static void enableBlurFragmentProgram(GL2 gl, long program,
+                                                  float textureWidth,
+                                                  float textureHeight) {
+        gl.glUseProgramObjectARB(program);
+
+        var kernelWidth = 5;
+        var kernelHeight = 5;
+
+        var xoff = 1.0f / textureWidth;
+        var yoff = 1.0f / textureHeight;
+
+        var offsets = new float[kernelWidth * kernelHeight * 2];
+        var offsetIndex = 0;
+
+        for (var i = -kernelHeight / 2; i < kernelHeight / 2 + 1; i++) {
+            for (var j = -kernelWidth / 2; j < kernelWidth / 2 + 1; j++) {
+                offsets[offsetIndex++] = j * xoff;
+                offsets[offsetIndex++] = i * yoff;
+            }
+        }
+
+        var loc = gl.glGetUniformLocationARB(program, "offsets");
+        gl.glUniform2fv(loc, offsets.length / 2, offsets, 0);
+
+        var values = createGaussianBlurFilter(2);
+
+        loc = gl.glGetUniformLocationARB(program, "kernelVals");
+        gl.glUniform1fvARB(loc, values.length, values, 0);
+    }
+
+    private static float[] createGaussianBlurFilter(int radius) {
+        if (radius < 1) {
+            throw new IllegalArgumentException("Radius must be >= 1");
+        }
+
+        var size = radius * 2 + 1;
+        var data = new float[size * size];
+
+        var sigma = radius / 3.0f;
+        var twoSigmaSquare = 2.0f * sigma * sigma;
+        var sigmaRoot = (float) Math.sqrt(twoSigmaSquare * Math.PI);
+        var total = 0.0f;
+
+        var index = 0;
+        for (var y = -radius; y <= radius; y++) {
+            for (var x = -radius; x <= radius; x++) {
+                float distance = x * x + y * y;
+                data[index] = (float) Math.exp(-distance / twoSigmaSquare) / sigmaRoot;
+                total += data[index];
+                index++;
+            }
+        }
+
+        for (var i = 0; i < data.length; i++) {
+            data[i] /= total;
+        }
+
+        return data;
+    }
+
+    private static void enableBrightPassFragmentProgram(GL2 gl, long program,
+                                                        float threshold) {
+        gl.glUseProgramObjectARB(program);
+
+        var loc = gl.glGetUniformLocationARB(program, "brightPassThreshold");
+        gl.glUniform1fARB(loc, threshold);
+    }
+
+    private static void disableFragmentProgram(GL2 gl) {
+        gl.glUseProgramObjectARB(0);
+    }
+
+    @Override
+    public void display(GLAutoDrawable glAutoDrawable) {
+        var gl = glAutoDrawable.getGL().getGL2();
+        gl.glLoadIdentity();
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        viewOrtho(gl, image.getWidth(), image.getHeight());
+        gl.glEnable(GL.GL_TEXTURE_2D);
+
+        var width = image.getWidth();
+        var height = image.getHeight();
+
+        // Source Image/bright pass on FBO1
+        renderBrightPass(gl, width, height);
+        // Source image on FBO2
+        renderImage(gl, width, height);
+        // On screen
+        renderTextureOnScreen(gl, width, height);
+
+        // render5x5(gl, width, height);
+        render11x11(gl, width, height);
+        render21x21(gl, width, height);
+        render41x41(gl, width, height);
+
+        gl.glDisable(GL.GL_TEXTURE_2D);
+
+        // viewOrtho() pushes temporary projection and model-view matrices.
+        // Restore the previous matrices and avoid exhausting the finite stacks
+        // across repeated display() calls.
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glPopMatrix();
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glPopMatrix();
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glFlush();
+    }
+
+    private void render41x41(GL2 gl, int width, int height) {
+        // FBO1/blur on FBO2
+        renderBlur(gl, width / 8.0f, height / 8.0f);
+        // Add on screen
+        gl.glPushMatrix();
+        gl.glTranslatef(0.0f, -height * 7.0f, 0.0f);
+        renderAddTextureOnScreen(gl, width * 8.0f, height * 8.0f);
+        gl.glPopMatrix();
+    }
+
+    private void render21x21(GL2 gl, int width, int height) {
+        // FBO1/blur on FBO2
+        renderBlur(gl, width / 4.0f, height / 4.0f);
+        // Add on screen
+        gl.glPushMatrix();
+        gl.glTranslatef(0.0f, -height * 3.0f, 0.0f);
+        renderAddTextureOnScreen(gl, width * 4.0f, height * 4.0f);
+        gl.glPopMatrix();
+    }
+
+    private void render11x11(GL2 gl, int width, int height) {
+        // FBO1/blur on FBO2
+        renderBlur(gl, width / 2.0f, height / 2.0f);
+        // Add on screen
+        gl.glPushMatrix();
+        gl.glTranslatef(0.0f, -height, 0.0f);
+        renderAddTextureOnScreen(gl, width * 2.0f, height * 2.0f);
+        gl.glPopMatrix();
+    }
+
+    private void render5x5(GL2 gl, int width, int height) {
+        // FBO1/blur on FBO2
+        renderBlur(gl, width, height);
+        // Add on screen
+        renderAddTextureOnScreen(gl, width, height);
+    }
+
+    private void renderAddTextureOnScreen(GL2 gl, float width, float height) {
+        gl.glEnable(GL2.GL_BLEND);
+        gl.glBlendFunc(GL2.GL_ONE, GL2.GL_ONE);
+        renderTextureOnScreen(gl, width, height);
+        gl.glDisable(GL2.GL_BLEND);
+    }
+
+    private void renderTextureOnScreen(GL2 gl, float width, float height) {
+        // Draw the texture on a quad
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, frameBufferTexture2);
+        renderTexturedQuad(gl, width, height, false);
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+    }
+
+    /// Binds a source-image-sized offscreen framebuffer and sets the viewport to
+    /// the dimensions of its attached color texture.
+    ///
+    /// This keeps the downsampled bloom passes inside that texture. Binding an
+    /// FBO does not update the OpenGL viewport automatically, so a viewport
+    /// previously configured for the larger Retina surface cannot be reused.
+    ///
+    /// The offscreen framebuffer textures use the dimensions of the source
+    /// [BufferedImage] ([#image]) loaded from `/images/screen.png`.
+    /// The Swing panel has the same logical preferred size, but its OpenGL surface is
+    /// measured in physical pixels and **can be larger on a HiDPI
+    /// display**. In this example, the source image and FBO textures are
+    /// 512 x 256 pixels, while a 2x Retina surface has a 1024 x 512 viewport.
+    ///
+    /// The bloom pipeline increases the effective blur radius through the
+    /// [`&frac12;`][#render11x11(GL2, int, int)], [`&frac14;`][#render21x21(GL2, int, int)],
+    /// and [`&#x215B;`][#render41x41(GL2, int, int)] blur passes. They call
+    /// [#renderBlur(GL2, float, float)] with quads at one half, one quarter,
+    /// and one eighth of the source-image size, respectively. With the 2x viewport
+    /// still active, the half-size pass's vertical coordinates map to pixel rows
+    /// 256 through 512, while the attached texture only has rows 0 through 255.
+    ///
+    /// After each offscreen pass, [#bindDefaultFramebuffer(GL2)] restores
+    /// the 1024 x 512 drawable viewport for on-screen composition. Before the next
+    /// blur pass, this method switches it back to the 512 x 256 FBO viewport.
+    /// Without that switch, clearing the FBO succeeds, but the blur quad is
+    /// rasterized outside it and the target remains empty.
+    ///
+    /// @param gl          current OpenGL interface
+    /// @param framebuffer source-image-sized framebuffer to render into
+    /// @see #bindDefaultFramebuffer(GL2)
+    private void bindImageFramebuffer(GL2 gl, int framebuffer) {
+        gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, framebuffer);
+        gl.glViewport(0, 0, image.getWidth(), image.getHeight());
+    }
+
+    /// Restores the draw framebuffer and viewport used by the [GLJPanel]
+    /// after an offscreen pass.
+    ///
+    /// Framebuffer binding is persistent OpenGL state. After
+    /// [#bindImageFramebuffer(GL2, int)] selects an offscreen FBO, later
+    /// draw calls continue writing there until another framebuffer is bound.
+    /// Rebinding the panel's framebuffer ensures that
+    /// [#renderTextureOnScreen(GL2, float, float)] and the additive bloom
+    /// passes are composed into the panel rather than another offscreen texture.
+    ///
+    /// Framebuffer `0` is OpenGL's window-system default, but it is not
+    /// necessarily the panel's render target. JOGL can compose a `GLJPanel` through
+    /// an internal FBO, in which case [GL#getDefaultDrawFramebuffer()]
+    /// returns that _non default_ framebuffer. Its viewport must use the drawable's
+    /// physical pixel dimensions accounting for Retina/HiDPI scaling.
+    ///
+    /// As a side effect, this changes the current viewport from the offscreen
+    /// image dimensions to the drawable's physical pixel dimensions. It does not
+    /// resize either framebuffer; it changes how subsequent geometry is mapped to
+    /// framebuffer pixels. The new viewport remains in effect until another one
+    /// is set.
+    ///
+    /// @param gl current OpenGL interface
+    /// @see #bindImageFramebuffer(GL2, int)
+    private static void bindDefaultFramebuffer(GL2 gl) {
+        gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, gl.getDefaultDrawFramebuffer());
+        var drawable = gl.getContext().getGLDrawable();
+        gl.glViewport(0, 0, drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
+    }
+
+    private void renderBrightPass(GL2 gl, float width, float height) {
+        // Draw into the FBO
+        bindImageFramebuffer(gl, frameBufferObject1);
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+        enableBrightPassFragmentProgram(gl, brightPassShader, threshold);
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureObject());
+
+        renderTexturedQuad(gl, width, height, texture.getMustFlipVertically());
+
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+        disableFragmentProgram(gl);
+
+        bindDefaultFramebuffer(gl);
+    }
+
+    private void renderImage(GL2 gl, float width, float height) {
+        // Draw into the FBO
+        bindImageFramebuffer(gl, frameBufferObject2);
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, texture.getTextureObject());
+        renderTexturedQuad(gl, width, height, texture.getMustFlipVertically());
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+
+        bindDefaultFramebuffer(gl);
+    }
+
+    private void renderBlur(GL2 gl, float width, float height) {
+        // Draw into the FBO
+        bindImageFramebuffer(gl, frameBufferObject2);
+        gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+
+        enableBlurFragmentProgram(gl, blurShader, width, height);
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, frameBufferTexture1);
+
+        renderTexturedQuad(gl, width, height, texture.getMustFlipVertically());
+
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+        disableFragmentProgram(gl);
+
+        bindDefaultFramebuffer(gl);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(image.getWidth(), image.getHeight());
+    }
+
+    @Override
+    public void reshape(GLAutoDrawable glAutoDrawable,
+                        int x, int y,
+                        int width, int height) {
+        var gl = glAutoDrawable.getGL().getGL2();
+
+        gl.glViewport(0, 0, width, height);
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glLoadIdentity();
+
+        glu.gluPerspective(50, (float) width / height, 5, 2000);
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glLoadIdentity();
+    }
+
+    public void displayChanged(GLAutoDrawable glAutoDrawable, boolean modeChanged,
+                               boolean deviceChanged) {
+    }
+
+    public float getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(float threshold) {
+        this.threshold = threshold;
+        repaint();
+    }
+
+    static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            final BloomOpenGL bloom;
+            final JSlider slider;
+
+            var f = new JFrame("Bloom OpenGL");
+            f.add(bloom = new BloomOpenGL());
+
+            var controls = new JPanel(new FlowLayout(FlowLayout.LEADING));
+            controls.add(new JLabel("Bloom: 0.0"));
+            controls.add(slider = new JSlider(0, 100, 30));
+            slider.addChangeListener(e -> {
+                var slider1 = (JSlider) e.getSource();
+                var threshold = slider1.getValue() / 100.0f;
+                bloom.setThreshold(threshold);
+            });
+            controls.add(new JLabel("1.0"));
+            f.add(controls, BorderLayout.SOUTH);
+
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            f.pack();
+            f.setLocationRelativeTo(null);
+            f.setResizable(false);
+            f.setVisible(true);
+        });
+    }
+}
