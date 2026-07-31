@@ -1,8 +1,5 @@
-import java.awt.Color;
-import java.awt.Graphics;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import java.awt.*;
 /*
  * FillDraw.java
  *
@@ -43,7 +40,7 @@ import javax.swing.SwingUtilities;
  * @author Chet
  */
 public class FillDraw extends JComponent {
-    
+
     /**
      * Fill first, then draw the boundary
      */
@@ -53,7 +50,7 @@ public class FillDraw extends JComponent {
         g.setColor(Color.BLACK);
         g.drawRect(x, y, w, h);
     }
-    
+
     /**
      * Draw the boundary, then fill
      */
@@ -71,22 +68,22 @@ public class FillDraw extends JComponent {
         g.setColor(Color.BLACK);
         g.drawRect(x, y, w, h);
         g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(x+1, y+1, w-1, h-1);
+        g.fillRect(x + 1, y + 1, w - 1, h - 1);
     }
 
     protected void paintComponent(Graphics g) {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
-        
+
         // Perform three different versions for visual comparison
         // (you'll need a magnifier to see the differences)
         fillDraw(g, 50, 10, 3, 3);
         drawFill(g, 60, 10, 3, 3);
         fillInsideDraw(g, 70, 10, 3, 3);
     }
-    
+
     private static void createAndShowGUI() {
-        JFrame f = new JFrame();
+        var f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(150, 100);
         JComponent test = new FillDraw();
@@ -94,12 +91,8 @@ public class FillDraw extends JComponent {
         f.setVisible(true);
     }
 
-    public static void main(String args[]) {
-        Runnable doCreateAndShowGUI = new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        };
+    static void main(String[] args) {
+        Runnable doCreateAndShowGUI = FillDraw::createAndShowGUI;
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
 }

@@ -74,8 +74,7 @@ public class FadeIn extends Fade {
     /**
      * Creates a new instance with the given end state.
      *
-     * @param end
-     *            The <code>ComponentState</code> at the end of the transition; this is what we are fading to.
+     * @param end The <code>ComponentState</code> at the end of the transition; this is what we are fading to.
      */
     public FadeIn(ComponentState end) {
         setEnd(end);

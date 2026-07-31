@@ -31,25 +31,19 @@
 
 package org.progx.artemis.ui;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
+import org.progx.artemis.Application;
+import org.progx.artemis.graphics.GraphicsUtilities;
+import org.progx.artemis.graphics.Reflection;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
-import javax.swing.JFileChooser;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.imageio.ImageIO;
-
-import org.progx.artemis.Application;
-import org.progx.artemis.graphics.GraphicsUtilities;
-import org.progx.artemis.graphics.Reflection;
 
 class SizeStepPanel extends JPanel {
     private BufferedImage small;
@@ -72,36 +66,30 @@ class SizeStepPanel extends JPanel {
     }
 
     private void createThumbnails() {
-        Thread loader = new Thread(new Runnable() {
-            public void run() {
-                final MainFrame mainFrame = Application.getMainFrame();
-                BufferedImage image = mainFrame.getImage();
+        var loader = new Thread(() -> {
+            final var mainFrame = Application.getMainFrame();
+            var image = mainFrame.getImage();
 
-                small = GraphicsUtilities.createThumbnail(image, 90);
-                smallHeight = small.getHeight();
-                small = Reflection.createReflection(small);
+            small = GraphicsUtilities.createThumbnail(image, 90);
+            smallHeight = small.getHeight();
+            small = Reflection.createReflection(small);
 
-                medium = GraphicsUtilities.createThumbnail(image, 160);
-                mediumHeight = medium.getHeight();
-                medium = Reflection.createReflection(medium);
+            medium = GraphicsUtilities.createThumbnail(image, 160);
+            mediumHeight = medium.getHeight();
+            medium = Reflection.createReflection(medium);
 
-                large = GraphicsUtilities.createThumbnail(image, 240);
-                largeHeight = large.getHeight();
-                large = Reflection.createReflection(large);
+            large = GraphicsUtilities.createThumbnail(image, 240);
+            largeHeight = large.getHeight();
+            large = Reflection.createReflection(large);
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        mainFrame.hideWaitGlassPane();
-                    }
-                });
+            SwingUtilities.invokeLater(mainFrame::hideWaitGlassPane);
 
-                isLoaded = true;
-                repaint();
-            }
+            isLoaded = true;
+            repaint();
         });
         loader.start();
     }
-    
+
     public void dispose() {
         if (large != null) {
             large.flush();
@@ -125,11 +113,11 @@ class SizeStepPanel extends JPanel {
             return;
         }
 
-        int totalWidth = 24 * 2;
+        var totalWidth = 24 * 2;
         totalWidth += large.getWidth() + medium.getWidth() + small.getWidth();
 
-        int x = (getWidth() - totalWidth) / 2;
-        int y = (getHeight() - large.getHeight()) / 2;
+        var x = (getWidth() - totalWidth) / 2;
+        var y = (getHeight() - large.getHeight()) / 2;
         y += 42;
 
         g.drawImage(large, x, y, null);
@@ -153,19 +141,13 @@ class SizeStepPanel extends JPanel {
     }
 
     private static void saveImage(final BufferedImage image, final File file) {
-        Thread writer = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    ImageIO.write(image, "JPEG", file); // NON-NLS
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        Application.getMainFrame().showDoneStep();
-                    }
-                });
+        var writer = new Thread(() -> {
+            try {
+                ImageIO.write(image, "JPEG", file); // NON-NLS
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            SwingUtilities.invokeLater(() -> Application.getMainFrame().showDoneStep());
         });
         writer.start();
     }
@@ -173,45 +155,41 @@ class SizeStepPanel extends JPanel {
     private class SizeSelector extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e) {
-            Point point = e.getPoint();
-            for (final Rectangle r : new Rectangle[] { largeImageBounds, mediumImageBounds, smallImageBounds }) {
+            var point = e.getPoint();
+            for (final var r : new Rectangle[]{largeImageBounds, mediumImageBounds, smallImageBounds}) {
                 if (r != null && r.contains(point)) {
                     Application.getMainFrame().showWaitGlassPane();
-                    Thread sizer = new Thread(new Runnable() {
-                        public void run() {
-                            int width;
-                            if (r == largeImageBounds) {
-                                width = 1024;
-                            } else if (r == mediumImageBounds) {
-                                width = 800;
-                            } else {
-                                width = 640;
-                            }
-                            final BufferedImage toSave =
-                                    GraphicsUtilities.createThumbnail(
-                                            Application.getMainFrame().getImage(), width);
-                            SwingUtilities.invokeLater(new Runnable() {
-                                public void run() {
-                                    JFileChooser chooser = new JFileChooser();
-                                    chooser.setSelectedFile(new File(
-                                            MessageFormat.format(Application
-                                                    .getResourceBundle().getString(
-                                                    "file.save.prefix"),
-                                                                 Application
-                                                                         .getMainFrame().getFileName())));
-                                    dispose();
-                                    if (chooser.showSaveDialog(Application.getMainFrame()) == JFileChooser.APPROVE_OPTION) {
-                                        File selectedFile = chooser.getSelectedFile();
-                                        if (!selectedFile.getPath().toLowerCase().endsWith(".jpg")) { // NON-NLS
-                                            selectedFile = new File(selectedFile.getPath() + ".jpg"); // NON-NLS
-                                        }
-                                        saveImage(toSave, selectedFile);
-                                    } else {
-                                        Application.getMainFrame().showDragAndDropStep();
-                                    }
-                                }
-                            });
+                    var sizer = new Thread(() -> {
+                        int width;
+                        if (r == largeImageBounds) {
+                            width = 1024;
+                        } else if (r == mediumImageBounds) {
+                            width = 800;
+                        } else {
+                            width = 640;
                         }
+                        final var toSave =
+                                GraphicsUtilities.createThumbnail(
+                                        Application.getMainFrame().getImage(), width);
+                        SwingUtilities.invokeLater(() -> {
+                            var chooser = new JFileChooser();
+                            chooser.setSelectedFile(new File(
+                                    MessageFormat.format(Application
+                                                    .getResourceBundle().getString(
+                                                            "file.save.prefix"),
+                                            Application
+                                                    .getMainFrame().getFileName())));
+                            dispose();
+                            if (chooser.showSaveDialog(Application.getMainFrame()) == JFileChooser.APPROVE_OPTION) {
+                                var selectedFile = chooser.getSelectedFile();
+                                if (!selectedFile.getPath().toLowerCase().endsWith(".jpg")) { // NON-NLS
+                                    selectedFile = new File(selectedFile.getPath() + ".jpg"); // NON-NLS
+                                }
+                                saveImage(toSave, selectedFile);
+                            } else {
+                                Application.getMainFrame().showDragAndDropStep();
+                            }
+                        });
                     });
                     sizer.start();
                 }
@@ -222,7 +200,7 @@ class SizeStepPanel extends JPanel {
     private class CursorChanger extends MouseAdapter {
         @Override
         public void mouseMoved(MouseEvent e) {
-            Point point = e.getPoint();
+            var point = e.getPoint();
             if ((largeImageBounds != null && largeImageBounds.contains(point)) ||
                 (mediumImageBounds != null && mediumImageBounds.contains(point)) ||
                 (smallImageBounds != null && smallImageBounds.contains(point))) {

@@ -33,19 +33,18 @@
 
 package org.jdesktop.animation.transitions;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.image.BufferedImage;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
-import javax.swing.JComponent;
-
 import org.jdesktop.core.animation.timing.Animator;
 import org.jdesktop.core.animation.timing.TimingTarget;
 import org.jdesktop.core.animation.timing.TimingTargetAdapter;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.image.BufferedImage;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * This class is used to run animated transitions in an application.
@@ -63,7 +62,7 @@ public class ScreenTransition {
     /**
      * Sets the passed effects manager as the default used for the construction of transitions. If no effects manager is
      * explicitly set, a default is used.
-     * 
+     * <p>
      * Passing {@code null} to this method resets the effect manager to the default.
      */
     public static void setDefaultEffectsManager(EffectsManager effectsManager) {
@@ -93,20 +92,20 @@ public class ScreenTransition {
     /**
      * Handles the structure and rendering of the actual animation during the transitions.
      */
-    private AnimationManager animationManager;
+    private final AnimationManager animationManager;
 
     /**
      * The component where the transition animation occurs. This component (which is set to be the layered pane) is
      * visible during the transition, but is otherwise invisible.
      */
-    private AnimationLayer animationLayer;
+    private final AnimationLayer animationLayer;
 
     /**
      * The component supplied at contruction time that holds the actual components added to ScreenTransition by the
      * application. Keeping this container separate from ScreenTransition allows us to render the AnimationLayer during
      * the transitions and separate the animation sequence from the actual container of the components.
      */
-    private JComponent containerLayer;
+    private final JComponent containerLayer;
 
     /**
      * Image used to store the current state of the transition animation. This image will be rendered to during
@@ -118,7 +117,7 @@ public class ScreenTransition {
      * The user-defined code which ScreenTransition will call to setup the next state of the GUI when a transition is
      * started.
      */
-    private TransitionTarget transitionTarget;
+    private final TransitionTarget transitionTarget;
 
     /**
      * Animation engine for the transition.
@@ -126,20 +125,16 @@ public class ScreenTransition {
     private Animator animator = null;
 
     public static class Builder {
-        private static AtomicReference<EffectsManager> globalEffectsManager = new AtomicReference<>(new EffectsManager());
+        private static final AtomicReference<EffectsManager> globalEffectsManager = new AtomicReference<>(new EffectsManager());
 
         /**
          * Sets the passed effects manager as the default used for the construction of transitions. If no effects
          * manager is explicitly set, a default is used.
-         *
+         * <p>
          * Passing {@code null} to this method resets the effect manager to the default.
          */
         static void setDefaultEffectsManager(EffectsManager effectsManager) {
-            if (effectsManager == null) {
-                globalEffectsManager.set(new EffectsManager());
-            } else {
-                globalEffectsManager.set(effectsManager);
-            }
+            globalEffectsManager.set(Objects.requireNonNullElseGet(effectsManager, EffectsManager::new));
         }
 
         static EffectsManager getDefaultEffectsManager() {
@@ -160,8 +155,7 @@ public class ScreenTransition {
         /**
          * The Animator used to drive this ScreenTransition will be created internally using the duration.
          *
-         * @param durationInMillis
-         *            the length of time in milliseconds that the transition will last
+         * @param durationInMillis the length of time in milliseconds that the transition will last
          */
         public Builder setDuration(int durationInMillis) {
             return setAnimator(new Animator.Builder().setDuration(durationInMillis, TimeUnit.MILLISECONDS).build());
@@ -171,12 +165,9 @@ public class ScreenTransition {
          * Sets the Animator that will be used to drive the ScreenTransition. Transition will start if either
          * {@link #start} is called or {@link Animator#start} is called.
          *
-         * @throws IllegalStateException
-         *             if animator is already running
-         * @throws IllegalArgumentException
-         *             animator must be non-null
-         * @param animator
-         *            the animator that defines the characteristics of the transition animation, such as its duration
+         * @param animator the animator that defines the characteristics of the transition animation, such as its duration
+         * @throws IllegalStateException    if animator is already running
+         * @throws IllegalArgumentException animator must be non-null
          * @see Animator#isRunning()
          * @see Animator#start()
          */
@@ -193,9 +184,8 @@ public class ScreenTransition {
 
         /**
          * Sets the effect manager to be used by this transition. The default effect manager is the global default.
-         * 
-         * @param effectsManager
-         *            the effect manager used for this transition
+         *
+         * @param effectsManager the effect manager used for this transition
          */
         public Builder setEffectsManager(EffectsManager effectsManager) {
             this.effectsManager = effectsManager;
@@ -205,24 +195,22 @@ public class ScreenTransition {
         /**
          * Constructs a screen transition with the settings defined by this builder.
          *
-         * @throws IllegalArgumentException
-         *             if no animator or duration was provided
-         * 
          * @return a screen transition.
+         * @throws IllegalArgumentException if no animator or duration was provided
          */
         public ScreenTransition build() {
             if (animator == null)
                 throw new IllegalArgumentException("Either an animator or a duration must be provided.");
 
-            EffectsManager customEffectManager = effectsManager == null ? globalEffectsManager.get() : effectsManager;
+            var customEffectManager = effectsManager == null ? globalEffectsManager.get() : effectsManager;
             return new ScreenTransition(transitionComponent, transitionTarget, customEffectManager, animator);
         }
     }
 
     private ScreenTransition(JComponent containerLayer,
-            TransitionTarget transitionTarget,
-            EffectsManager effectsManager,
-            Animator animator) {
+                             TransitionTarget transitionTarget,
+                             EffectsManager effectsManager,
+                             Animator animator) {
         this.containerLayer = containerLayer;
         this.transitionTarget = transitionTarget;
 
@@ -238,8 +226,8 @@ public class ScreenTransition {
      * Create the transition images here and in AnimationManager if necessary.
      */
     private void createTransitionImages() {
-        int cw = containerLayer.getWidth();
-        int ch = containerLayer.getHeight();
+        var cw = containerLayer.getWidth();
+        var ch = containerLayer.getHeight();
         if ((cw > 0 && ch > 0)
             && (transitionImage == null || transitionImage.getWidth() != cw || transitionImage.getHeight() != ch)) {
             // Recreate transition image and background for new dimensions
@@ -261,7 +249,7 @@ public class ScreenTransition {
 
     /**
      * Returns <code>Animator</code> object that drives this ScreenTransition.
-     * 
+     *
      * @return the Animator that drives this ScreenTransition
      */
     public Animator getAnimator() {
@@ -272,14 +260,11 @@ public class ScreenTransition {
      * Sets animator that drives this ScreenTransition. Animator cannot be null. Animator also cannot be running when
      * this method is called (because important setup information for ScreenTransition happens at Animator start time).
      * Transition will start if either {@link #start} is called or {@link Animator#start} is called.
-     * 
-     * @param animator
-     *            non-null Animator object that will drive this ScreenTransition. Animator cannot be running when this
-     *            is called.
-     * @throws IllegalStateException
-     *             if animator is already running
-     * @throws IllegalArgumentException
-     *             animator must be non-null
+     *
+     * @param animator non-null Animator object that will drive this ScreenTransition. Animator cannot be running when this
+     *                 is called.
+     * @throws IllegalStateException    if animator is already running
+     * @throws IllegalArgumentException animator must be non-null
      * @see Animator#isRunning()
      */
     private void setAnimator(Animator animator) {
@@ -317,7 +302,7 @@ public class ScreenTransition {
      * methods to be public). Having this as an internal private class hides the methods from the ScreenTransition API
      * while allowing the same functionality.
      */
-    private TimingTarget transitionTimingTarget = new TimingTargetAdapter() {
+    private final TimingTarget transitionTimingTarget = new TimingTargetAdapter() {
 
         /**
          * This method is called as a result of a call to {@link ScreenTransition#start()}. The method sets up
@@ -382,7 +367,7 @@ public class ScreenTransition {
          */
         @Override
         public void timingEvent(Animator source, double elapsedFraction) {
-            Graphics2D gImg = (Graphics2D) transitionImage.getGraphics();
+            var gImg = (Graphics2D) transitionImage.getGraphics();
 
             // Render this frame of the animation
             animationManager.paint(gImg);

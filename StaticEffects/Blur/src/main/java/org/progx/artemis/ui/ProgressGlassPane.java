@@ -31,24 +31,14 @@
 
 package org.progx.artemis.ui;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.LinearGradientPaint;
-import java.awt.Paint;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import javax.swing.JComponent;
-
 import org.progx.artemis.Application;
 import org.progx.artemis.graphics.GraphicsUtilities;
 import org.progx.artemis.image.ColorTintFilter;
 import org.progx.artemis.image.GaussianBlurFilter;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class ProgressGlassPane extends JComponent {
     private static final int BAR_WIDTH = 200;
@@ -56,16 +46,16 @@ public class ProgressGlassPane extends JComponent {
 
     private static final Color TEXT_COLOR = new Color(0xFFFFFF);
 
-    private static final float[] GRADIENT_FRACTIONS = new float[] {
-        0.0f, 0.499f, 0.5f, 1.0f
+    private static final float[] GRADIENT_FRACTIONS = new float[]{
+            0.0f, 0.499f, 0.5f, 1.0f
     };
-    private static final Color[] GRADIENT_COLORS = new Color[] {
-        Color.GRAY, Color.DARK_GRAY, Color.BLACK, Color.GRAY
+    private static final Color[] GRADIENT_COLORS = new Color[]{
+            Color.GRAY, Color.DARK_GRAY, Color.BLACK, Color.GRAY
     };
     private static final Color GRADIENT_COLOR2 = Color.WHITE;
     private static final Color GRADIENT_COLOR1 = Color.GRAY;
 
-    private String message =
+    private final String message =
             Application.getResourceBundle().getString("wait.message");
     private int progress = 0;
     private BufferedImage backDrop = null;
@@ -83,15 +73,15 @@ public class ProgressGlassPane extends JComponent {
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
-            MainFrame mainFrame = Application.getMainFrame();
+            var mainFrame = Application.getMainFrame();
             backDrop = GraphicsUtilities.createCompatibleImage(mainFrame.getRootPane().getWidth(),
-                                                               mainFrame.getRootPane().getHeight());
-            Graphics2D g2 = backDrop.createGraphics();
+                    mainFrame.getRootPane().getHeight());
+            var g2 = backDrop.createGraphics();
             mainFrame.getRootPane().paint(g2);
             g2.dispose();
 
             backDrop = GraphicsUtilities.createThumbnail(backDrop,
-                                                         mainFrame.getRootPane().getWidth() / 2);
+                    mainFrame.getRootPane().getWidth() / 2);
             backDrop = new ColorTintFilter(Color.BLACK, 0.10f).filter(backDrop, null);
             backDrop = new GaussianBlurFilter(12).filter(backDrop, null);
         } else {
@@ -104,30 +94,30 @@ public class ProgressGlassPane extends JComponent {
     }
 
     public void setProgress(int progress) {
-        int oldProgress = this.progress;
+        var oldProgress = this.progress;
         this.progress = progress;
 
         if (progress > oldProgress) {
             // computes the damaged area
-            FontMetrics metrics = getGraphics().getFontMetrics(getFont());
-            int w = (int) (BAR_WIDTH * ((float) oldProgress / 100.0f));
-            int x = w + (getWidth() - BAR_WIDTH) / 2;
-            int y = (getHeight() - BAR_HEIGHT) / 2;
+            var metrics = getGraphics().getFontMetrics(getFont());
+            var w = (int) (BAR_WIDTH * ((float) oldProgress / 100.0f));
+            var x = w + (getWidth() - BAR_WIDTH) / 2;
+            var y = (getHeight() - BAR_HEIGHT) / 2;
             y += metrics.getDescent() / 2 + 2;
 
             w = (int) (BAR_WIDTH * ((float) progress / 100.0f)) - w;
-            int h = BAR_HEIGHT;
+            var h = BAR_HEIGHT;
 
             repaint(x, y, w, h);
         } else {
-            FontMetrics metrics = getGraphics().getFontMetrics(getFont());
-            int w = (int) (BAR_WIDTH * ((float) oldProgress / 100.0f));
-            int x = w + (getWidth() - BAR_WIDTH) / 2;
-            int y = (getHeight() - BAR_HEIGHT) / 2;
+            var metrics = getGraphics().getFontMetrics(getFont());
+            var w = (int) (BAR_WIDTH * ((float) oldProgress / 100.0f));
+            var x = w + (getWidth() - BAR_WIDTH) / 2;
+            var y = (getHeight() - BAR_HEIGHT) / 2;
             y += metrics.getDescent() / 2 + 2;
 
             w = (int) (BAR_WIDTH * ((float) progress / 100.0f)) + w;
-            int h = BAR_HEIGHT;
+            var h = BAR_HEIGHT;
 
             repaint(x, y, w, h);
         }
@@ -136,31 +126,31 @@ public class ProgressGlassPane extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         // enables anti-aliasing
-        Graphics2D g2 = (Graphics2D) g;
+        var g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                            RenderingHints.VALUE_ANTIALIAS_ON);
+                RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-        MainFrame mainFrame = Application.getMainFrame();
-        int width = mainFrame.getRootPane().getWidth();
-        int height = mainFrame.getRootPane().getHeight();
+        var mainFrame = Application.getMainFrame();
+        var width = mainFrame.getRootPane().getWidth();
+        var height = mainFrame.getRootPane().getHeight();
         g2.drawImage(backDrop, 0, 0, width, height, null);
 
         // sets a 65% translucent composite
-        AlphaComposite alpha = AlphaComposite.SrcOver.derive(0.75f);
-        Composite composite = g2.getComposite();
+        var alpha = AlphaComposite.SrcOver.derive(0.75f);
+        var composite = g2.getComposite();
 
         // centers the progress bar on screen
-        FontMetrics metrics = g.getFontMetrics();
-        int x = (getWidth() - BAR_WIDTH) / 2;
-        int y = (getHeight() - BAR_HEIGHT - metrics.getDescent()) / 2;
+        var metrics = g.getFontMetrics();
+        var x = (getWidth() - BAR_WIDTH) / 2;
+        var y = (getHeight() - BAR_HEIGHT - metrics.getDescent()) / 2;
 
         g2.setComposite(alpha);
         g2.setColor(Color.BLACK);
         g2.fillRoundRect(x - 15, y - metrics.getAscent() - 7,
-                         BAR_WIDTH + 30, BAR_HEIGHT + 22 + metrics.getAscent(),
-                         20, 20);
+                BAR_WIDTH + 30, BAR_HEIGHT + 22 + metrics.getAscent(),
+                20, 20);
 
         g2.setComposite(composite);
 
@@ -172,23 +162,23 @@ public class ProgressGlassPane extends JComponent {
         y += metrics.getDescent() + 2;
 
         // computes the size of the progress indicator
-        int w = (int) (BAR_WIDTH * ((float) progress / 100.0f));
-        int h = BAR_HEIGHT;
+        var w = (int) (BAR_WIDTH * ((float) progress / 100.0f));
+        var h = BAR_HEIGHT;
 
         // draws the content of the progress bar
-        Paint paint = g2.getPaint();
+        var paint = g2.getPaint();
 
         g2.setComposite(alpha);
 
         // bar's background
         Paint gradient = new GradientPaint(x, y, GRADIENT_COLOR1,
-                                           x, y + h, GRADIENT_COLOR2);
+                x, y + h, GRADIENT_COLOR2);
         g2.setPaint(gradient);
         g2.fillRect(x, y, BAR_WIDTH, BAR_HEIGHT);
 
         // actual progress
         gradient = new LinearGradientPaint(x, y, x, y + h,
-                                           GRADIENT_FRACTIONS, GRADIENT_COLORS);
+                GRADIENT_FRACTIONS, GRADIENT_COLORS);
         g2.setPaint(gradient);
         g2.fillRect(x, y, w, h);
 
@@ -199,6 +189,6 @@ public class ProgressGlassPane extends JComponent {
         g2.drawRect(x, y, BAR_WIDTH, BAR_HEIGHT);
 
         g2.setComposite(composite);
- 
+
     }
 }

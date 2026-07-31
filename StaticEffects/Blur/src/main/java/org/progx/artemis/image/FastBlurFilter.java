@@ -34,9 +34,9 @@
 
 package org.progx.artemis.image;
 
-import java.awt.image.BufferedImage;
-
 import org.progx.artemis.graphics.GraphicsUtilities;
+
+import java.awt.image.BufferedImage;
 
 /**
  *
@@ -66,15 +66,15 @@ public class FastBlurFilter extends AbstractFilter {
      */
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
-        int width = src.getWidth();
-        int height = src.getHeight();
+        var width = src.getWidth();
+        var height = src.getHeight();
 
         if (dst == null) {
             dst = createCompatibleDestImage(src, null);
         }
 
-        int[] srcPixels = new int[width * height];
-        int[] dstPixels = new int[width * height];
+        var srcPixels = new int[width * height];
+        var dstPixels = new int[width * height];
 
         GraphicsUtilities.getPixels(src, 0, 0, width, height, srcPixels);
         // horizontal pass
@@ -89,62 +89,62 @@ public class FastBlurFilter extends AbstractFilter {
 
     private static void blur(int[] srcPixels, int[] dstPixels,
                              int width, int height, int radius) {
-        int windowSize = radius * 2 + 1;
+        var windowSize = radius * 2 + 1;
 
         int sumAlpha;
         int sumRed;
         int sumGreen;
         int sumBlue;
 
-        int srcIndex = 0;
+        var srcIndex = 0;
         int dstIndex;
         int pixel;
 
-        for (int y = 0; y < height; y++) {
+        for (var y = 0; y < height; y++) {
             sumAlpha = sumRed = sumGreen = sumBlue = 0;
             dstIndex = y;
 
             pixel = srcPixels[srcIndex];
             sumAlpha += (radius + 1) * ((pixel >> 24) & 0xFF);
-            sumRed   += (radius + 1) * ((pixel >> 16) & 0xFF);
-            sumGreen += (radius + 1) * ((pixel >>  8) & 0xFF);
-            sumBlue  += (radius + 1) * ( pixel        & 0xFF);
+            sumRed += (radius + 1) * ((pixel >> 16) & 0xFF);
+            sumGreen += (radius + 1) * ((pixel >> 8) & 0xFF);
+            sumBlue += (radius + 1) * (pixel & 0xFF);
 
-            for (int i = 1; i <= radius; i++) {
-                pixel = srcPixels[srcIndex + (i <= width - 1 ? i : width - 1)];
+            for (var i = 1; i <= radius; i++) {
+                pixel = srcPixels[srcIndex + (Math.min(i, width - 1))];
                 sumAlpha += (pixel >> 24) & 0xFF;
-                sumRed   += (pixel >> 16) & 0xFF;
-                sumGreen += (pixel >>  8) & 0xFF;
-                sumBlue  +=  pixel        & 0xFF;
+                sumRed += (pixel >> 16) & 0xFF;
+                sumGreen += (pixel >> 8) & 0xFF;
+                sumBlue += pixel & 0xFF;
             }
 
-            for  (int x = 0; x < width; x++) {
+            for (var x = 0; x < width; x++) {
                 dstPixels[dstIndex] = sumAlpha / windowSize << 24 |
-                                      sumRed   / windowSize << 16 |
-                                      sumGreen / windowSize <<  8 |
-                                      sumBlue  / windowSize;
+                                      sumRed / windowSize << 16 |
+                                      sumGreen / windowSize << 8 |
+                                      sumBlue / windowSize;
                 dstIndex += height;
 
-                int nextPixelIndex = x + radius + 1;
+                var nextPixelIndex = x + radius + 1;
                 if (nextPixelIndex >= width) {
                     nextPixelIndex = width - 1;
                 }
 
-                int previousPixelIndex = x - radius;
+                var previousPixelIndex = x - radius;
                 if (previousPixelIndex < 0) {
                     previousPixelIndex = 0;
                 }
 
-                int nextPixel = srcPixels[srcIndex + nextPixelIndex];
-                int previousPixel = srcPixels[srcIndex + previousPixelIndex];
+                var nextPixel = srcPixels[srcIndex + nextPixelIndex];
+                var previousPixel = srcPixels[srcIndex + previousPixelIndex];
 
-                sumAlpha += (nextPixel     >> 24) & 0xFF;
+                sumAlpha += (nextPixel >> 24) & 0xFF;
                 sumAlpha -= (previousPixel >> 24) & 0xFF;
 
-                sumRed += (nextPixel     >> 16) & 0xFF;
+                sumRed += (nextPixel >> 16) & 0xFF;
                 sumRed -= (previousPixel >> 16) & 0xFF;
 
-                sumGreen += (nextPixel     >> 8) & 0xFF;
+                sumGreen += (nextPixel >> 8) & 0xFF;
                 sumGreen -= (previousPixel >> 8) & 0xFF;
 
                 sumBlue += nextPixel & 0xFF;

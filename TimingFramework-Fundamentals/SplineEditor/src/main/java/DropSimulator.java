@@ -1,21 +1,21 @@
 /**
  * Copyright (c) 2006, Sun Microsystems, Inc
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials provided
- *     with the distribution.
- *   * Neither the name of the TimingFramework project nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
+ * <p>
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided
+ * with the distribution.
+ * * Neither the name of the TimingFramework project nor the names of its
+ * contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -29,16 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 
 public class DropSimulator extends AbstractSimulator {
@@ -46,20 +39,21 @@ public class DropSimulator extends AbstractSimulator {
 
     private BufferedImage image;
     private BufferedImage shadow;
-    
-    private float angle = 90;
-    private int distance = 20;
+
+    private final float angle = 90;
+    private final int distance = 20;
 
     // cached values for fast painting
     private int distance_x = 0;
     private int distance_y = 0;
-    
+
     public DropSimulator() {
         try {
             image = ImageIO.read(BouncerSimulator.class.getResource("images/icon.png"));
-            ShadowFactory factory = new ShadowFactory(5, 0.5f, Color.BLACK);
+            var factory = new ShadowFactory(5, 0.5f, Color.BLACK);
             shadow = factory.createShadow(image);
-        } catch (Exception e) { }
+        } catch (Exception _) {
+        }
     }
 
     @Override
@@ -67,8 +61,8 @@ public class DropSimulator extends AbstractSimulator {
         if (!isVisible()) {
             return;
         }
-        
-        Graphics2D g2 = (Graphics2D) g;
+
+        var g2 = (Graphics2D) g;
 
         setupGraphics(g2);
         drawBackground(g2);
@@ -76,24 +70,24 @@ public class DropSimulator extends AbstractSimulator {
     }
 
     private void drawItem(Graphics2D g2) {
-        double position = time;
+        var position = time;
 
-        int width = (int) (shadow.getWidth() / 2 * (1.0 + position));
-        int height = (int) (shadow.getHeight() / 2 * (1.0 + position));
-        int x = (getWidth() - width) / 2;
-        int y = (getHeight() - height) / 2;
+        var width = (int) ((double) shadow.getWidth() / 2 * (1.0 + position));
+        var height = (int) ((double) shadow.getHeight() / 2 * (1.0 + position));
+        var x = (getWidth() - width) / 2;
+        var y = (getHeight() - height) / 2;
 
-        Composite composite = g2.getComposite();
+        var composite = g2.getComposite();
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                                                   1.0f - (0.5f * (float) position)));
+                1.0f - (0.5f * (float) position)));
 
         computeShadowPosition((position * distance) + 1.0);
         g2.drawImage(shadow, x + distance_x, y + distance_y, width, height, null);
-        
+
         g2.setComposite(composite);
-        
-        width = (int) (image.getWidth() / 2 * (1.0 + position));
-        height = (int) (image.getHeight() / 2 * (1.0 + position));
+
+        width = (int) ((double) image.getWidth() / 2 * (1.0 + position));
+        height = (int) ((double) image.getHeight() / 2 * (1.0 + position));
         x = (getWidth() - width) / 2;
         y = (getHeight() - height) / 2;
 
@@ -102,9 +96,9 @@ public class DropSimulator extends AbstractSimulator {
 
     private void setupGraphics(Graphics2D g2) {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                            RenderingHints.VALUE_ANTIALIAS_ON);
+                RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                            RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+                RenderingHints.VALUE_INTERPOLATION_BICUBIC);
     }
 
     private void drawBackground(Graphics2D g2) {
@@ -118,7 +112,7 @@ public class DropSimulator extends AbstractSimulator {
     }
 
     private void computeShadowPosition(double distance) {
-        double angleRadians = Math.toRadians(angle);
+        var angleRadians = Math.toRadians(angle);
         distance_x = (int) (Math.cos(angleRadians) * distance);
         distance_y = (int) (Math.sin(angleRadians) * distance);
     }

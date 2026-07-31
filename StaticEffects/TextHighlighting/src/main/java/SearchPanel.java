@@ -30,42 +30,46 @@
  */
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  *
  * @author Romain Guy
  */
-public class SearchPanel extends javax.swing.JPanel {
-    
-    /** Creates new form SearchPanel */
+public class SearchPanel extends JPanel {
+
+    /**
+     * Creates new form SearchPanel
+     */
     public SearchPanel() {
         initComponents();
     }
-    
-    /** This method is called from within the constructor to
+
+    /**
+     * This method is called from within the constructor to
      * initialize the form.
-     * 
+     * <p>
      * This code has been converted from Netbeans/Jdesktop code
      * that made it to Swing's GroupLayout code in Java 1.6.
      * It is not anymore generated.
      */
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
+        GridBagConstraints gridBagConstraints;
 
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jLabel2 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jButton2 = new javax.swing.JButton();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        jRadioButton2 = new JRadioButton();
+        jLabel1 = new JLabel();
+        jTextField1 = new JTextField();
+        jButton1 = new JButton();
+        jCheckBox1 = new JCheckBox();
+        jLabel2 = new JLabel();
+        jRadioButton1 = new JRadioButton();
+        jButton2 = new JButton();
+        jCheckBox2 = new JCheckBox();
+        jRadioButton3 = new JRadioButton();
 
         jRadioButton2.setText("jRadioButton2");
-        jRadioButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jRadioButton2.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jRadioButton2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jRadioButton2.setMargin(new Insets(0, 0, 0, 0));
 
         jLabel1.setText("Find what:");
 
@@ -75,98 +79,98 @@ public class SearchPanel extends javax.swing.JPanel {
         jButton1.setOpaque(false);
 
         jCheckBox1.setText("Match case");
-        jCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jCheckBox1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jCheckBox1.setMargin(new Insets(0, 0, 0, 0));
         jCheckBox1.setOpaque(false);
 
         jLabel2.setText("Direction:");
 
         jRadioButton1.setSelected(true);
         jRadioButton1.setText("Up");
-        jRadioButton1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jRadioButton1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jRadioButton1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jRadioButton1.setMargin(new Insets(0, 0, 0, 0));
         jRadioButton1.setOpaque(false);
 
         jButton2.setText("Cancel");
         jButton2.setOpaque(false);
-        jButton2.setPreferredSize(new java.awt.Dimension(91, 23));
+        jButton2.setPreferredSize(new Dimension(91, 23));
 
         jCheckBox2.setText("Wrap");
-        jCheckBox2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jCheckBox2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jCheckBox2.setMargin(new Insets(0, 0, 0, 0));
         jCheckBox2.setOpaque(false);
 
         jRadioButton3.setText("Down");
-        jRadioButton3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jRadioButton3.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jRadioButton3.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jRadioButton3.setMargin(new Insets(0, 0, 0, 0));
         jRadioButton3.setOpaque(false);
 
-        GroupLayout layout = new GroupLayout(this);
+        var layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jCheckBox1)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                                .addComponent(jLabel2))
-                            .addComponent(jCheckBox2))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton3)
-                            .addComponent(jRadioButton1))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton2, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE,75, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, GroupLayout.Alignment.TRAILING))
-                        .addGap(23, 23, 23))))
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel1)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jTextField1, GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                                                .addContainerGap())
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addComponent(jCheckBox1)
+                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                                                                .addComponent(jLabel2))
+                                                        .addComponent(jCheckBox2))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jRadioButton3)
+                                                        .addComponent(jRadioButton1))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                        .addComponent(jButton2, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jButton1, GroupLayout.Alignment.TRAILING))
+                                                .addGap(23, 23, 23))))
         );
 
-        layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton1, jButton2});
+        layout.linkSize(SwingConstants.HORIZONTAL, jButton1, jButton2);
 
         layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(  GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(8, 8, 8)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jLabel2)
-                    .addComponent(jCheckBox1))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jRadioButton3)
-                    .addComponent(jCheckBox2))
-                .addContainerGap())
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel1)
+                                        .addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(8, 8, 8)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jButton1)
+                                        .addComponent(jRadioButton1)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jCheckBox1))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jRadioButton3)
+                                        .addComponent(jCheckBox2))
+                                .addContainerGap())
         );
     }
-    
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JTextField jTextField1;
+    private JButton jButton1;
+    private JButton jButton2;
+    private JCheckBox jCheckBox1;
+    private JCheckBox jCheckBox2;
+    private JLabel jLabel1;
+    private JLabel jLabel2;
+    private JRadioButton jRadioButton1;
+    private JRadioButton jRadioButton2;
+    private JRadioButton jRadioButton3;
+    private JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
-    
+
 }

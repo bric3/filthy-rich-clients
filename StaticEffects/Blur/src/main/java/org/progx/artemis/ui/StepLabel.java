@@ -31,20 +31,10 @@
 
 package org.progx.artemis.ui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.GradientPaint;
-import java.awt.Paint;
-import java.awt.AlphaComposite;
-import java.awt.image.BufferedImage;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-
 import org.progx.artemis.graphics.GraphicsUtilities;
+
+import javax.swing.*;
+import java.awt.*;
 
 class StepLabel extends JLabel {
     private int step;
@@ -55,7 +45,7 @@ class StepLabel extends JLabel {
         setForeground(Color.WHITE);
         setHorizontalAlignment(CENTER);
         setIconTextGap(12);
-        //setOpaque(true);
+        // setOpaque(true);
         setFont(new Font("Helvetica", Font.PLAIN, 24));
         setStep(1);
         setText(" ");
@@ -74,30 +64,30 @@ class StepLabel extends JLabel {
     @Override
     protected void paintComponent(Graphics g) {
         if (rebuildIcon) {
-            FontMetrics fontMetrics = g.getFontMetrics();
-            int height = (int) (fontMetrics.getHeight() / 1.5 + 2);
+            var fontMetrics = g.getFontMetrics();
+            var height = (int) (fontMetrics.getHeight() / 1.5 + 2);
 
-            BufferedImage image = GraphicsUtilities.createTranslucentCompatibleImage(height, height);
-            Graphics2D g2 = image.createGraphics();
+            var image = GraphicsUtilities.createTranslucentCompatibleImage(height, height);
+            var g2 = image.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                RenderingHints.VALUE_ANTIALIAS_ON);
+                    RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                                RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 
             g2.setFont(getFont().deriveFont(Font.BOLD, 20));
             fontMetrics = g2.getFontMetrics();
 
-            String s = String.valueOf(step);
-            int x = (height - fontMetrics.stringWidth(s)) / 2;
-            int y = height - fontMetrics.getAscent() / 8;
+            var s = String.valueOf(step);
+            var x = (height - fontMetrics.stringWidth(s)) / 2;
+            var y = height - fontMetrics.getAscent() / 8;
 
-            //g2.setColor(Color.WHITE);
-            Paint paint = g2.getPaint();
+            // g2.setColor(Color.WHITE);
+            var paint = g2.getPaint();
             g2.setPaint(new GradientPaint(0.0f, 0.0f, Color.WHITE,
-                                          0.0f, height, Color.GRAY));
+                    0.0f, height, Color.GRAY));
             g2.fillOval(0, 0, height, height);
             g2.setPaint(paint);
-            //g2.setColor(Color.BLACK);
+            // g2.setColor(Color.BLACK);
             g2.setComposite(AlphaComposite.Clear);
             g2.drawString(s, x, y);
 

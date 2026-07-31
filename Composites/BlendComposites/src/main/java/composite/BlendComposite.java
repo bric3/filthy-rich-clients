@@ -42,9 +42,9 @@ import java.awt.image.*;
  * (known as the source) is mixed with existing graphics (know as the
  * destination.)</p>
  * <p><code>BlendComposite</code> is an implementation of the
- * {@link java.awt.Composite} interface and must therefore be set as a state on
- * a {@link java.awt.Graphics2D} surface.</p>
- * <p>Please refer to {@link java.awt.Graphics2D#setComposite(java.awt.Composite)}
+ * {@link Composite} interface and must therefore be set as a state on
+ * a {@link Graphics2D} surface.</p>
+ * <p>Please refer to {@link Graphics2D#setComposite(Composite)}
  * for more information on how to use this class with a graphics surface.</p>
  * <h2>Blending Modes</h2>
  * <p>This class offers a certain number of blending modes, or compositing
@@ -79,9 +79,9 @@ import java.awt.image.*;
  * <p>TThe blending mode <em>SoftLight</em> has not been implemented yet.</p>
  *
  * @author Romain Guy <romain.guy@mac.com>
- * @see java.awt.Graphics2D
- * @see java.awt.Composite
- * @see java.awt.AlphaComposite
+ * @see Graphics2D
+ * @see Composite
+ * @see AlphaComposite
  */
 public final class BlendComposite implements Composite {
     /**
@@ -304,24 +304,24 @@ public final class BlendComposite implements Composite {
         }
 
         public void compose(Raster src, Raster dstIn, WritableRaster dstOut) {
-            int width = Math.min(src.getWidth(), dstIn.getWidth());
-            int height = Math.min(src.getHeight(), dstIn.getHeight());
+            var width = Math.min(src.getWidth(), dstIn.getWidth());
+            var height = Math.min(src.getHeight(), dstIn.getHeight());
 
-            float alpha = composite.getAlpha();
+            var alpha = composite.getAlpha();
 
-            int[] result = new int[4];
-            int[] srcPixel = new int[4];
-            int[] dstPixel = new int[4];
-            int[] srcPixels = new int[width];
-            int[] dstPixels = new int[width];
+            var result = new int[4];
+            var srcPixel = new int[4];
+            var dstPixel = new int[4];
+            var srcPixels = new int[width];
+            var dstPixels = new int[width];
 
-            for (int y = 0; y < height; y++) {
+            for (var y = 0; y < height; y++) {
                 src.getDataElements(0, y, width, 1, srcPixels);
                 dstIn.getDataElements(0, y, width, 1, dstPixels);
-                for (int x = 0; x < width; x++) {
+                for (var x = 0; x < width; x++) {
                     // pixels are stored as INT_ARGB
                     // our arrays are [R, G, B, A]
-                    int pixel = srcPixels[x];
+                    var pixel = srcPixels[x];
                     srcPixel[0] = (pixel >> 16) & 0xFF;
                     srcPixel[1] = (pixel >> 8) & 0xFF;
                     srcPixel[2] = (pixel) & 0xFF;
@@ -381,9 +381,9 @@ public final class BlendComposite implements Composite {
                 case COLOR -> new Blender() {
                     @Override
                     public void blend(int[] src, int[] dst, int[] result) {
-                        float[] srcHSL = new float[3];
+                        var srcHSL = new float[3];
                         ColorUtilities.RGBtoHSL(src[0], src[1], src[2], srcHSL);
-                        float[] dstHSL = new float[3];
+                        var dstHSL = new float[3];
                         ColorUtilities.RGBtoHSL(dst[0], dst[1], dst[2], dstHSL);
 
                         ColorUtilities.HSLtoRGB(srcHSL[0], srcHSL[1], dstHSL[2], result);
@@ -501,9 +501,9 @@ public final class BlendComposite implements Composite {
                 case HUE -> new Blender() {
                     @Override
                     public void blend(int[] src, int[] dst, int[] result) {
-                        float[] srcHSL = new float[3];
+                        var srcHSL = new float[3];
                         ColorUtilities.RGBtoHSL(src[0], src[1], src[2], srcHSL);
-                        float[] dstHSL = new float[3];
+                        var dstHSL = new float[3];
                         ColorUtilities.RGBtoHSL(dst[0], dst[1], dst[2], dstHSL);
 
                         ColorUtilities.HSLtoRGB(srcHSL[0], dstHSL[1], dstHSL[2], result);
@@ -546,9 +546,9 @@ public final class BlendComposite implements Composite {
                 case LUMINOSITY -> new Blender() {
                     @Override
                     public void blend(int[] src, int[] dst, int[] result) {
-                        float[] srcHSL = new float[3];
+                        var srcHSL = new float[3];
                         ColorUtilities.RGBtoHSL(src[0], src[1], src[2], srcHSL);
-                        float[] dstHSL = new float[3];
+                        var dstHSL = new float[3];
                         ColorUtilities.RGBtoHSL(dst[0], dst[1], dst[2], dstHSL);
 
                         ColorUtilities.HSLtoRGB(dstHSL[0], dstHSL[1], srcHSL[2], result);
@@ -609,9 +609,9 @@ public final class BlendComposite implements Composite {
                 case SATURATION -> new Blender() {
                     @Override
                     public void blend(int[] src, int[] dst, int[] result) {
-                        float[] srcHSL = new float[3];
+                        var srcHSL = new float[3];
                         ColorUtilities.RGBtoHSL(src[0], src[1], src[2], srcHSL);
-                        float[] dstHSL = new float[3];
+                        var dstHSL = new float[3];
                         ColorUtilities.RGBtoHSL(dst[0], dst[1], dst[2], dstHSL);
 
                         ColorUtilities.HSLtoRGB(dstHSL[0], srcHSL[1], dstHSL[2], result);
@@ -666,9 +666,9 @@ public final class BlendComposite implements Composite {
                 case SOFT_LIGHT -> new Blender() {
                     @Override
                     public void blend(int[] src, int[] dst, int[] result) {
-                        int mRed = src[0] * dst[0] / 255;
-                        int mGreen = src[1] * dst[1] / 255;
-                        int mBlue = src[2] * dst[2] / 255;
+                        var mRed = src[0] * dst[0] / 255;
+                        var mGreen = src[1] * dst[1] / 255;
+                        var mBlue = src[2] * dst[2] / 255;
                         result[0] = mRed + src[0] * (255 - ((255 - src[0]) * (255 - dst[0]) / 255) - mRed) / 255;
                         result[1] = mGreen + src[1] * (255 - ((255 - src[1]) * (255 - dst[1]) / 255) - mGreen) / 255;
                         result[2] = mBlue + src[2] * (255 - ((255 - src[2]) * (255 - dst[2]) / 255) - mBlue) / 255;
@@ -678,9 +678,9 @@ public final class BlendComposite implements Composite {
                 case STAMP -> new Blender() {
                     @Override
                     public void blend(int[] src, int[] dst, int[] result) {
-                        result[0] = Math.max(0, Math.min(255, dst[0] + 2 * src[0] - 256));
-                        result[1] = Math.max(0, Math.min(255, dst[1] + 2 * src[1] - 256));
-                        result[2] = Math.max(0, Math.min(255, dst[2] + 2 * src[2] - 256));
+                        result[0] = Math.clamp(dst[0] + 2L * src[0] - 256, 0, 255);
+                        result[1] = Math.clamp(dst[1] + 2L * src[1] - 256, 0, 255);
+                        result[2] = Math.clamp(dst[2] + 2L * src[2] - 256, 0, 255);
                         result[3] = Math.min(255, src[3] + dst[3] - (src[3] * dst[3]) / 255);
                     }
                 };

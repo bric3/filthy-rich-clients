@@ -7,14 +7,8 @@
  * Licensed under LGPL.
  */
 
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.FlatteningPathIterator;
-import java.awt.geom.IllegalPathStateException;
-import java.awt.geom.PathIterator;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.*;
+import java.awt.geom.*;
 
 /**
  * <p>A morphing shape is a shape which geometry is constructed from two
@@ -49,9 +43,9 @@ public class Morphing2D implements Shape {
         if (startGeometry.getWindingRule() != endGeometry.getWindingRule()) {
             throw new IllegalPathStateException("shapes must use same winding rule");
         }
-        double[] tvals0 = startGeometry.getTvals();
-        double[] tvals1 = endGeometry.getTvals();
-        double[] masterTvals = mergeTvals(tvals0, tvals1);
+        var tvals0 = startGeometry.getTvals();
+        var tvals1 = endGeometry.getTvals();
+        var masterTvals = mergeTvals(tvals0, tvals1);
         startGeometry.setTvals(masterTvals);
         endGeometry.setTvals(masterTvals);
     }
@@ -94,12 +88,12 @@ public class Morphing2D implements Shape {
     }
 
     private static double[] mergeTvals(double[] tvals0, double[] tvals1) {
-        int i0 = 0;
-        int i1 = 0;
-        int numtvals = 0;
+        var i0 = 0;
+        var i1 = 0;
+        var numtvals = 0;
         while (i0 < tvals0.length && i1 < tvals1.length) {
-            double t0 = tvals0[i0];
-            double t1 = tvals1[i1];
+            var t0 = tvals0[i0];
+            var t1 = tvals1[i1];
             if (t0 <= t1) {
                 i0++;
             }
@@ -108,13 +102,13 @@ public class Morphing2D implements Shape {
             }
             numtvals++;
         }
-        double[] newtvals = new double[numtvals];
+        var newtvals = new double[numtvals];
         i0 = 0;
         i1 = 0;
         numtvals = 0;
         while (i0 < tvals0.length && i1 < tvals1.length) {
-            double t0 = tvals0[i0];
-            double t1 = tvals1[i1];
+            var t0 = tvals0[i0];
+            var t1 = tvals1[i1];
             if (t0 <= t1) {
                 newtvals[numtvals] = t0;
                 i0++;
@@ -135,16 +129,16 @@ public class Morphing2D implements Shape {
 
     @Override
     public Rectangle2D getBounds2D() {
-        int n = startGeometry.getNumCoords();
+        var n = startGeometry.getNumCoords();
         double xmin, ymin, xmax, ymax;
         xmin = xmax = interp(startGeometry.getCoord(0), endGeometry.getCoord(0),
                 morph);
         ymin = ymax = interp(startGeometry.getCoord(1), endGeometry.getCoord(1),
                 morph);
-        for (int i = 2; i < n; i += 2) {
-            double x = interp(startGeometry.getCoord(i),
+        for (var i = 2; i < n; i += 2) {
+            var x = interp(startGeometry.getCoord(i),
                     endGeometry.getCoord(i), morph);
-            double y = interp(startGeometry.getCoord(i + 1),
+            var y = interp(startGeometry.getCoord(i + 1),
                     endGeometry.getCoord(i + 1), morph);
             if (xmin > x) {
                 xmin = x;
@@ -207,34 +201,34 @@ public class Morphing2D implements Shape {
         static final double MIN_LEN = 0.001;
         double[] bezierCoords;
         int numCoords;
-        int windingrule;
+        final int windingrule;
         double[] myTvals;
 
         public Geometry(Shape s) {
             // Multiple of 6 plus 2 more for initial moveto
             bezierCoords = new double[20];
-            PathIterator pi = s.getPathIterator(null);
+            var pi = s.getPathIterator(null);
             windingrule = pi.getWindingRule();
             if (pi.isDone()) {
                 // We will have 1 segment and it will be all zeros
                 // It will have 8 coordinates (2 for moveto, 6 for cubic)
                 numCoords = 8;
             }
-            double[] coords = new double[6];
-            int type = pi.currentSegment(coords);
+            var coords = new double[6];
+            var type = pi.currentSegment(coords);
             pi.next();
             if (type != PathIterator.SEG_MOVETO) {
                 throw new IllegalPathStateException("missing initial moveto");
             }
-            double curx = bezierCoords[0] = coords[0];
-            double cury = bezierCoords[1] = coords[1];
+            var curx = bezierCoords[0] = coords[0];
+            var cury = bezierCoords[1] = coords[1];
             double newx, newy;
             numCoords = 2;
             while (!pi.isDone()) {
                 if (numCoords + 6 > bezierCoords.length) {
                     // Keep array size to a multiple of 6 plus 2
-                    int newsize = (numCoords - 2) * 2 + 2;
-                    double[] newCoords = new double[newsize];
+                    var newsize = (numCoords - 2) * 2 + 2;
+                    var newCoords = new double[newsize];
                     System.arraycopy(bezierCoords, 0, newCoords, 0, numCoords);
                     bezierCoords = newCoords;
                 }
@@ -262,8 +256,8 @@ public class Morphing2D implements Shape {
                         bezierCoords[numCoords++] = cury = newy;
                         break;
                     case PathIterator.SEG_QUADTO:
-                        double ctrlx = coords[0];
-                        double ctrly = coords[1];
+                        var ctrlx = coords[0];
+                        var ctrly = coords[1];
                         newx = coords[2];
                         newy = coords[3];
                         // A third of the way from ctrlxy back to curxy:
@@ -304,12 +298,12 @@ public class Morphing2D implements Shape {
                 bezierCoords[numCoords++] = newy;
             }
             // Now find the segment endpoint with the smallest Y coordinate
-            int minPt = 0;
-            double minX = bezierCoords[0];
-            double minY = bezierCoords[1];
-            for (int ci = 6; ci < numCoords; ci += 6) {
-                double x = bezierCoords[ci];
-                double y = bezierCoords[ci + 1];
+            var minPt = 0;
+            var minX = bezierCoords[0];
+            var minY = bezierCoords[1];
+            for (var ci = 6; ci < numCoords; ci += 6) {
+                var x = bezierCoords[ci];
+                var y = bezierCoords[ci + 1];
                 if (y < minY || (y == minY && x < minX)) {
                     minPt = ci;
                     minX = x;
@@ -320,7 +314,7 @@ public class Morphing2D implements Shape {
             // rotate the points so that it is...
             if (minPt > 0) {
                 // Keep in mind that first 2 coords == last 2 coords
-                double[] newCoords = new double[numCoords];
+                var newCoords = new double[numCoords];
                 // Copy all coordinates from minPt to the end of the
                 // array to the beginning of the new array
                 System.arraycopy(bezierCoords, minPt,
@@ -371,7 +365,7 @@ public class Morphing2D implements Shape {
             // do not need to process coords[0,1] against coords[n-2,n-1]
             curx = bezierCoords[0];
             cury = bezierCoords[1];
-            for (int i = 2; i < numCoords; i += 2) {
+            for (var i = 2; i < numCoords; i += 2) {
                 newx = bezierCoords[i];
                 newy = bezierCoords[i + 1];
                 area += curx * newy - newx * cury;
@@ -393,8 +387,8 @@ public class Morphing2D implements Shape {
                  */
                 // Note that [0,1] do not need to be swapped with [n-2,n-1]
                 // So first pair to swap is [2,3] and [n-4,n-3]
-                int i = 2;
-                int j = numCoords - 4;
+                var i = 2;
+                var j = numCoords - 4;
                 while (i < j) {
                     curx = bezierCoords[i];
                     cury = bezierCoords[i + 1];
@@ -427,17 +421,17 @@ public class Morphing2D implements Shape {
 
             // assert(numCoords >= 8);
             // assert(((numCoords - 2) % 6) == 0);
-            double[] tvals = new double[(numCoords - 2) / 6 + 1];
+            var tvals = new double[(numCoords - 2) / 6 + 1];
 
             // First calculate total "length" of path
             // Length of each segment is averaged between
             // the length between the endpoints (a lower bound for a cubic)
             // and the length of the control polygon (an upper bound)
-            double segx = bezierCoords[0];
-            double segy = bezierCoords[1];
+            var segx = bezierCoords[0];
+            var segy = bezierCoords[1];
             double tlen = 0;
-            int ci = 2;
-            int ti = 0;
+            var ci = 2;
+            var ti = 0;
             while (ci < numCoords) {
                 double prevx, prevy, newx, newy;
                 prevx = segx;
@@ -446,7 +440,7 @@ public class Morphing2D implements Shape {
                 newy = bezierCoords[ci++];
                 prevx -= newx;
                 prevy -= newy;
-                double len = Math.sqrt(prevx * prevx + prevy * prevy);
+                var len = Math.sqrt(prevx * prevx + prevy * prevy);
                 prevx = newx;
                 prevy = newy;
                 newx = bezierCoords[ci++];
@@ -490,10 +484,10 @@ public class Morphing2D implements Shape {
 
             // Now set tvals for each segment to its proportional
             // part of the length
-            double prevt = tvals[0];
+            var prevt = tvals[0];
             tvals[0] = 0;
             for (ti = 1; ti < tvals.length - 1; ti++) {
-                double nextt = tvals[ti];
+                var nextt = tvals[ti];
                 tvals[ti] = prevt / tlen;
                 prevt = nextt;
             }
@@ -502,21 +496,21 @@ public class Morphing2D implements Shape {
         }
 
         public void setTvals(double[] newTvals) {
-            double[] oldCoords = bezierCoords;
-            double[] newCoords = new double[2 + (newTvals.length - 1) * 6];
-            double[] oldTvals = getTvals();
-            int oldci = 0;
+            var oldCoords = bezierCoords;
+            var newCoords = new double[2 + (newTvals.length - 1) * 6];
+            var oldTvals = getTvals();
+            var oldci = 0;
             double x0, xc0, xc1, x1;
             double y0, yc0, yc1, y1;
             x0 = xc0 = xc1 = x1 = oldCoords[oldci++];
             y0 = yc0 = yc1 = y1 = oldCoords[oldci++];
-            int newci = 0;
+            var newci = 0;
             newCoords[newci++] = x0;
             newCoords[newci++] = y0;
             double t0 = 0;
             double t1 = 0;
-            int oldti = 1;
-            int newti = 1;
+            var oldti = 1;
+            var newti = 1;
             while (newti < newTvals.length) {
                 if (t0 >= t1) {
                     x0 = x1;
@@ -529,11 +523,11 @@ public class Morphing2D implements Shape {
                     y1 = oldCoords[oldci++];
                     t1 = oldTvals[oldti++];
                 }
-                double nt = newTvals[newti++];
+                var nt = newTvals[newti++];
                 // assert(nt > t0);
                 if (nt < t1) {
                     // Make nt proportional to [t0 => t1] range
-                    double relt = (nt - t0) / (t1 - t0);
+                    var relt = (nt - t0) / (t1 - t0);
                     newCoords[newci++] = x0 = interp(x0, xc0, relt);
                     newCoords[newci++] = y0 = interp(y0, yc0, relt);
                     xc0 = interp(xc0, xc1, relt);
@@ -563,10 +557,10 @@ public class Morphing2D implements Shape {
     }
 
     private static class Iterator implements PathIterator {
-        AffineTransform at;
-        Geometry g0;
-        Geometry g1;
-        double t;
+        final AffineTransform at;
+        final Geometry g0;
+        final Geometry g1;
+        final double t;
         int cindex;
 
         public Iterator(AffineTransform at,
@@ -604,7 +598,7 @@ public class Morphing2D implements Shape {
             if (dcoords == null) {
                 dcoords = new double[6];
             }
-            int type = currentSegment(dcoords);
+            var type = currentSegment(dcoords);
             if (type != SEG_CLOSE) {
                 coords[0] = (float) dcoords[0];
                 coords[1] = (float) dcoords[1];
@@ -633,7 +627,7 @@ public class Morphing2D implements Shape {
                 n = 6;
             }
             if (n > 0) {
-                for (int i = 0; i < n; i++) {
+                for (var i = 0; i < n; i++) {
                     coords[i] = interp(g0.getCoord(cindex + i),
                             g1.getCoord(cindex + i),
                             t);

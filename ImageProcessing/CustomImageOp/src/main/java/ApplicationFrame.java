@@ -29,74 +29,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.color.ColorSpace;
-import java.awt.color.ICC_ColorSpace;
-import java.awt.color.ICC_Profile;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
-import java.awt.image.LookupOp;
-import java.awt.image.LookupTable;
-import java.awt.image.RescaleOp;
-import java.awt.image.ShortLookupTable;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
+import javax.swing.*;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * <p>Demos of a custom buffered image operation.</p>
- * 
+ *
  * @author Romain Guy <romain.guy@mac.com>
  */
 public class ApplicationFrame extends JFrame {
     private BufferedImage sourceImage;
     private ImagePanel imagePanel;
-    
+
     private JSlider redSlider;
     private JSlider greenSlider;
     private JSlider blueSlider;
     private JSlider alphaSlider;
-    
+
     public ApplicationFrame() {
         super("Custom Image Op Demo");
-        
+
         loadSourceImage();
         buildContent();
-        
+
         pack();
-        
+
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
-    
-    public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new ApplicationFrame().setVisible(true);
-            }
-        });
+
+    static void main(String... args) {
+        SwingUtilities.invokeLater(() -> new ApplicationFrame().setVisible(true));
     }
 
     private void buildContent() {
@@ -116,10 +83,10 @@ public class ApplicationFrame extends JFrame {
     private void buildImagePanel() {
         add(imagePanel = new ImagePanel());
     }
-    
+
     private void buildControlsPanel() {
-        JPanel controls = new JPanel(new GridBagLayout());
-        
+        var controls = new JPanel(new GridBagLayout());
+
         // red component
         controls.add(new JLabel("Red: 0"), new GridBagConstraints(
                 0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.LINE_END,
@@ -130,7 +97,7 @@ public class ApplicationFrame extends JFrame {
         controls.add(new JLabel("255"), new GridBagConstraints(
                 2, 0, 1, 1, 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        
+
         // green component
         controls.add(new JLabel("Green: 0"), new GridBagConstraints(
                 0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.LINE_END,
@@ -141,7 +108,7 @@ public class ApplicationFrame extends JFrame {
         controls.add(new JLabel("255"), new GridBagConstraints(
                 2, 1, 1, 1, 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        
+
         // blue component
         controls.add(new JLabel("Blue: 0"), new GridBagConstraints(
                 0, 2, 1, 1, 1.0, 1.0, GridBagConstraints.LINE_END,
@@ -152,7 +119,7 @@ public class ApplicationFrame extends JFrame {
         controls.add(new JLabel("255"), new GridBagConstraints(
                 2, 2, 1, 1, 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        
+
         // mix value
         controls.add(new JLabel("Mix: 0%"), new GridBagConstraints(
                 0, 3, 1, 1, 1.0, 1.0, GridBagConstraints.LINE_END,
@@ -163,65 +130,57 @@ public class ApplicationFrame extends JFrame {
         controls.add(new JLabel("100%"), new GridBagConstraints(
                 2, 3, 1, 1, 1.0, 1.0, GridBagConstraints.LINE_START,
                 GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        
+
         // change listener
-        ChangeListener colorChange = new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                imagePanel.setColor(new Color(redSlider.getValue(),
-                        greenSlider.getValue(), blueSlider.getValue()));
-            }
-        };
+        ChangeListener colorChange = e -> imagePanel.setColor(new Color(redSlider.getValue(),
+                greenSlider.getValue(), blueSlider.getValue()));
         redSlider.addChangeListener(colorChange);
         greenSlider.addChangeListener(colorChange);
         blueSlider.addChangeListener(colorChange);
-        
+
         // alpha listener
-        alphaSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                imagePanel.setMix((float) alphaSlider.getValue() / 100.0f);
-            }
-        });
-        
+        alphaSlider.addChangeListener(e -> imagePanel.setMix((float) alphaSlider.getValue() / 100.0f));
+
         add(controls, BorderLayout.SOUTH);
     }
-    
+
     private class ImagePanel extends JComponent {
         private ColorTintFilter op = new ColorTintFilter(Color.WHITE, 0.5f);
-        private BufferedImage cache;
+        private final BufferedImage cache;
         private boolean damaged;
-        
+
         private ImagePanel() {
             cache = GraphicsUtilities.createCompatibleImage(sourceImage);
             damaged = true;
         }
-        
+
         public void setColor(Color color) {
             op = new ColorTintFilter(color, op.getMixValue());
             damaged = true;
             repaint();
         }
-        
+
         public void setMix(float mix) {
             op = new ColorTintFilter(op.getMixColor(), mix);
             damaged = true;
             repaint();
         }
-        
+
         @Override
         public Dimension getPreferredSize() {
             return new Dimension(sourceImage.getWidth(), sourceImage.getHeight());
         }
-        
+
         @Override
         protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g;
-            
+            var g2 = (Graphics2D) g;
+
             if (damaged) {
                 op.filter(sourceImage, cache);
             }
-            
-            int x = (getWidth() - cache.getWidth()) / 2;
-            int y = (getHeight() - cache.getHeight()) / 2;
+
+            var x = (getWidth() - cache.getWidth()) / 2;
+            var y = (getHeight() - cache.getHeight()) / 2;
             g2.drawImage(cache, x, y, null);
         }
     }

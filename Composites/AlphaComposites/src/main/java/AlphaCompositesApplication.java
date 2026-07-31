@@ -29,22 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.RenderingHints;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -54,22 +42,22 @@ public class AlphaCompositesApplication extends JFrame {
     private final CompositePainter painter;
     private JSlider opacity;
     private final JComboBox<String> composites;
-    
+
     public AlphaCompositesApplication() {
         super("Alpha Composites");
-        
+
         add(painter = new CompositePainter(), BorderLayout.CENTER);
 
         var panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
         panel.add(composites = buildCompositeSelector());
         panel.add(buildOpacitySelector());
         add(panel, BorderLayout.SOUTH);
-        
+
         setSize(400, 300);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    
+
     private Component buildOpacitySelector() {
         opacity = new JSlider(0, 100, 50);
         opacity.addChangeListener(_ -> changeComposite());
@@ -79,25 +67,25 @@ public class AlphaCompositesApplication extends JFrame {
         panel.add(new JLabel("100%"));
         return panel;
     }
-    
+
     private JComboBox<String> buildCompositeSelector() {
-        var composites = new JComboBox<>(new String[] {
-            "CLEAR",
-            "DST", "DST_ATOP", "DST_IN", "DST_OUT", "DST_OVER",
-            "SRC", "SRC_ATOP", "SRC_IN", "SRC_OUT", "SRC_OVER",
-            "XOR"
+        var composites = new JComboBox<>(new String[]{
+                "CLEAR",
+                "DST", "DST_ATOP", "DST_IN", "DST_OUT", "DST_OVER",
+                "SRC", "SRC_ATOP", "SRC_IN", "SRC_OUT", "SRC_OVER",
+                "XOR"
         });
         composites.setSelectedItem("SRC");
         composites.addActionListener(_ -> changeComposite());
         return composites;
     }
-    
+
     private void changeComposite() {
         var rule = Objects.requireNonNull(composites.getSelectedItem()).toString();
         try {
             var ruleField = AlphaComposite.class.getDeclaredField(rule);
             var composite = AlphaComposite.getInstance(ruleField.getInt(null),
-                (float) opacity.getValue() / 100.0f);
+                    (float) opacity.getValue() / 100.0f);
             painter.setComposite(composite);
         } catch (SecurityException
                  | NoSuchFieldException
@@ -106,7 +94,7 @@ public class AlphaCompositesApplication extends JFrame {
             ex.printStackTrace();
         }
     }
-    
+
     private static final class CompositePainter extends JComponent {
         private AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC, 0.5f);
 
@@ -115,14 +103,14 @@ public class AlphaCompositesApplication extends JFrame {
             var image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
             var g2 = image.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            
+
             g2.setColor(Color.BLUE);
             g2.fillRect(4 + (getWidth() / 4), 4, getWidth() / 2, getHeight() - 8);
             g2.setColor(Color.RED);
             g2.setComposite(composite);
             g2.fillOval(40, 40, getWidth() - 80, getHeight() - 80);
             g2.dispose();
-            
+
             g.drawImage(image, 0, 0, null);
         }
 
@@ -131,8 +119,8 @@ public class AlphaCompositesApplication extends JFrame {
             repaint();
         }
     }
-    
-    public static void main(String... args) {
+
+    static void main(String... args) {
         SwingUtilities.invokeLater(() -> new AlphaCompositesApplication().setVisible(true));
     }
 }

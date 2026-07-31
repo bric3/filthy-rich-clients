@@ -29,29 +29,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
 
 /**
  * @author Romain Guy
  */
 public class SwingThreading extends JFrame implements ActionListener {
-    private JLabel counter;
+    private final JLabel counter;
     private int tickCounter = 0;
     private static SwingThreading edt;
 
     public SwingThreading() {
         super("Swing Threading");
 
-        JButton freezer = new JButton("Increment");
+        var freezer = new JButton("Increment");
         freezer.addActionListener(this);
 
         counter = new JLabel("0");
 
         add(freezer, BorderLayout.CENTER);
-        add(counter,  BorderLayout.SOUTH);
+        add(counter, BorderLayout.SOUTH);
 
         pack();
         setLocationRelativeTo(null);
@@ -65,11 +65,7 @@ public class SwingThreading extends JFrame implements ActionListener {
 
     private void incrementLabel() {
         tickCounter++;
-        Runnable code = new Runnable() {
-            public void run() {
-                counter.setText(String.valueOf(tickCounter));
-            }
-        };
+        Runnable code = () -> counter.setText(String.valueOf(tickCounter));
 
         if (SwingUtilities.isEventDispatchThread()) {
             code.run();
@@ -78,24 +74,20 @@ public class SwingThreading extends JFrame implements ActionListener {
         }
     }
 
-    public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                edt = new SwingThreading();
-                edt.setVisible(true);
-                
-                new Thread(new Runnable() {
-                    public void run() {
-                        while (true) {
-                            try {
-                                Thread.sleep(300);
-                            } catch (InterruptedException e) {
-                            }
-                            edt.incrementLabel();
-                        }
+    static void main(String... args) {
+        SwingUtilities.invokeLater(() -> {
+            edt = new SwingThreading();
+            edt.setVisible(true);
+
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException _) {
                     }
-                }).start();
-            }
+                    edt.incrementLabel();
+                }
+            }).start();
         });
     }
 }

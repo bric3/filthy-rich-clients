@@ -31,8 +31,8 @@
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.EventQueue;
-import java.awt.Toolkit;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
 /**
  * @author Romain Guy
@@ -54,7 +54,7 @@ public class ApplicationFrame extends JFrame {
      * This code has been converted from Netbeans/Jdesktop code
      * that made it to Swing's GroupLayout code in Java 1.6.
      * It is not anymore generated.
-     *
+     * <p>
      * And now it's updated with later constructs like var
      */
     private void initComponents() {
@@ -118,14 +118,14 @@ public class ApplicationFrame extends JFrame {
         setBounds((screenSize.width - 553) / 2, (screenSize.height - 394) / 2, 553, 394);
     }
 
-    private void buttonDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadActionPerformed
+    private void buttonDownloadActionPerformed(ActionEvent evt) {// GEN-FIRST:event_buttonDownloadActionPerformed
         getGlassPane().setVisible(true);
         startDownloadThread();
     }
 
     private void startDownloadThread() {
         var downloader = new Thread(() -> {
-            int i = 0;
+            var i = 0;
             do {
                 try {
                     Thread.sleep(30 + (int) (Math.random() * MAX_DELAY));
@@ -144,7 +144,7 @@ public class ApplicationFrame extends JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String... args) {
+    static void main(String... args) {
         EventQueue.invokeLater(() -> new ApplicationFrame().setVisible(true));
     }
 }

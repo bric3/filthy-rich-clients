@@ -29,32 +29,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.io.IOException;
-import javax.swing.Box;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import java.util.Arrays;
 
 /**
  * @author Romain Guy <romain.guy@mac.com>
  */
 public class BoxBlurDemo extends JFrame {
-    private BlurTestPanel blurTestPanel;
-    private JSlider radiusSlider;
-    private JCheckBox fasterBlurCheck;
+    private final BlurTestPanel blurTestPanel;
+    private final JSlider radiusSlider;
+    private final JCheckBox fasterBlurCheck;
 
     public BoxBlurDemo() {
         super("Box Blur");
@@ -63,24 +52,16 @@ public class BoxBlurDemo extends JFrame {
         add(blurTestPanel);
 
         radiusSlider = new JSlider(1, 10, 1);
-        radiusSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                blurTestPanel.setRadius(radiusSlider.getValue());
-            }
-        });
-        
-        fasterBlurCheck = new JCheckBox("2-steps blur");
-        fasterBlurCheck.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                blurTestPanel.setFastBlur(fasterBlurCheck.isSelected());
-            }
-        });
+        radiusSlider.addChangeListener(e -> blurTestPanel.setRadius(radiusSlider.getValue()));
 
-        JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        fasterBlurCheck = new JCheckBox("2-steps blur");
+        fasterBlurCheck.addChangeListener(e -> blurTestPanel.setFastBlur(fasterBlurCheck.isSelected()));
+
+        var controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controls.add(new JLabel("Radius: 1px"));
         controls.add(radiusSlider);
         controls.add(new JLabel("10px"));
-        
+
         controls.add(Box.createHorizontalStrut(12));
         controls.add(fasterBlurCheck);
 
@@ -115,25 +96,25 @@ public class BoxBlurDemo extends JFrame {
         protected void paintComponent(Graphics g) {
             if (image == null) {
                 image = new BufferedImage(imageA.getWidth() + 2 * radius,
-                                          imageA.getHeight() + 2 * radius,
-                                          BufferedImage.TYPE_INT_ARGB);
-                Graphics2D g2 = image.createGraphics();
+                        imageA.getHeight() + 2 * radius,
+                        BufferedImage.TYPE_INT_ARGB);
+                var g2 = image.createGraphics();
                 g2.drawImage(imageA, radius, radius, null);
                 g2.dispose();
 
-                long start = System.nanoTime();
+                var start = System.nanoTime();
                 if (!fasterBlur) {
                     image = getBlurFilter(radius).filter(image, null);
                 } else {
                     image = getBlurFilter(radius, 0).filter(image, null);
                     image = getBlurFilter(0, radius).filter(image, null);
                 }
-                long delay = System.nanoTime() - start;
+                var delay = System.nanoTime() - start;
                 System.out.println("time = " + (delay / 1000.0f / 1000.0f) + "ms");
             }
 
-            int x = (getWidth() - image.getWidth()) / 2;
-            int y = (getHeight() - image.getHeight()) / 2;
+            var x = (getWidth() - image.getWidth()) / 2;
+            var y = (getHeight() - image.getHeight()) / 2;
             g.drawImage(image, x, y, null);
         }
 
@@ -149,45 +130,37 @@ public class BoxBlurDemo extends JFrame {
             repaint();
         }
     }
-    
-    public static ConvolveOp getBlurFilter(int horizontalRadius,
-            int verticalRadius) {
-        int width = horizontalRadius * 2 + 1;
-        int height = verticalRadius * 2 + 1;
 
-        float weight = 1.0f / (width * height);
-        float[] data = new float[width * height];
-        
-        for (int i = 0; i < data.length; i++) {
-            data[i] = weight;
-        }
-        
-        Kernel kernel = new Kernel(width, height, data);
+    public static ConvolveOp getBlurFilter(int horizontalRadius,
+                                           int verticalRadius) {
+        var width = horizontalRadius * 2 + 1;
+        var height = verticalRadius * 2 + 1;
+
+        var weight = 1.0f / (width * height);
+        var data = new float[width * height];
+
+        Arrays.fill(data, weight);
+
+        var kernel = new Kernel(width, height, data);
         return new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
     }
-    
+
     public static ConvolveOp getBlurFilter(int radius) {
         if (radius < 1) {
             throw new IllegalArgumentException("Radius must be >= 1");
         }
-        
-        int size = radius * 2 + 1;
-        float weight = 1.0f / (size * size);
-        float[] data = new float[size * size];
-        
-        for (int i = 0; i < data.length; i++) {
-            data[i] = weight;
-        }
-        
-        Kernel kernel = new Kernel(size, size, data);
+
+        var size = radius * 2 + 1;
+        var weight = 1.0f / (size * size);
+        var data = new float[size * size];
+
+        Arrays.fill(data, weight);
+
+        var kernel = new Kernel(size, size, data);
         return new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
     }
 
-    public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new BoxBlurDemo().setVisible(true);
-            }
-        });
+    static void main(String... args) {
+        SwingUtilities.invokeLater(() -> new BoxBlurDemo().setVisible(true));
     }
 }

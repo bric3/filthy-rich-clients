@@ -29,29 +29,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 /**
  *
  * @author Romain GUy
  */
 public class RadialGradientApp extends JFrame {
-    
-    /** Creates a new instance of RadialGradientApp */
+
+    /**
+     * Creates a new instance of RadialGradientApp
+     */
     public RadialGradientApp() {
         super("Radial Gradient");
-        
-        JPanel panel = new JPanel();
+
+        var panel = new JPanel();
         panel.add(new SphereComponent());
         add(panel);
-        
+
         pack();
         setLocationRelativeTo(null);
     }
-    
-    public static void main(String... args) {
+
+    static void main(String... args) {
         SwingUtilities.invokeLater(() -> new RadialGradientApp().setVisible(true));
     }
 }

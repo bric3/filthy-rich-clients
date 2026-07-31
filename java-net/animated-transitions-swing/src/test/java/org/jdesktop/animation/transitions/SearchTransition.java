@@ -1,33 +1,18 @@
 package org.jdesktop.animation.transitions;
 
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.JComponent;
-import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.WindowConstants;
-
 import org.jdesktop.animation.transitions.effects.CompositeEffect;
 import org.jdesktop.animation.transitions.effects.FadeIn;
-import org.jdesktop.animation.transitions.effects.Move;
 import org.jdesktop.animation.transitions.effects.MoveIn;
 import org.jdesktop.core.animation.timing.Animator;
 import org.jdesktop.core.animation.timing.TimingSource;
 import org.jdesktop.core.animation.timing.interpolators.AccelerationInterpolator;
 import org.jdesktop.swing.animation.timing.sources.SwingTimerTimingSource;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
 
 /*
  * SearchTransition.java Created on May 3, 2007, 3:05 PM Copyright (c) 2007, Sun Microsystems, Inc All rights reserved.
@@ -54,22 +39,22 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
     //
     // GUI components used in the application screens
     //
-    JLabel instructions = new JLabel("Search and ye shall find...");
-    JLabel searchLabel = new JLabel("Search:");
-    JTextField searchField = new JTextField("");
-    JEditorPane results = new JEditorPane("text/html", "<html><body><b>Dung Beetles</b>: An Ode<br/>"
-                                                       + "My Life with <b>Dung Beetles</b><br/>"
-                                                       + "<b>Beetle</b> Bailey Gets Latrine Duty<br/>"
-                                                       + "Evolution's Oddities<br/>"
-                                                       + "Society's Parasites<br/>"
-                                                       + "You <b>Dung</b> Me Wrong: A Country Music History<br/>"
-                                                       + "Ding, <b>Dung</b>, The Witch is Dead<br/>"
-                                                       + "'To be or not to <b>beetle</b>'<br/>"
-                                                       + "Gross Insects of the World<br/>"
-                                                       + "Nature's Sanitation Engineers<br/>"
-                                                       + "Why are they here?<br/>"
-                                                       + "</body></html>");
-    JScrollPane scroller = new JScrollPane(results);
+    final JLabel instructions = new JLabel("Search and ye shall find...");
+    final JLabel searchLabel = new JLabel("Search:");
+    final JTextField searchField = new JTextField("");
+    final JEditorPane results = new JEditorPane("text/html", "<html><body><b>Dung Beetles</b>: An Ode<br/>"
+                                                             + "My Life with <b>Dung Beetles</b><br/>"
+                                                             + "<b>Beetle</b> Bailey Gets Latrine Duty<br/>"
+                                                             + "Evolution's Oddities<br/>"
+                                                             + "Society's Parasites<br/>"
+                                                             + "You <b>Dung</b> Me Wrong: A Country Music History<br/>"
+                                                             + "Ding, <b>Dung</b>, The Witch is Dead<br/>"
+                                                             + "'To be or not to <b>beetle</b>'<br/>"
+                                                             + "Gross Insects of the World<br/>"
+                                                             + "Nature's Sanitation Engineers<br/>"
+                                                             + "Why are they here?<br/>"
+                                                             + "</body></html>");
+    final JScrollPane scroller = new JScrollPane(results);
     private static final int LABEL_W = 50;
     private static final int LABEL_H = 20;
     private static final int FIELD_W = 100;
@@ -90,7 +75,9 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
     Paint bgGradient = null;
     int prevW, prevH;
 
-    /** Creates a new instance of SearchTransition */
+    /**
+     * Creates a new instance of SearchTransition
+     */
     public SearchTransition() {
         results.setEditable(false);
 
@@ -100,9 +87,9 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
             Animator.setDefaultTimingSource(ts);
         }
         // Setup the animation parameters
-        Animator animator = new Animator.Builder().setInterpolator(new AccelerationInterpolator(0.2f, 0.4f))
-                                                  .setDuration(500, TimeUnit.MILLISECONDS)
-                                                  .build();
+        var animator = new Animator.Builder().setInterpolator(new AccelerationInterpolator(0.2f, 0.4f))
+                .setDuration(500, TimeUnit.MILLISECONDS)
+                .build();
 
         // optional EffectsManager
         effectsManager = new EffectsManager();
@@ -113,8 +100,8 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
         // "animator" as the animator that drives the transition
         // "effectManager" the effectManager used for this animation (optional)
         transition = new ScreenTransition.Builder(this, this).setAnimator(animator)
-                                                             .setEffectsManager(effectsManager)
-                                                             .build();
+                .setEffectsManager(effectsManager)
+                .build();
 
         // Set this as the listener for entries in the search field
         searchField.addActionListener(this);
@@ -138,12 +125,12 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
      * Arrange the GUI for the initial search screen.
      */
     private void setupSearchScreen() {
-        int instructionsX = (getWidth() - INSTRUCTIONS_W) / 2;
-        int instructionsY = getHeight() / 4;
-        int searchX = (getWidth() - LABEL_W - FIELD_W - 10) / 2;
-        int searchY = instructionsY + INSTRUCTIONS_H + 20;
-        int fieldX = searchX + LABEL_W + 10;
-        int fieldY = searchY;
+        var instructionsX = (getWidth() - INSTRUCTIONS_W) / 2;
+        var instructionsY = getHeight() / 4;
+        var searchX = (getWidth() - LABEL_W - FIELD_W - 10) / 2;
+        var searchY = instructionsY + INSTRUCTIONS_H + 20;
+        var fieldX = searchX + LABEL_W + 10;
+        var fieldY = searchY;
         add(instructions);
         add(searchLabel);
         add(searchField);
@@ -156,12 +143,12 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
      * Arrange the GUI for the results screen
      */
     private void setupResultsScreen() {
-        int searchX = getWidth() - LABEL_W - FIELD_W - RESULTS_X - 10;
-        int searchY = 10;
-        int fieldX = searchX + LABEL_W + 10;
-        int fieldY = searchY;
-        int resultsX = RESULTS_X;
-        int resultsY = searchY + LABEL_H + 20;
+        var searchX = getWidth() - LABEL_W - FIELD_W - RESULTS_X - 10;
+        var searchY = 10;
+        var fieldX = searchX + LABEL_W + 10;
+        var fieldY = searchY;
+        var resultsX = RESULTS_X;
+        var resultsY = searchY + LABEL_H + 20;
         add(searchLabel);
         add(searchField);
         add(scroller);
@@ -178,8 +165,8 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
         bgGradient = new GradientPaint(0, 0, Color.LIGHT_GRAY.brighter(), 0, getHeight(), Color.DARK_GRAY.brighter());
 
         // Init resultsEffect with current component size info
-        MoveIn mover = new MoveIn(RESULTS_X, getHeight());
-        FadeIn fader = new FadeIn();
+        var mover = new MoveIn(RESULTS_X, getHeight());
+        var fader = new FadeIn();
         moverFader = new CompositeEffect(mover);
         moverFader.addEffect(fader);
         effectsManager.setEffect(scroller, moverFader, EffectsManager.TransitionType.APPEARING);
@@ -229,29 +216,24 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
     }
 
     private static void createAndShowGUI() {
-        JFrame f = new JFrame();
+        var f = new JFrame();
         f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         f.setSize(400, 300);
-        SearchTransition component = new SearchTransition();
+        var component = new SearchTransition();
         f.add(component);
         f.setVisible(true);
     }
 
     /**
-     * @param args
-     *            the command line arguments
+     * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException
-                | IllegalAccessException ex) {
+                 | IllegalAccessException ex) {
             ex.printStackTrace();
         }
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
+        SwingUtilities.invokeLater(SearchTransition::createAndShowGUI);
     }
 }

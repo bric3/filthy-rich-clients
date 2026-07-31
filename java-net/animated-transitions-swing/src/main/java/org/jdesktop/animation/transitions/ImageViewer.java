@@ -33,12 +33,8 @@
 
 package org.jdesktop.animation.transitions;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-
-import javax.swing.JComponent;
-import javax.swing.JFrame;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * This class is a debugging too. If you create an ImageViewer with an image, it will pop up a separate window
@@ -48,7 +44,7 @@ import javax.swing.JFrame;
  */
 class ImageViewer extends JFrame {
 
-    private Image image;
+    private final Image image;
 
     /**
      * Creates a simple JFrame that displays the given image in it
@@ -56,7 +52,7 @@ class ImageViewer extends JFrame {
     public ImageViewer(Image image) {
         this.image = image;
         this.setSize(image.getWidth(null) + 10, image.getHeight(null) + 30);
-        ImageViewerComponent component = new ImageViewerComponent();
+        var component = new ImageViewerComponent();
         component.setPreferredSize(new Dimension(image.getWidth(null), image.getHeight(null)));
         add(component);
         pack();

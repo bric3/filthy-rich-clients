@@ -1,17 +1,12 @@
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.Animator.RepeatBehavior;
-import org.jdesktop.animation.timing.interpolation.Interpolator;
-import org.jdesktop.animation.timing.interpolation.KeyFrames;
-import org.jdesktop.animation.timing.interpolation.KeyTimes;
-import org.jdesktop.animation.timing.interpolation.KeyValues;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.jdesktop.animation.timing.interpolation.SplineInterpolator;
+import org.jdesktop.animation.timing.interpolation.*;
 import org.jdesktop.animation.timing.triggers.ActionTrigger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 /*
  * MultiStepRace.java
  *
@@ -60,46 +55,46 @@ import org.jdesktop.animation.timing.triggers.ActionTrigger;
  */
 public class MultiStepRace {
     
-    protected Animator animator;
-    private SoundEffects soundEffects;
+    protected final Animator animator;
+    private final SoundEffects soundEffects;
     public static final int RACE_TIME = 10000;
     
     
     /** Creates a new instance of BasicRace */
     public MultiStepRace(String appName) {
-        RaceGUI basicGUI = new RaceGUI(appName);
+        var basicGUI = new RaceGUI(appName);
         
         // We're going to need a more involved PropertyRange object
         // that has all curves of the track in it, as well as 
         // non-linear movement around the curves
-        Point values[] = {
+        Point[] values = {
             TrackView.START_POS,
             TrackView.FIRST_TURN_START, TrackView.FIRST_TURN_END,
             TrackView.SECOND_TURN_START, TrackView.SECOND_TURN_END,
             TrackView.THIRD_TURN_START, TrackView.THIRD_TURN_END,
             TrackView.FOURTH_TURN_START, 
             TrackView.START_POS};
-        KeyValues keyValues = KeyValues.create(values);
+        var trackViewPoints = KeyValues.create(values);
         // Calculate the keyTimes based on the distances that must be
         // traveled on each leg of the journey
         double totalDistance = 0;
-        double segmentDistance[] = new double[values.length];
-        for (int i = 0; i < (values.length - 1); ++i) {
+        var segmentDistance = new double[values.length];
+        for (var i = 0; i < (values.length - 1); ++i) {
             segmentDistance[i] = values[i].distance(values[i + 1]);
             totalDistance += segmentDistance[i];
         }
         segmentDistance[(values.length-1)] = 
                 values[(values.length - 1)].distance(values[0]);
         totalDistance += segmentDistance[(values.length-1)];
-        float times[] = new float[values.length];
-        float elapsedTime = 0.0f;
+        var times = new float[values.length];
+        var elapsedTime = 0.0f;
         times[0] = 0.0f;
         times[values.length - 1] = 1.0f;
-        for (int i = 0; i < (values.length - 2); ++i) {
+        for (var i = 0; i < (values.length - 2); ++i) {
             times[i + 1] = elapsedTime + (float)(segmentDistance[i] / totalDistance);
             elapsedTime = times[i + 1];
         }
-        KeyTimes keyTimes = new KeyTimes(times);
+        var keyTimes = new KeyTimes(times);
 
         // For realistic movement, we want a big acceleration
         // on the straightaways
@@ -107,22 +102,22 @@ public class MultiStepRace {
         Interpolator straightawaySpline = new SplineInterpolator(0.50f, 0.20f, .50f, .80f);
         Interpolator curveSpline = new SplineInterpolator(0.50f, 0.20f, .50f, .80f);
         Interpolator finalSpline = new SplineInterpolator(0.50f, 0.00f, .50f, 1.00f);
-        KeyFrames keyFrames = new KeyFrames(keyValues, keyTimes,
+        var keyFrames = new KeyFrames(trackViewPoints, keyTimes,
                 initialSpline, curveSpline, straightawaySpline, curveSpline,
                 straightawaySpline, curveSpline,
                 straightawaySpline, finalSpline);
         // This PropertySetter enables the animation for the car movement all 
         // the way around the track
-        PropertySetter modifier = new PropertySetter(basicGUI.getTrack(), 
+        var modifier = new PropertySetter(basicGUI.getTrack(),
                 "carPosition", keyFrames);
         animator = new Animator(RACE_TIME, Animator.INFINITE,
                 RepeatBehavior.LOOP, modifier);
         
         // Now create similar keyframes for rotation of car
-        keyValues = KeyValues.create(360, 315, 270, 225, 180, 135, 90, 45, 0);
+        var carKeyFrames = KeyValues.create(360, 315, 270, 225, 180, 135, 90, 45, 0);
         Interpolator straightawayTurnSpline = new SplineInterpolator(1.0f, 0.0f, 1.0f, 0.0f);
         Interpolator curveTurnSpline = new SplineInterpolator(0.0f, 0.5f, 0.5f, 1.0f);
-        keyFrames = new KeyFrames(keyValues, keyTimes, 
+        keyFrames = new KeyFrames(carKeyFrames, keyTimes,
                 straightawayTurnSpline, curveTurnSpline, 
                 straightawayTurnSpline, curveTurnSpline, 
                 straightawayTurnSpline, curveTurnSpline, 
@@ -137,17 +132,17 @@ public class MultiStepRace {
         
         // Instead of manually tracking the events, have the framework do
         // the work by setting up a trigger
-        JButton goButton = basicGUI.getControlPanel().getGoButton();
-        JButton stopButton = basicGUI.getControlPanel().getStopButton();
-        ActionTrigger trigger = ActionTrigger.addTrigger(goButton, animator);
+        var goButton = basicGUI.getControlPanel().getGoButton();
+        var stopButton = basicGUI.getControlPanel().getStopButton();
+        var trigger = ActionTrigger.addTrigger(goButton, animator);
         stopButton.addActionListener(new Stopper(animator));
     }
 
     /**
      * Handle clicks on the Stop button to stop the race
      */
-    private class Stopper implements ActionListener {
-        Animator timer;
+    private static class Stopper implements ActionListener {
+        final Animator timer;
         Stopper(Animator timer) {
             this.timer = timer;
         }
@@ -156,11 +151,9 @@ public class MultiStepRace {
         }
     }
 
-    public static void main(String args[]) {
-        Runnable doCreateAndShowGUI = new Runnable() {
-            public void run() {
-                MultiStepRace race = new MultiStepRace("Multi Step Race");
-            }
+    static void main(String[] args) {
+        Runnable doCreateAndShowGUI = () -> {
+            var race = new MultiStepRace("Multi Step Race");
         };
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }

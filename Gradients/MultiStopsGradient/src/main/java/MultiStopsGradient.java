@@ -29,28 +29,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 /**
  *
  * @author Romain Guy
  */
 public class MultiStopsGradient extends JFrame {
-    
-    /** Creates a new instance of MultiStopsGradient */
+
+    /**
+     * Creates a new instance of MultiStopsGradient
+     */
     public MultiStopsGradient() {
         super("Multi-stops Gradient");
-        
+
         add(new GradientLabel("Gradients"));
-        
+
         setSize(320, 43);
         setLocationRelativeTo(null);
     }
-    
-    public static void main(String... args) {
+
+    static void main(String... args) {
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (UnsupportedLookAndFeelException
@@ -60,6 +59,6 @@ public class MultiStopsGradient extends JFrame {
             ex.printStackTrace();
         }
 
-      SwingUtilities.invokeLater(() -> new MultiStopsGradient().setVisible(true));
+        SwingUtilities.invokeLater(() -> new MultiStopsGradient().setVisible(true));
     }
 }

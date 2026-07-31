@@ -29,21 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  * See {@link org.jdesktop.swingx.image.FastBlurFilter}.
@@ -51,9 +40,9 @@ import javax.swing.event.ChangeListener;
  * @author Romain Guy <romain.guy@mac.com>
  */
 public class FastBlurDemo extends JFrame {
-    private BlurTestPanel blurTestPanel;
-    private JSlider radiusSlider;
-    private JSlider iterationsSlider;
+    private final BlurTestPanel blurTestPanel;
+    private final JSlider radiusSlider;
+    private final JSlider iterationsSlider;
 
     public FastBlurDemo() {
         super("Fast Blur/Stack Blur");
@@ -62,20 +51,12 @@ public class FastBlurDemo extends JFrame {
         add(blurTestPanel);
 
         radiusSlider = new JSlider(0, 100, 0);
-        radiusSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                blurTestPanel.setRadius(radiusSlider.getValue());
-            }
-        });
+        radiusSlider.addChangeListener(e -> blurTestPanel.setRadius(radiusSlider.getValue()));
 
         iterationsSlider = new JSlider(1, 15, 1);
-        iterationsSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                blurTestPanel.setIterations(iterationsSlider.getValue());
-            }
-        });
+        iterationsSlider.addChangeListener(e -> blurTestPanel.setIterations(iterationsSlider.getValue()));
 
-        JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        var controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controls.add(new JLabel("Radius: 0px"));
         controls.add(radiusSlider);
         controls.add(new JLabel("100px"));
@@ -117,35 +98,35 @@ public class FastBlurDemo extends JFrame {
         protected void paintComponent(Graphics g) {
             if (image == null) {
                 image = new BufferedImage(imageA.getWidth(),
-                                          imageA.getHeight(),
-                                          BufferedImage.TYPE_INT_ARGB);
+                        imageA.getHeight(),
+                        BufferedImage.TYPE_INT_ARGB);
                 repaint = true;
             }
-            
+
             if (repaint) {
-                Graphics2D g2 = image.createGraphics();
+                var g2 = image.createGraphics();
                 g2.setComposite(AlphaComposite.Clear);
                 g2.fillRect(0, 0, image.getWidth(), image.getHeight());
-                
+
                 g2.setComposite(AlphaComposite.Src);
-                
+
                 if (radius > 0) {
-                    long start = System.nanoTime();
-                    
+                    var start = System.nanoTime();
+
                     g2.drawImage(imageA, blurFilter, 0, 0);
-                    
-                    long delay = System.nanoTime() - start;
+
+                    var delay = System.nanoTime() - start;
                     System.out.println("time = " + (delay / 1000.0f / 1000.0f) + "ms");
                 } else {
                     g2.drawImage(imageA, null, 0, 0);
                 }
                 g2.dispose();
-                
+
                 repaint = false;
             }
 
-            int x = (getWidth() - image.getWidth()) / 2;
-            int y = (getHeight() - image.getHeight()) / 2;
+            var x = (getWidth() - image.getWidth()) / 2;
+            var y = (getHeight() - image.getHeight()) / 2;
             g.drawImage(image, x, y, null);
         }
 
@@ -164,11 +145,7 @@ public class FastBlurDemo extends JFrame {
         }
     }
 
-    public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new FastBlurDemo().setVisible(true);
-            }
-        });
+    static void main(String... args) {
+        SwingUtilities.invokeLater(() -> new FastBlurDemo().setVisible(true));
     }
 }

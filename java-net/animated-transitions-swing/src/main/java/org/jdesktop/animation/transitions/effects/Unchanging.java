@@ -39,7 +39,7 @@ import org.jdesktop.animation.transitions.Effect;
 /**
  * <code>Unchanging</code> is a simple effect that avoids animating any properties of the component during the
  * animation, which effectively causes the component to be displayed in the same way throughout the transition.
- * 
+ *
  * @author Chet Haase
  */
 public class Unchanging extends Effect {

@@ -29,29 +29,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
-import javax.swing.*;
 
 /**
  * @author Romain Guy
  */
 public class SwingThreadingWait extends JFrame implements ActionListener {
-    private JLabel counter;
+    private final JLabel counter;
     private long start = 0;
 
     public SwingThreadingWait() {
         super("Invoke & Wait");
 
-        JButton freezer = new JButton("Open File");
+        var freezer = new JButton("Open File");
         freezer.addActionListener(this);
 
         counter = new JLabel("Time elapsed: 0s");
 
         add(freezer, BorderLayout.CENTER);
-        add(counter,  BorderLayout.SOUTH);
+        add(counter, BorderLayout.SOUTH);
 
         pack();
         setLocationRelativeTo(null);
@@ -61,50 +61,37 @@ public class SwingThreadingWait extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         start = System.currentTimeMillis();
-        new Thread(new Runnable() {
-            public void run() {
-                while (true) {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException _) {
+                }
+
+                final var elapsed = (int) ((System.currentTimeMillis() - start) / 1000);
+                SwingUtilities.invokeLater(() -> counter.setText("Time elapsed: " + elapsed + "s"));
+
+                if (elapsed == 4) {
                     try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                    }
-
-                    final int elapsed = (int) ((System.currentTimeMillis() - start) / 1000);
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            counter.setText("Time elapsed: " + elapsed + "s");
+                        final var answer = new int[1];
+                        SwingUtilities.invokeAndWait((Runnable) () -> answer[0] = JOptionPane.showConfirmDialog(SwingThreadingWait.this,
+                                "Abort long operation?",
+                                "Abort?",
+                                JOptionPane.YES_NO_OPTION));
+                        if (answer[0] == JOptionPane.YES_OPTION) {
+                            return;
                         }
-                    });
-
-                    if (elapsed == 4) {
-                        try {
-                            final int[] answer = new int[1];
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                public void run() {
-                                    answer[0] = JOptionPane.showConfirmDialog(SwingThreadingWait.this,
-                                                                              "Abort long operation?",
-                                                                              "Abort?",
-                                                                              JOptionPane.YES_NO_OPTION);
-                                }
-                            });
-                            if (answer[0] == JOptionPane.YES_OPTION) {
-                                return;
-                            }
-                        } catch (InterruptedException e1) {
-                        } catch (InvocationTargetException e1) {
-                        }
+                    } catch (InterruptedException | InvocationTargetException _) {
                     }
                 }
             }
         }).start();
     }
 
-    public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                SwingThreadingWait edt = new SwingThreadingWait();
-                edt.setVisible(true);
-            }
+    static void main(String... args) {
+        SwingUtilities.invokeLater(() -> {
+            var edt = new SwingThreadingWait();
+            edt.setVisible(true);
         });
     }
 }

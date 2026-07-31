@@ -1,7 +1,8 @@
 package org.progx.artemis.image;
 
-import java.awt.image.BufferedImage;
 import org.progx.artemis.graphics.GraphicsUtilities;
+
+import java.awt.image.BufferedImage;
 
 public class GaussianBlurFilter extends AbstractFilter {
     private final int radius;
@@ -41,23 +42,23 @@ public class GaussianBlurFilter extends AbstractFilter {
      */
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
-        int width = src.getWidth();
-        int height = src.getHeight();
+        var width = src.getWidth();
+        var height = src.getHeight();
 
         if (dst == null) {
             dst = createCompatibleDestImage(src, null);
         }
 
-        int[] srcPixels = new int[width * height];
-        int[] dstPixels = new int[width * height];
+        var srcPixels = new int[width * height];
+        var dstPixels = new int[width * height];
 
-        float[] kernel = createGaussianKernel(radius);
+        var kernel = createGaussianKernel(radius);
 
         GraphicsUtilities.getPixels(src, 0, 0, width, height, srcPixels);
         // horizontal pass
         blur(srcPixels, dstPixels, width, height, kernel, radius);
         // vertical pass
-        //noinspection SuspiciousNameCombination
+        // noinspection SuspiciousNameCombination
         blur(dstPixels, srcPixels, height, width, kernel, radius);
         // the result is now stored in srcPixels due to the 2nd pass
         GraphicsUtilities.setPixels(dst, 0, 0, width, height, srcPixels);
@@ -75,10 +76,10 @@ public class GaussianBlurFilter extends AbstractFilter {
      *
      * @param srcPixels the source pixels
      * @param dstPixels the destination pixels
-     * @param width the width of the source picture
-     * @param height the height of the source picture
-     * @param kernel the kernel of the blur effect
-     * @param radius the radius of the blur effect
+     * @param width     the width of the source picture
+     * @param height    the height of the source picture
+     * @param kernel    the kernel of the blur effect
+     * @param radius    the radius of the blur effect
      */
     static void blur(int[] srcPixels, int[] dstPixels,
                      int width, int height,
@@ -93,26 +94,26 @@ public class GaussianBlurFilter extends AbstractFilter {
         int cg;
         int cb;
 
-        for (int y = 0; y < height; y++) {
-            int index = y;
-            int offset = y * width;
+        for (var y = 0; y < height; y++) {
+            var index = y;
+            var offset = y * width;
 
-            for (int x = 0; x < width; x++) {
+            for (var x = 0; x < width; x++) {
                 a = r = g = b = 0.0f;
 
-                for (int i = -radius; i <= radius; i++) {
-                    int subOffset = x + i;
+                for (var i = -radius; i <= radius; i++) {
+                    var subOffset = x + i;
                     if (subOffset < 0 || subOffset >= width) {
                         subOffset = (x + width) % width;
                     }
 
-                    int pixel = srcPixels[offset + subOffset];
-                    float blurFactor = kernel[radius + i];
+                    var pixel = srcPixels[offset + subOffset];
+                    var blurFactor = kernel[radius + i];
 
                     a += blurFactor * ((pixel >> 24) & 0xFF);
                     r += blurFactor * ((pixel >> 16) & 0xFF);
-                    g += blurFactor * ((pixel >>  8) & 0xFF);
-                    b += blurFactor * ((pixel      ) & 0xFF);
+                    g += blurFactor * ((pixel >> 8) & 0xFF);
+                    b += blurFactor * ((pixel) & 0xFF);
                 }
 
                 ca = (int) (a + 0.5f);
@@ -120,10 +121,10 @@ public class GaussianBlurFilter extends AbstractFilter {
                 cg = (int) (g + 0.5f);
                 cb = (int) (b + 0.5f);
 
-                dstPixels[index] = ((ca > 255 ? 255 : ca) << 24) |
-                                   ((cr > 255 ? 255 : cr) << 16) |
-                                   ((cg > 255 ? 255 : cg) <<  8) |
-                                    (cb > 255 ? 255 : cb);
+                dstPixels[index] = ((Math.min(ca, 255)) << 24) |
+                                   ((Math.min(cr, 255)) << 16) |
+                                   ((Math.min(cg, 255)) << 8) |
+                                   (Math.min(cb, 255));
                 index += height;
             }
         }
@@ -134,21 +135,21 @@ public class GaussianBlurFilter extends AbstractFilter {
             throw new IllegalArgumentException("Radius must be >= 1");
         }
 
-        float[] data = new float[radius * 2 + 1];
+        var data = new float[radius * 2 + 1];
 
-        float sigma = radius / 3.0f;
-        float twoSigmaSquare = 2.0f * sigma * sigma;
-        float sigmaRoot = (float) Math.sqrt(twoSigmaSquare * Math.PI);
-        float total = 0.0f;
+        var sigma = radius / 3.0f;
+        var twoSigmaSquare = 2.0f * sigma * sigma;
+        var sigmaRoot = (float) Math.sqrt(twoSigmaSquare * Math.PI);
+        var total = 0.0f;
 
-        for (int i = -radius; i <= radius; i++) {
+        for (var i = -radius; i <= radius; i++) {
             float distance = i * i;
-            int index = i + radius;
+            var index = i + radius;
             data[index] = (float) Math.exp(-distance / twoSigmaSquare) / sigmaRoot;
             total += data[index];
         }
 
-        for (int i = 0; i < data.length; i++) {
+        for (var i = 0; i < data.length; i++) {
             data[i] /= total;
         }
 

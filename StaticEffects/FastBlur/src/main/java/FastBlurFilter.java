@@ -83,15 +83,15 @@ public class FastBlurFilter extends AbstractFilter {
      */
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
-        int width = src.getWidth();
-        int height = src.getHeight();
+        var width = src.getWidth();
+        var height = src.getHeight();
 
         if (dst == null) {
             dst = createCompatibleDestImage(src, null);
         }
 
-        int[] srcPixels = new int[width * height];
-        int[] dstPixels = new int[width * height];
+        var srcPixels = new int[width * height];
+        var dstPixels = new int[width * height];
 
         GraphicsUtilities.getPixels(src, 0, 0, width, height, srcPixels);
         // horizontal pass
@@ -112,88 +112,88 @@ public class FastBlurFilter extends AbstractFilter {
      *
      * @param srcPixels the source pixels
      * @param dstPixels the destination pixels
-     * @param width the width of the source picture
-     * @param height the height of the source picture
-     * @param radius the radius of the blur effect
+     * @param width     the width of the source picture
+     * @param height    the height of the source picture
+     * @param radius    the radius of the blur effect
      */
     static void blur(int[] srcPixels, int[] dstPixels,
                      int width, int height, int radius) {
-        final int windowSize = radius * 2 + 1;
-        final int radiusPlusOne = radius + 1;
+        final var windowSize = radius * 2 + 1;
+        final var radiusPlusOne = radius + 1;
 
         int sumAlpha;
         int sumRed;
         int sumGreen;
         int sumBlue;
 
-        int srcIndex = 0;
+        var srcIndex = 0;
         int dstIndex;
         int pixel;
 
-        int[] sumLookupTable = new int[256 * windowSize];
-        for (int i = 0; i < sumLookupTable.length; i++) {
+        var sumLookupTable = new int[256 * windowSize];
+        for (var i = 0; i < sumLookupTable.length; i++) {
             sumLookupTable[i] = i / windowSize;
         }
 
-        int[] indexLookupTable = new int[radiusPlusOne];
+        var indexLookupTable = new int[radiusPlusOne];
         if (radius < width) {
-            for (int i = 0; i < indexLookupTable.length; i++) {
+            for (var i = 0; i < indexLookupTable.length; i++) {
                 indexLookupTable[i] = i;
             }
         } else {
-            for (int i = 0; i < width; i++) {
+            for (var i = 0; i < width; i++) {
                 indexLookupTable[i] = i;
             }
-            for (int i = width; i < indexLookupTable.length; i++) {
+            for (var i = width; i < indexLookupTable.length; i++) {
                 indexLookupTable[i] = width - 1;
             }
         }
 
-        for (int y = 0; y < height; y++) {
+        for (var y = 0; y < height; y++) {
             sumAlpha = sumRed = sumGreen = sumBlue = 0;
             dstIndex = y;
 
             pixel = srcPixels[srcIndex];
             sumAlpha += radiusPlusOne * ((pixel >> 24) & 0xFF);
-            sumRed   += radiusPlusOne * ((pixel >> 16) & 0xFF);
-            sumGreen += radiusPlusOne * ((pixel >>  8) & 0xFF);
-            sumBlue  += radiusPlusOne * ( pixel        & 0xFF);
+            sumRed += radiusPlusOne * ((pixel >> 16) & 0xFF);
+            sumGreen += radiusPlusOne * ((pixel >> 8) & 0xFF);
+            sumBlue += radiusPlusOne * (pixel & 0xFF);
 
-            for (int i = 1; i <= radius; i++) {
+            for (var i = 1; i <= radius; i++) {
                 pixel = srcPixels[srcIndex + indexLookupTable[i]];
                 sumAlpha += (pixel >> 24) & 0xFF;
-                sumRed   += (pixel >> 16) & 0xFF;
-                sumGreen += (pixel >>  8) & 0xFF;
-                sumBlue  +=  pixel        & 0xFF;
+                sumRed += (pixel >> 16) & 0xFF;
+                sumGreen += (pixel >> 8) & 0xFF;
+                sumBlue += pixel & 0xFF;
             }
 
-            for  (int x = 0; x < width; x++) {
+            for (var x = 0; x < width; x++) {
                 dstPixels[dstIndex] = sumLookupTable[sumAlpha] << 24 |
-                                      sumLookupTable[sumRed]   << 16 |
-                                      sumLookupTable[sumGreen] <<  8 |
+                                      sumLookupTable[sumRed] << 16 |
+                                      sumLookupTable[sumGreen] << 8 |
                                       sumLookupTable[sumBlue];
                 dstIndex += height;
 
-                int nextPixelIndex = x + radiusPlusOne;
+                var nextPixelIndex = x + radiusPlusOne;
                 if (nextPixelIndex >= width) {
                     nextPixelIndex = width - 1;
                 }
 
-                int previousPixelIndex = x - radius;
+                var previousPixelIndex = x - radius;
                 if (previousPixelIndex < 0) {
                     previousPixelIndex = 0;
                 }
 
-                int nextPixel = srcPixels[srcIndex + nextPixelIndex];
-                int previousPixel = srcPixels[srcIndex + previousPixelIndex];
+                var nextPixel = srcPixels[srcIndex + nextPixelIndex];
+                var previousPixel = srcPixels[srcIndex + previousPixelIndex];
 
-                sumAlpha += (nextPixel     >> 24) & 0xFF;
+                sumAlpha += (nextPixel >> 24) & 0xFF;
                 sumAlpha -= (previousPixel >> 24) & 0xFF;
 
-                sumRed += (nextPixel     >> 16) & 0xFF;
+                sumRed += (nextPixel >> 16) & 0xFF;
                 sumRed -= (previousPixel >> 16) & 0xFF;
 
-                sumGreen += (nextPixel     >> 8) & 0xFF;
+                sumGreen += (nextPixel >> 8) & 0xFF;
                 sumGreen -= (previousPixel >> 8) & 0xFF;
 
                 sumBlue += nextPixel & 0xFF;

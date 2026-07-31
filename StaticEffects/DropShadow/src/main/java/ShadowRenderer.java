@@ -7,7 +7,7 @@
  * Licensed under LGPL.
  */
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -65,7 +65,7 @@ import java.beans.PropertyChangeSupport;
  * you can easily repaint the component when needed.</p>
  * <h2>Threading Issues</h2>
  * <p><code>ShadowRenderer</code> is not guaranteed to be thread-safe.</p>
- * 
+ *
  * @author Romain Guy <romain.guy@mac.com>
  * @author Sebastien Petrucci
  */
@@ -76,14 +76,14 @@ public class ShadowRenderer {
      * value are provided as <code>Integer</code> instances.</p>
      */
     public static final String SIZE_CHANGED_PROPERTY = "shadow_size";
-    
+
     /**
      * <p>Identifies a change to the opacity used to render the shadow.</p>
      * <p>When the property change event is fired, the old value and the new
      * value are provided as <code>Float</code> instances.</p>
      */
     public static final String OPACITY_CHANGED_PROPERTY = "shadow_opacity";
-    
+
     /**
      * <p>Identifies a change to the color used to render the shadow.</p>
      */
@@ -91,15 +91,15 @@ public class ShadowRenderer {
 
     // size of the shadow in pixels (defines the fuzziness)
     private int size = 5;
-    
+
     // opacity of the shadow
     private float opacity = 0.5f;
-    
+
     // color of the shadow
     private Color color = Color.BLACK;
-    
+
     // notifies listeners of properties changes
-    private PropertyChangeSupport changeSupport;
+    private final PropertyChangeSupport changeSupport;
 
     /**
      * <p>Creates a default good looking shadow generator.
@@ -114,10 +114,10 @@ public class ShadowRenderer {
     public ShadowRenderer() {
         this(5, 0.5f, Color.BLACK);
     }
-    
+
     /**
      * <p>A shadow renderer needs three properties to generate shadows.
-     * These properties are:</p> 
+     * These properties are:</p>
      * <ul>
      *   <li><i>size</i>: The size, in pixels, of the shadow. This property also
      *   defines the fuzzyness.</li>
@@ -125,12 +125,13 @@ public class ShadowRenderer {
      *   <li><i>color</i>: The color of the shadow. Shadows are not meant to be
      *   black only.</li>
      * </ul>
-     * @param size the size of the shadow in pixels. Defines the fuzziness.
+     *
+     * @param size    the size of the shadow in pixels. Defines the fuzziness.
      * @param opacity the opacity of the shadow.
-     * @param color the color of the shadow.
+     * @param color   the color of the shadow.
      */
     public ShadowRenderer(final int size, final float opacity, final Color color) {
-        //noinspection ThisEscapedInObjectConstruction
+        // noinspection ThisEscapedInObjectConstruction
         changeSupport = new PropertyChangeSupport(this);
 
         setSize(size);
@@ -143,7 +144,8 @@ public class ShadowRenderer {
      * registered for all properties. The same listener object may be added
      * more than once, and will be called as many times as it is added. If
      * <code>listener</code> is null, no exception is thrown and no action
-     * is taken.</p> 
+     * is taken.</p>
+     *
      * @param listener the PropertyChangeListener to be added
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -157,6 +159,7 @@ public class ShadowRenderer {
      * it will be notified one less time after being removed. If
      * <code>listener</code> is null, or was never added, no exception is thrown
      * and no action is taken.</p>
+     *
      * @param listener the PropertyChangeListener to be removed
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
@@ -165,6 +168,7 @@ public class ShadowRenderer {
 
     /**
      * <p>Gets the color used by the renderer to generate shadows.</p>
+     *
      * @return this renderer's shadow color
      */
     public Color getColor() {
@@ -176,15 +180,16 @@ public class ShadowRenderer {
      * <p>Consecutive calls to {@link #createShadow} will all use this color
      * until it is set again.</p>
      * <p>If the color provided is null, the previous color will be retained.</p>
+     *
      * @param shadowColor the generated shadows color
      */
     public void setColor(final Color shadowColor) {
         if (shadowColor != null) {
-            Color oldColor = this.color;
+            var oldColor = this.color;
             this.color = shadowColor;
             changeSupport.firePropertyChange(COLOR_CHANGED_PROPERTY,
-                                             oldColor,
-                                             this.color);
+                    oldColor,
+                    this.color);
         }
     }
 
@@ -192,6 +197,7 @@ public class ShadowRenderer {
      * <p>Gets the opacity used by the renderer to generate shadows.</p>
      * <p>The opacity is comprised between 0.0f and 1.0f; 0.0f being fully
      * transparent and 1.0f fully opaque.</p>
+     *
      * @return this renderer's shadow opacity
      */
     public float getOpacity() {
@@ -205,26 +211,24 @@ public class ShadowRenderer {
      * <p>The opacity is comprised between 0.0f and 1.0f; 0.0f being fully
      * transparent and 1.0f fully opaque. If you provide a value out of these
      * boundaries, it will be restrained to the closest boundary.</p>
+     *
      * @param shadowOpacity the generated shadows opacity
      */
     public void setOpacity(final float shadowOpacity) {
-        float oldOpacity = this.opacity;
-        
+        var oldOpacity = this.opacity;
+
         if (shadowOpacity < 0.0) {
             this.opacity = 0.0f;
-        } else if (shadowOpacity > 1.0f) {
-            this.opacity = 1.0f;
-        } else {
-            this.opacity = shadowOpacity;
-        }
-        
+        } else this.opacity = Math.min(shadowOpacity, 1.0f);
+
         changeSupport.firePropertyChange(OPACITY_CHANGED_PROPERTY,
-                                         oldOpacity,
-                                         this.opacity);
+                oldOpacity,
+                this.opacity);
     }
 
     /**
      * <p>Gets the size in pixel used by the renderer to generate shadows.</p>
+     *
      * @return this renderer's shadow size
      */
     public int getSize() {
@@ -237,20 +241,17 @@ public class ShadowRenderer {
      * fuzziness.</p>
      * <p>There is virtually no limit to the size. The size cannot be negative.
      * If you provide a negative value, the size will be 0 instead.</p>
+     *
      * @param shadowSize the generated shadows size in pixels (fuzziness)
      */
     public void setSize(final int shadowSize) {
-        int oldSize = this.size;
-        
-        if (shadowSize < 0) {
-            this.size = 0;
-        } else {
-            this.size = shadowSize;
-        }
-        
+        var oldSize = this.size;
+
+        this.size = Math.max(shadowSize, 0);
+
         changeSupport.firePropertyChange(SIZE_CHANGED_PROPERTY,
-                                         new Integer(oldSize),
-                                         new Integer(this.size));
+                Integer.valueOf(oldSize),
+                Integer.valueOf(this.size));
     }
 
     /**
@@ -261,49 +262,50 @@ public class ShadowRenderer {
      * width  = imageWidth  + 2 * shadowSize
      * height = imageHeight + 2 * shadowSize
      * </pre>
+     *
      * @param image the picture from which the shadow must be cast
-     * @return the picture containing the shadow of <code>image</code> 
+     * @return the picture containing the shadow of <code>image</code>
      */
     public BufferedImage createShadow(final BufferedImage image) {
         // Written by Sesbastien Petrucci
-        int shadowSize = size * 2;
+        var shadowSize = size * 2;
 
-        int srcWidth = image.getWidth();
-        int srcHeight = image.getHeight();
+        var srcWidth = image.getWidth();
+        var srcHeight = image.getHeight();
 
-        int dstWidth = srcWidth + shadowSize;
-        int dstHeight = srcHeight + shadowSize;
+        var dstWidth = srcWidth + shadowSize;
+        var dstHeight = srcHeight + shadowSize;
 
-        int left = size;
-        int right = shadowSize - left;
+        var left = size;
+        var right = shadowSize - left;
 
-        int yStop = dstHeight - right;
+        var yStop = dstHeight - right;
 
-        int shadowRgb = color.getRGB() & 0x00FFFFFF;
-        int[] aHistory = new int[shadowSize];
+        var shadowRgb = color.getRGB() & 0x00FFFFFF;
+        var aHistory = new int[shadowSize];
         int historyIdx;
 
         int aSum;
 
-        BufferedImage dst = new BufferedImage(dstWidth, dstHeight,
-                                              BufferedImage.TYPE_INT_ARGB);
+        var dst = new BufferedImage(dstWidth, dstHeight,
+                BufferedImage.TYPE_INT_ARGB);
 
-        int[] dstBuffer = new int[dstWidth * dstHeight];
-        int[] srcBuffer = new int[srcWidth * srcHeight];
+        var dstBuffer = new int[dstWidth * dstHeight];
+        var srcBuffer = new int[srcWidth * srcHeight];
 
         GraphicsUtilities.getPixels(image, 0, 0, srcWidth, srcHeight, srcBuffer);
 
-        int lastPixelOffset = right * dstWidth;
-        float hSumDivider = 1.0f / shadowSize;
-        float vSumDivider = opacity / shadowSize;
+        var lastPixelOffset = right * dstWidth;
+        var hSumDivider = 1.0f / shadowSize;
+        var vSumDivider = opacity / shadowSize;
 
-        int[] hSumLookup = new int[256 * shadowSize];
-        for (int i = 0; i < hSumLookup.length; i++) {
+        var hSumLookup = new int[256 * shadowSize];
+        for (var i = 0; i < hSumLookup.length; i++) {
             hSumLookup[i] = (int) (i * hSumDivider);
         }
 
-        int[] vSumLookup = new int[256 * shadowSize];
-        for (int i = 0; i < vSumLookup.length; i++) {
+        var vSumLookup = new int[256 * shadowSize];
+        for (var i = 0; i < vSumLookup.length; i++) {
             vSumLookup[i] = (int) (i * vSumDivider);
         }
 
@@ -323,11 +325,11 @@ public class ShadowRenderer {
             srcOffset = srcY * srcWidth;
 
             // compute the blur average with pixels from the source image
-            for (int srcX = 0; srcX < srcWidth; srcX++) {
+            for (var srcX = 0; srcX < srcWidth; srcX++) {
 
-                int a = hSumLookup[aSum];
+                var a = hSumLookup[aSum];
                 dstBuffer[dstOffset++] = a << 24;   // store the alpha value only
-                                                    // the shadow color will be added in the next pass
+                // the shadow color will be added in the next pass
 
                 aSum -= aHistory[historyIdx]; // substract the oldest pixel from the sum
 
@@ -342,9 +344,9 @@ public class ShadowRenderer {
             }
 
             // blur the end of the row - no new pixels to grab
-            for (int i = 0; i < shadowSize; i++) {
+            for (var i = 0; i < shadowSize; i++) {
 
-                int a = hSumLookup[aSum];
+                var a = hSumLookup[aSum];
                 dstBuffer[dstOffset++] = a << 24;
 
                 // substract the oldest pixel from the sum ... and nothing new to add !
@@ -362,13 +364,13 @@ public class ShadowRenderer {
             aSum = 0;
 
             // first pixels are empty
-            for (historyIdx = 0; historyIdx < left;) {
+            for (historyIdx = 0; historyIdx < left; ) {
                 aHistory[historyIdx++] = 0;
             }
 
             // and then they come from the dstBuffer
-            for (int y = 0; y < right; y++, bufferOffset += dstWidth) {
-                int a = dstBuffer[bufferOffset] >>> 24;         // extract alpha
+            for (var y = 0; y < right; y++, bufferOffset += dstWidth) {
+                var a = dstBuffer[bufferOffset] >>> 24;         // extract alpha
                 aHistory[historyIdx++] = a;                     // store into history
                 aSum += a;                                      // and add to sum
             }
@@ -377,9 +379,9 @@ public class ShadowRenderer {
             historyIdx = 0;
 
             // compute the blur avera`ge with pixels from the previous pass
-            for (int y = 0; y < yStop; y++, bufferOffset += dstWidth) {
+            for (var y = 0; y < yStop; y++, bufferOffset += dstWidth) {
 
-                int a = vSumLookup[aSum];
+                var a = vSumLookup[aSum];
                 dstBuffer[bufferOffset] = a << 24 | shadowRgb;  // store alpha value + shadow color
 
                 aSum -= aHistory[historyIdx];   // substract the oldest pixel from the sum
@@ -394,9 +396,9 @@ public class ShadowRenderer {
             }
 
             // blur the end of the column - no pixels to grab anymore
-            for (int y = yStop; y < dstHeight; y++, bufferOffset += dstWidth) {
+            for (var y = yStop; y < dstHeight; y++, bufferOffset += dstWidth) {
 
-                int a = vSumLookup[aSum];
+                var a = vSumLookup[aSum];
                 dstBuffer[bufferOffset] = a << 24 | shadowRgb;
 
                 aSum -= aHistory[historyIdx];   // substract the oldest pixel from the sum

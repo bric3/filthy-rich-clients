@@ -29,42 +29,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLDrawable;
-import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
  * Demonstrate the use of the Jogamp library (OpenGL bindings).
- *
+ * <p>
  * This library was previously known as JOGL.
- *
- *
+ * <p>
+ * <p>
  * /!\ The rendering happens in FBOs so that you can get the result back into
- *     a Java 2D image without displaying it on screen through a GLJPanel. This
- *     implementation does not offer the conversion from FBO to a BufferedImage
- *     but you can do it by reading the texture data from frameBufferTexture2.
+ * a Java 2D image without displaying it on screen through a GLJPanel. This
+ * implementation does not offer the conversion from FBO to a BufferedImage
+ * but you can do it by reading the texture data from frameBufferTexture2.
  *
  * @author Romain Guy <romain.guy@mac.com>
  * @see <a href="https://jogamp.org/">jogamp</a>
@@ -79,47 +66,47 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
     private Texture texture;
     private BufferedImage image;
 
-    private GLU glu = new GLU();
+    private final GLU glu = new GLU();
 
     private final String blurShaderSource =
             """
-            const int MAX_KERNEL_SIZE = 25;
-            uniform sampler2D baseImage;
-            uniform vec2 offsets[MAX_KERNEL_SIZE];
-            uniform float kernelVals[MAX_KERNEL_SIZE];
-            
-            void main(void) {
-                int i;
-                vec4 sum = vec4(0.0);
-                
-                for (i = 0; i < MAX_KERNEL_SIZE; i++) {
-                    vec4 tmp = texture2D(baseImage,
-                                         gl_TexCoord[0].st + offsets[i]);
-                    sum += tmp * kernelVals[i];
-                }
-                
-                gl_FragColor = sum;
-            }""";
+                    const int MAX_KERNEL_SIZE = 25;
+                    uniform sampler2D baseImage;
+                    uniform vec2 offsets[MAX_KERNEL_SIZE];
+                    uniform float kernelVals[MAX_KERNEL_SIZE];
+                    
+                    void main(void) {
+                        int i;
+                        vec4 sum = vec4(0.0);
+                    
+                        for (i = 0; i < MAX_KERNEL_SIZE; i++) {
+                            vec4 tmp = texture2D(baseImage,
+                                                 gl_TexCoord[0].st + offsets[i]);
+                            sum += tmp * kernelVals[i];
+                        }
+                    
+                        gl_FragColor = sum;
+                    }""";
 
     private long blurShader;
 
-    private String brightPassShaderSource =
+    private final String brightPassShaderSource =
             """
-            uniform sampler2D baseImage;
-            uniform float brightPassThreshold;
-            
-            void main(void) {
-                vec3 luminanceVector = vec3(0.2125, 0.7154, 0.0721);
-                vec4 sample = texture2D(baseImage, gl_TexCoord[0].st);
-                
-                float luminance = dot(luminanceVector, sample.rgb);
-                luminance = max(0.0, luminance - brightPassThreshold);
-                sample.rgb *= sign(luminance);
-                sample.a = 1.0;
-                
-                gl_FragColor = sample;
-            }
-            """;
+                    uniform sampler2D baseImage;
+                    uniform float brightPassThreshold;
+                    
+                    void main(void) {
+                        vec3 luminanceVector = vec3(0.2125, 0.7154, 0.0721);
+                        vec4 sample = texture2D(baseImage, gl_TexCoord[0].st);
+                    
+                        float luminance = dot(luminanceVector, sample.rgb);
+                        luminance = max(0.0, luminance - brightPassThreshold);
+                        sample.rgb *= sign(luminance);
+                        sample.a = 1.0;
+                    
+                        gl_FragColor = sample;
+                    }
+                    """;
 
     private long brightPassShader;
 
@@ -138,7 +125,7 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
 
     @Override
     public void init(GLAutoDrawable glAutoDrawable) {
-        GL2 gl = glAutoDrawable.getGL().getGL2();
+        var gl = glAutoDrawable.getGL().getGL2();
 
         if (texture == null) {
             texture = AWTTextureIO.newTexture(
@@ -149,14 +136,14 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         }
 
         // create the blur shader
-        blurShader = createFragmentProgram(gl, new String[] { blurShaderSource });
+        blurShader = createFragmentProgram(gl, new String[]{blurShaderSource});
         gl.glUseProgramObjectARB(blurShader);
-        int loc = gl.glGetUniformLocationARB(blurShader, "baseImage");
+        var loc = gl.glGetUniformLocationARB(blurShader, "baseImage");
         gl.glUniform1iARB(loc, 0);
         gl.glUseProgramObjectARB(0);
 
         // create the bright-pass shader
-        brightPassShader = createFragmentProgram(gl, new String[] { brightPassShaderSource });
+        brightPassShader = createFragmentProgram(gl, new String[]{brightPassShaderSource});
         gl.glUseProgramObjectARB(brightPassShader);
         loc = gl.glGetUniformLocationARB(brightPassShader, "baseImage");
         gl.glUniform1iARB(loc, 0);
@@ -164,16 +151,16 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
 
         // create the FBOs
         if (gl.isExtensionAvailable("GL_EXT_framebuffer_object")) {
-            int[] fboId = new int[1];
-            int[] texId = new int[1];
+            var fboId = new int[1];
+            var texId = new int[1];
 
             createFrameBufferObject(gl, fboId, texId,
-                                    image.getWidth(), image.getHeight());
+                    image.getWidth(), image.getHeight());
             frameBufferObject1 = fboId[0];
             frameBufferTexture1 = texId[0];
 
             createFrameBufferObject(gl, fboId, texId,
-                                    image.getWidth(), image.getHeight());
+                    image.getWidth(), image.getHeight());
             frameBufferObject2 = fboId[0];
             frameBufferTexture2 = texId[0];
         }
@@ -193,17 +180,17 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         gl.glGenTextures(1, colorBuffer, 0);
         gl.glBindTexture(GL2.GL_TEXTURE_2D, colorBuffer[0]);
         gl.glTexImage2D(GL2.GL_TEXTURE_2D, 0, GL2.GL_RGBA,
-                        width, height,
-                        0, GL2.GL_RGBA, GL2.GL_UNSIGNED_BYTE,
-                        ByteBuffer.allocate(width * height * 4));
+                width, height,
+                0, GL2.GL_RGBA, GL2.GL_UNSIGNED_BYTE,
+                ByteBuffer.allocate(width * height * 4));
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
         gl.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
         gl.glFramebufferTexture2D(GL2.GL_FRAMEBUFFER,
-                                     GL2.GL_COLOR_ATTACHMENT0,
-                                     GL2.GL_TEXTURE_2D, colorBuffer[0], 0);
+                GL2.GL_COLOR_ATTACHMENT0,
+                GL2.GL_TEXTURE_2D, colorBuffer[0], 0);
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 
-        int status = gl.glCheckFramebufferStatus(GL2.GL_FRAMEBUFFER);
+        var status = gl.glCheckFramebufferStatus(GL2.GL_FRAMEBUFFER);
         if (status == GL2.GL_FRAMEBUFFER_COMPLETE) {
             gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, 0);
         } else {
@@ -224,41 +211,41 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
     private static void renderTexturedQuad(GL2 gl, float width, float height,
                                            boolean flip) {
         gl.glBegin(GL2.GL_QUADS);
-            gl.glTexCoord2f(0.0f, flip ? 1.0f : 0.0f);
-            gl.glVertex2f(0.0f, 0.0f);
+        gl.glTexCoord2f(0.0f, flip ? 1.0f : 0.0f);
+        gl.glVertex2f(0.0f, 0.0f);
 
-            gl.glTexCoord2f(1.0f, flip ? 1.0f : 0.0f);
-            gl.glVertex2f(width, 0.0f);
+        gl.glTexCoord2f(1.0f, flip ? 1.0f : 0.0f);
+        gl.glVertex2f(width, 0.0f);
 
-            gl.glTexCoord2f(1.0f, flip ? 0.0f : 1.0f);
-            gl.glVertex2f(width, height);
+        gl.glTexCoord2f(1.0f, flip ? 0.0f : 1.0f);
+        gl.glVertex2f(width, height);
 
-            gl.glTexCoord2f(0.0f, flip ? 0.0f : 1.0f);
-            gl.glVertex2f(0.0f, height);
+        gl.glTexCoord2f(0.0f, flip ? 0.0f : 1.0f);
+        gl.glVertex2f(0.0f, height);
         gl.glEnd();
     }
 
     private static long createFragmentProgram(GL2 gl, String[] fragmentShaderSource) {
         long fragmentShader;
         long fragmentProgram;
-        int[] success = new int[1];
+        var success = new int[1];
 
         // create the shader object and compile the shader source code
         fragmentShader = gl.glCreateShaderObjectARB(GL2.GL_FRAGMENT_SHADER);
         gl.glShaderSourceARB(fragmentShader, 1, fragmentShaderSource, null);
         gl.glCompileShaderARB(fragmentShader);
         gl.glGetObjectParameterivARB(fragmentShader,
-                                      GL2.GL_OBJECT_COMPILE_STATUS_ARB,
-                                      success, 0);
+                GL2.GL_OBJECT_COMPILE_STATUS_ARB,
+                success, 0);
 
         // print the compiler messages, if necessary
-        int[] infoLogLength = new int[1];
-        int[] length = new int[1];
+        var infoLogLength = new int[1];
+        var length = new int[1];
         gl.glGetObjectParameterivARB(fragmentShader,
-                                     GL2.GL_OBJECT_INFO_LOG_LENGTH_ARB,
-                                     infoLogLength, 0);
+                GL2.GL_OBJECT_INFO_LOG_LENGTH_ARB,
+                infoLogLength, 0);
         if (infoLogLength[0] > 1) {
-            byte[] b = new byte[1024];
+            var b = new byte[1024];
             gl.glGetInfoLogARB(fragmentShader, 1024, length, 0, b, 0);
             System.out.println("Fragment compile phase = " + new String(b, 0, length[0]));
         }
@@ -278,14 +265,14 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         // link the program
         gl.glLinkProgramARB(fragmentProgram);
         gl.glGetObjectParameterivARB(fragmentProgram,
-                                     GL2.GL_OBJECT_LINK_STATUS_ARB,
-                                     success, 0);
+                GL2.GL_OBJECT_LINK_STATUS_ARB,
+                success, 0);
 
         gl.glGetObjectParameterivARB(fragmentShader,
-                                     GL2.GL_OBJECT_INFO_LOG_LENGTH_ARB,
-                                     infoLogLength, 0);
+                GL2.GL_OBJECT_INFO_LOG_LENGTH_ARB,
+                infoLogLength, 0);
         if (infoLogLength[0] > 1) {
-            byte[] b = new byte[1024];
+            var b = new byte[1024];
             gl.glGetInfoLogARB(fragmentShader, 1024, length, 0, b, 0);
             System.out.println("Fragment link phase = " + new String(b, 0, length[0]));
         }
@@ -303,26 +290,26 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
                                                   float textureHeight) {
         gl.glUseProgramObjectARB(program);
 
-        int kernelWidth = 5;
-        int kernelHeight = 5;
+        var kernelWidth = 5;
+        var kernelHeight = 5;
 
-        float xoff = 1.0f / textureWidth;
-        float yoff = 1.0f / textureHeight;
+        var xoff = 1.0f / textureWidth;
+        var yoff = 1.0f / textureHeight;
 
-        float[] offsets = new float[kernelWidth * kernelHeight * 2];
-        int offsetIndex = 0;
+        var offsets = new float[kernelWidth * kernelHeight * 2];
+        var offsetIndex = 0;
 
-        for (int i = -kernelHeight / 2; i < kernelHeight / 2 + 1; i++) {
-            for (int j = -kernelWidth / 2; j < kernelWidth / 2 + 1; j++) {
+        for (var i = -kernelHeight / 2; i < kernelHeight / 2 + 1; i++) {
+            for (var j = -kernelWidth / 2; j < kernelWidth / 2 + 1; j++) {
                 offsets[offsetIndex++] = j * xoff;
                 offsets[offsetIndex++] = i * yoff;
             }
         }
 
-        int loc = gl.glGetUniformLocationARB(program, "offsets");
+        var loc = gl.glGetUniformLocationARB(program, "offsets");
         gl.glUniform2fv(loc, offsets.length / 2, offsets, 0);
 
-        float[] values = createGaussianBlurFilter(2);
+        var values = createGaussianBlurFilter(2);
 
         loc = gl.glGetUniformLocationARB(program, "kernelVals");
         gl.glUniform1fvARB(loc, values.length, values, 0);
@@ -333,17 +320,17 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
             throw new IllegalArgumentException("Radius must be >= 1");
         }
 
-        int size = radius * 2 + 1;
-        float[] data = new float[size * size];
+        var size = radius * 2 + 1;
+        var data = new float[size * size];
 
-        float sigma = radius / 3.0f;
-        float twoSigmaSquare = 2.0f * sigma * sigma;
-        float sigmaRoot = (float) Math.sqrt(twoSigmaSquare * Math.PI);
-        float total = 0.0f;
+        var sigma = radius / 3.0f;
+        var twoSigmaSquare = 2.0f * sigma * sigma;
+        var sigmaRoot = (float) Math.sqrt(twoSigmaSquare * Math.PI);
+        var total = 0.0f;
 
-        int index = 0;
-        for (int y = -radius; y <= radius; y++) {
-            for (int x = -radius; x <= radius; x++) {
+        var index = 0;
+        for (var y = -radius; y <= radius; y++) {
+            for (var x = -radius; x <= radius; x++) {
                 float distance = x * x + y * y;
                 data[index] = (float) Math.exp(-distance / twoSigmaSquare) / sigmaRoot;
                 total += data[index];
@@ -351,7 +338,7 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
             }
         }
 
-        for (int i = 0; i < data.length; i++) {
+        for (var i = 0; i < data.length; i++) {
             data[i] /= total;
         }
 
@@ -362,7 +349,7 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
                                                         float threshold) {
         gl.glUseProgramObjectARB(program);
 
-        int loc = gl.glGetUniformLocationARB(program, "brightPassThreshold");
+        var loc = gl.glGetUniformLocationARB(program, "brightPassThreshold");
         gl.glUniform1fARB(loc, threshold);
     }
 
@@ -372,15 +359,15 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
 
     @Override
     public void display(GLAutoDrawable glAutoDrawable) {
-        GL2 gl = glAutoDrawable.getGL().getGL2();
-        gl.glLoadIdentity(); 
+        var gl = glAutoDrawable.getGL().getGL2();
+        gl.glLoadIdentity();
         gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
         viewOrtho(gl, image.getWidth(), image.getHeight());
         gl.glEnable(GL.GL_TEXTURE_2D);
 
-        int width = image.getWidth();
-        int height = image.getHeight();
+        var width = image.getWidth();
+        var height = image.getHeight();
 
         // Source Image/bright pass on FBO1
         renderBrightPass(gl, width, height);
@@ -389,7 +376,7 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         // On screen
         renderTextureOnScreen(gl, width, height);
 
-        //render5x5(gl, width, height);
+        // render5x5(gl, width, height);
         render11x11(gl, width, height);
         render21x21(gl, width, height);
         render41x41(gl, width, height);
@@ -487,7 +474,7 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
      * Without that switch, clearing the FBO succeeds, but the blur quad is
      * rasterized outside it and the target remains empty.
      *
-     * @param gl current OpenGL interface
+     * @param gl          current OpenGL interface
      * @param framebuffer source-image-sized framebuffer to render into
      * @see #bindDefaultFramebuffer(GL2)
      */
@@ -524,7 +511,7 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
      */
     private static void bindDefaultFramebuffer(GL2 gl) {
         gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, gl.getDefaultDrawFramebuffer());
-        GLDrawable drawable = gl.getContext().getGLDrawable();
+        var drawable = gl.getContext().getGLDrawable();
         gl.glViewport(0, 0, drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
     }
 
@@ -583,7 +570,7 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
     public void reshape(GLAutoDrawable glAutoDrawable,
                         int x, int y,
                         int width, int height) {
-        GL2 gl = glAutoDrawable.getGL().getGL2();
+        var gl = glAutoDrawable.getGL().getGL2();
 
         gl.glViewport(0, 0, width, height);
         gl.glMatrixMode(GL2.GL_PROJECTION);
@@ -607,23 +594,21 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         repaint();
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             final BloomOpenGL bloom;
             final JSlider slider;
 
-            JFrame f = new JFrame("Bloom OpenGL");
+            var f = new JFrame("Bloom OpenGL");
             f.add(bloom = new BloomOpenGL());
 
-            JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEADING));
+            var controls = new JPanel(new FlowLayout(FlowLayout.LEADING));
             controls.add(new JLabel("Bloom: 0.0"));
             controls.add(slider = new JSlider(0, 100, 30));
-            slider.addChangeListener(new ChangeListener() {
-                public void stateChanged(ChangeEvent e) {
-                    JSlider slider = (JSlider) e.getSource();
-                    float threshold = slider.getValue() / 100.0f;
-                    bloom.setThreshold(threshold);
-                }
+            slider.addChangeListener(e -> {
+                var slider1 = (JSlider) e.getSource();
+                var threshold = slider1.getValue() / 100.0f;
+                bloom.setThreshold(threshold);
             });
             controls.add(new JLabel("1.0"));
             f.add(controls, BorderLayout.SOUTH);

@@ -1,4 +1,3 @@
-import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 /*
  * MyIntAnimPS.java
@@ -42,9 +41,9 @@ import org.jdesktop.animation.timing.interpolation.PropertySetter;
  * @author Chet
  */
 public class MyIntAnimPS {
-    
+
     private int myInt;
-    
+
     public void setMyInt(int newValue) {
         myInt = newValue;
         System.out.println("newValue = " + newValue);
@@ -52,17 +51,18 @@ public class MyIntAnimPS {
 
     public MyIntAnimPS() {
         // Set up the animation
-        Animator anim = PropertySetter.createAnimator(1000, 
+        var anim = PropertySetter.createAnimator(1000,
                 this, "myInt", 0, 10);
         anim.start();
     }
-    
-    public static void main(String[] args) {
+
+    static void main(String[] args) {
         new MyIntAnimPS();
         // Sleep so that animation timer starts before main thread dies
         // and process quits
         try {
             Thread.sleep(2000);
-        } catch (Exception e) {}
+        } catch (Exception _) {
+        }
     }
 }

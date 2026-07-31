@@ -31,8 +31,8 @@
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.EventQueue;
-import java.awt.Toolkit;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 
 /**
  *
@@ -40,17 +40,18 @@ import java.awt.Toolkit;
  */
 public class ApplicationFrame extends JFrame {
     private static final int MAX_DELAY = 300;
-    
+
     private final ProgressGlassPane glassPane;
-    
+
     public ApplicationFrame() {
         initComponents();
         setGlassPane(glassPane = new ProgressGlassPane());
     }
-    
-    /** This method is called from within the constructor to
+
+    /**
+     * This method is called from within the constructor to
      * initialize the form.
-     *
+     * <p>
      * This code has been converted from Netbeans/Jdesktop code
      * that made it to Swing's GroupLayout code in Java 1.6.
      * It is not anymore generated.
@@ -70,15 +71,15 @@ public class ApplicationFrame extends JFrame {
 
         var filesTable = new JTable();
         filesTable.setModel(new DefaultTableModel(
-            new Object [][] {
-                {"aerith.png", "/www/progx/images/", "PNG", "5/17/2006"},
-                {"blog.html", "/www/progx", "HTML", "3/1/2006"},
-                {"index.html", "/www/progx", "HTML", "9/12/2006"},
-                {"pictures.zip", "/www/progx", "ZIP", "10/8/2006"}
-            },
-            new String [] {
-                "Name", "Path", "Type", "Date"
-            }
+                new Object[][]{
+                        {"aerith.png", "/www/progx/images/", "PNG", "5/17/2006"},
+                        {"blog.html", "/www/progx", "HTML", "3/1/2006"},
+                        {"index.html", "/www/progx", "HTML", "9/12/2006"},
+                        {"pictures.zip", "/www/progx", "ZIP", "10/8/2006"}
+                },
+                new String[]{
+                        "Name", "Path", "Type", "Date"
+                }
         ));
 
         var jScrollPane = new JScrollPane(filesTable);
@@ -86,44 +87,44 @@ public class ApplicationFrame extends JFrame {
         var layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(buttonDownload))
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(pickFileLabel))
-                        .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jScrollPane, GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))))
-                .addContainerGap())
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addContainerGap()
+                                                .addComponent(buttonDownload))
+                                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                                .addGroup(layout.createSequentialGroup()
+                                                        .addContainerGap()
+                                                        .addComponent(pickFileLabel))
+                                                .addGroup(layout.createSequentialGroup()
+                                                        .addContainerGap()
+                                                        .addComponent(jScrollPane, GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE))))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(pickFileLabel)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane, GroupLayout.PREFERRED_SIZE, 275, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buttonDownload)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addComponent(pickFileLabel)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane, GroupLayout.PREFERRED_SIZE, 275, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonDownload)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds((screenSize.width-553)/2, (screenSize.height-394)/2, 553, 394);
+        setBounds((screenSize.width - 553) / 2, (screenSize.height - 394) / 2, 553, 394);
     }
 
-    private void buttonDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownloadActionPerformed
+    private void buttonDownloadActionPerformed(ActionEvent evt) {// GEN-FIRST:event_buttonDownloadActionPerformed
         getGlassPane().setVisible(true);
         startDownloadThread();
     }
 
     private void startDownloadThread() {
         var downloader = new Thread(() -> {
-            int i = 0;
+            var i = 0;
             do {
                 try {
                     Thread.sleep(30 + (int) (Math.random() * MAX_DELAY));
@@ -138,11 +139,11 @@ public class ApplicationFrame extends JFrame {
         });
         downloader.start();
     }
-    
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String... args) {
+    static void main(String... args) {
         EventQueue.invokeLater(() -> new ApplicationFrame().setVisible(true));
     }
 }

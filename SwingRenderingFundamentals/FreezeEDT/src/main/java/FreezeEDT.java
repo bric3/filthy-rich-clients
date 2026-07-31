@@ -1,26 +1,25 @@
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JFrame;
 
 public class FreezeEDT extends JFrame implements ActionListener {
-  public FreezeEDT() {
-    super("Freeze");
-    JButton freezer = new JButton("Freeze");
-    freezer.addActionListener(this);
-    add(freezer);
-    pack();
-  }
-
-  public void actionPerformed(ActionEvent e) {
-    try {
-      Thread.sleep(4000);
-    } catch (InterruptedException evt) {
+    public FreezeEDT() {
+        super("Freeze");
+        var freezer = new JButton("Freeze");
+        freezer.addActionListener(this);
+        add(freezer);
+        pack();
     }
-  }
 
-  public static void main(String... args) {
-    FreezeEDT edt = new FreezeEDT();
-    edt.setVisible(true);
-  }
+    public void actionPerformed(ActionEvent e) {
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException _) {
+        }
+    }
+
+    static void main(String... args) {
+        var edt = new FreezeEDT();
+        edt.setVisible(true);
+    }
 }

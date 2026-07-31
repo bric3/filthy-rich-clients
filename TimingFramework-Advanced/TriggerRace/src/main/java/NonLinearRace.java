@@ -1,4 +1,4 @@
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 /*
  * NonLinearRace.java
  *
@@ -35,26 +35,26 @@ import javax.swing.SwingUtilities;
  */
 
 /**
- * Simple subclass of SetterRace that merely sets acceleration/deceleration 
+ * Simple subclass of SetterRace that merely sets acceleration/deceleration
  * factors to give a non-linear motion effect to the car's movement.
  *
  * @author Chet
  */
 public class NonLinearRace extends BasicRace {
-    
-    /** Creates a new instance of NonLinearRace */
+
+    /**
+     * Creates a new instance of NonLinearRace
+     */
     public NonLinearRace(String appName) {
         super(appName);
         // Accelerate for first half of duration, decelerate for final 10%
         animator.setAcceleration(.5f);
         animator.setDeceleration(.1f);
     }
-    
-    public static void main(String args[]) {
-        Runnable doCreateAndShowGUI = new Runnable() {
-            public void run() {
-                NonLinearRace race = new NonLinearRace("Non-Linear Race");
-            }
+
+    static void main(String[] args) {
+        Runnable doCreateAndShowGUI = () -> {
+            var race = new NonLinearRace("Non-Linear Race");
         };
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }

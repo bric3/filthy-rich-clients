@@ -15,4 +15,4 @@ jogmap-gluegen = { module = "org.jogamp.gluegen:gluegen-rt-main", version.ref = 
 vlcj = { module = "uk.co.caprica:vlcj", version.ref = "vlcj" }
 
 [bundles]
-jogamp = [ "jogmap-jogl", "jogmap-gluegen" ]
+jogamp = ["jogmap-jogl", "jogmap-gluegen"]

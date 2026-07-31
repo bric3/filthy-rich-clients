@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2007, Sun Microsystems, Inc
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- *
+ * <p>
  *   * Redistributions of source code must retain the above copyright
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
@@ -15,7 +15,7 @@
  *   * Neither the name of the TimingFramework project nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
- *
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -29,8 +29,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -38,7 +36,6 @@ import java.awt.image.BufferedImage;
 import java.awt.Point;
 import javax.swing.JComponent;
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 
 /**
  * This class does the work of rendering the current view of the
@@ -54,10 +51,14 @@ public class TrackView extends JComponent {
     
     BufferedImage car;
     BufferedImage track;
-    Point carPosition;
+    final Point carPosition;
     double carRotation = 0;
-    int trackW, trackH;
-    int carW, carH, carWHalf, carHHalf;
+    final int trackW;
+    final int trackH;
+    final int carW;
+    final int carH;
+    final int carWHalf;
+    final int carHHalf;
 
     /** Hard-coded positions of interest on the track */
     static final Point START_POS = new Point(450, 70);
@@ -99,7 +100,7 @@ public class TrackView extends JComponent {
         
         // Now draw the car.  The translate/rotate/translate settings account
         // for any nonzero carRotation values
-        Graphics2D g2d = (Graphics2D)g.create();
+        var g2d = (Graphics2D)g.create();
         g2d.translate(carPosition.x, carPosition.y);
         g2d.rotate(Math.toRadians(carRotation));
         g2d.translate(-(carPosition.x), -(carPosition.y));

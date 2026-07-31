@@ -53,20 +53,21 @@ public class MyIntAnim {
         // Set up the animation
         TimingTarget myTarget = new TimingTargetAdapter() {
             public void timingEvent(float fraction) {
-                setMyInt((int)(fraction * 10));
+                setMyInt((int) (fraction * 10));
             }
         };
-        Animator anim = new Animator(1000, myTarget);
+        var anim = new Animator(1000, myTarget);
         anim.start();
     }
-    
-    public static void main(String[] args) {
+
+    static void main(String[] args) {
         new MyIntAnim();
         // Sleep so that animation timer starts before main thread dies
         // and process quits
         try {
             Thread.sleep(2000);
-        } catch (Exception e) {}
+        } catch (Exception _) {
+        }
     }
-    
+
 }

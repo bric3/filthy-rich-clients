@@ -1,8 +1,9 @@
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 /*
  * SetterRace.java
  *
@@ -49,31 +50,31 @@ import org.jdesktop.animation.timing.interpolation.PropertySetter;
  * @author Chet
  */
 public class SetterRace implements ActionListener {
-    
-    protected Animator timer;
+
+    protected final Animator timer;
     public static final int RACE_TIME = 2000;
-    
-    
-    /** Creates a new instance of BasicRace */
+
+
+    /**
+     * Creates a new instance of BasicRace
+     */
     public SetterRace(String appName) {
-        RaceGUI basicGUI = new RaceGUI(appName);
-        
+        var basicGUI = new RaceGUI(appName);
+
         // Now set up an animation that will automatically
         // run itself with PropertySetter
-        timer = PropertySetter.createAnimator(RACE_TIME, basicGUI.getTrack(), 
+        timer = PropertySetter.createAnimator(RACE_TIME, basicGUI.getTrack(),
                 "carPosition", TrackView.START_POS, TrackView.FIRST_TURN_START);
         basicGUI.getControlPanel().addListener(this);
     }
-    
-    public static void main(String args[]) {
-        Runnable doCreateAndShowGUI = new Runnable() {
-            public void run() {
-                SetterRace race = new SetterRace("Property Setter Race");
-            }
+
+    static void main(String[] args) {
+        Runnable doCreateAndShowGUI = () -> {
+            var race = new SetterRace("Property Setter Race");
         };
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
-    
+
     /**
      * Handles clicks on Go/Stop buttons to start/stop the animation
      */

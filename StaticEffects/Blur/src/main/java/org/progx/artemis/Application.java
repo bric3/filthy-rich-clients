@@ -31,12 +31,10 @@
 
 package org.progx.artemis;
 
-import java.util.ResourceBundle;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import org.progx.artemis.ui.MainFrame;
+
+import javax.swing.*;
+import java.util.ResourceBundle;
 
 public class Application {
     private static MainFrame mainFrame;
@@ -49,23 +47,16 @@ public class Application {
         return mainFrame;
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException |
+                 InstantiationException e) {
             e.printStackTrace();
         }
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                mainFrame = new MainFrame();
-                mainFrame.setVisible(true);
-            }
+        SwingUtilities.invokeLater(() -> {
+            mainFrame = new MainFrame();
+            mainFrame.setVisible(true);
         });
     }
 

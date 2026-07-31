@@ -29,35 +29,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
 /**
  *
@@ -69,96 +47,96 @@ public class SpringDemo extends JFrame {
 
     public SpringDemo() {
         super("Spring Demo");
-        
+
         setupGlassPane();
-        
+
         add(Box.createVerticalStrut(16), BorderLayout.NORTH);
         add(Box.createHorizontalStrut(16), BorderLayout.WEST);
         add(buildList());
         add(Box.createHorizontalStrut(16), BorderLayout.EAST);
         add(Box.createVerticalStrut(16), BorderLayout.SOUTH);
-        
+
         pack();
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
-    
+
     private void setupGlassPane() {
         glassPane = new SpringGlassPane();
         setGlassPane(glassPane);
         glassPane.setVisible(true);
     }
-    
+
     private JComponent buildList() {
-        var elements = new Application[] {
-            Application.of("Address Book", "x-office-address-book.png"),
-            Application.of("Calendar",     "x-office-calendar.png"),
-            Application.of("Presentation", "x-office-presentation.png"),
-            Application.of("Spreadsheet",  "x-office-spreadsheet.png"),
+        var elements = new Application[]{
+                Application.of("Address Book", "x-office-address-book.png"),
+                Application.of("Calendar", "x-office-calendar.png"),
+                Application.of("Presentation", "x-office-presentation.png"),
+                Application.of("Spreadsheet", "x-office-spreadsheet.png"),
         };
-        
+
         list = new JList<>(elements);
         list.setCellRenderer(new ApplicationListCellRenderer());
         list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         list.setVisibleRowCount(2);
         list.setBorder(BorderFactory.createEtchedBorder());
         list.addMouseListener(new MouseAdapter() {
-             public void mouseClicked(MouseEvent e) {
-                 if (e.getClickCount() == 2) {
-                     int index = list.getSelectedIndex();
-                     
-                     Rectangle bounds = list.getCellBounds(index, index);
-                     Point location = new Point(bounds.x, bounds.y);
-                     location = SwingUtilities.convertPoint(list, location, glassPane);
-                     location.y -= 13;
-                     bounds.setLocation(location);
-                     
-                     glassPane.showSpring(bounds, list.getSelectedValue().icon.getImage());
-                 }
-             }
-         });
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    var index = list.getSelectedIndex();
+
+                    var bounds = list.getCellBounds(index, index);
+                    var location = new Point(bounds.x, bounds.y);
+                    location = SwingUtilities.convertPoint(list, location, glassPane);
+                    location.y -= 13;
+                    bounds.setLocation(location);
+
+                    glassPane.showSpring(bounds, list.getSelectedValue().icon.getImage());
+                }
+            }
+        });
 
         var panel = new JPanel(new GridBagLayout());
         panel.add(new JLabel("Launcher"),
                 new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
-                    GridBagConstraints.LINE_START, GridBagConstraints.NONE,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                        new Insets(0, 0, 0, 0), 0, 0));
         panel.add(list, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 new Insets(0, 0, 0, 0), 0, 0));
         panel.add(new JLabel("Double-click an icon to launch the program"),
                 new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0,
-                    GridBagConstraints.LINE_START, GridBagConstraints.NONE,
-                    new Insets(0, 0, 0, 0), 0, 0));
-        
+                        GridBagConstraints.LINE_START, GridBagConstraints.NONE,
+                        new Insets(0, 0, 0, 0), 0, 0));
+
         return panel;
     }
-    
+
     public static class SpringGlassPane extends JComponent {
         private static final float MAGNIFY_FACTOR = 1.5f;
-        
+
         private Rectangle bounds;
         private Image image;
-        
+
         private float zoom = 0.0f;
 
         @Override
         protected void paintComponent(Graphics g) {
             if (image != null && bounds != null) {
-                int width = image.getWidth(this);
+                var width = image.getWidth(this);
                 width += (int) (image.getWidth(this) * MAGNIFY_FACTOR * getZoom());
-                
-                int height = image.getHeight(this);
+
+                var height = image.getHeight(this);
                 height += (int) (image.getHeight(this) * MAGNIFY_FACTOR * getZoom());
-                
-                int x = (bounds.width - width) / 2;
-                int y = (bounds.height - height) / 2;
+
+                var x = (bounds.width - width) / 2;
+                var y = (bounds.height - height) / 2;
 
                 var g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                         RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                
+
                 g2.setComposite(AlphaComposite.SrcOver.derive(1.0f - getZoom()));
                 g2.drawImage(image, x + bounds.x, y + bounds.y,
                         width, height, null);
@@ -174,7 +152,7 @@ public class SpringDemo extends JFrame {
             animator.setAcceleration(0.2f);
             animator.setDeceleration(0.4f);
             animator.start();
-            
+
             repaint();
         }
 
@@ -187,15 +165,15 @@ public class SpringDemo extends JFrame {
             repaint();
         }
     }
-    
+
     private static class ApplicationListCellRenderer extends DefaultListCellRenderer {
         public Component getListCellRendererComponent(JList list, Object value,
-                int index, boolean isSelected, boolean cellHasFocus) {
+                                                      int index, boolean isSelected, boolean cellHasFocus) {
             JLabel c;
             c = (JLabel) super.getListCellRendererComponent(list, value,
                     index, isSelected, cellHasFocus);
-            
-            Application element = (Application) value;
+
+            var element = (Application) value;
             c.setBorder(BorderFactory.createEmptyBorder(32, 32, 32, 32));
             c.setFont(c.getFont().deriveFont(18.0f).deriveFont(Font.BOLD));
             c.setText(element.label);
@@ -205,11 +183,11 @@ public class SpringDemo extends JFrame {
             if (isSelected) {
                 c.setBackground(new Color(0, 0, 200, 20));
             }
-            
+
             return c;
-        }   
+        }
     }
-    
+
     private record Application(ImageIcon icon, String label) {
         public static Application of(String label, String icon) {
             return new Application(
@@ -219,7 +197,7 @@ public class SpringDemo extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new SpringDemo().setVisible(true));
     }
 }

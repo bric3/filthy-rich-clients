@@ -71,7 +71,7 @@ public class ImageBrowser extends JComponent
         implements TransitionTarget, ChangeListener {
 
     private static final int SLIDER_INCREMENT = 50;
-    private int numPictures = 40;
+    private final int numPictures = 40;
     private final JLabel[] label;
     private final Animator animator = new Animator(500);
     private final ScreenTransition transition = new ScreenTransition(this, this, animator);
@@ -108,7 +108,7 @@ public class ImageBrowser extends JComponent
         // is that scaling effects typically redraw the actual component
         // instead of using image tricks. In this case, image tricks are
         // just fine. So the custom effect is purely an optimization here.
-        for (int i = 0; i < images.size(); ++i) {
+        for (var i = 0; i < images.size(); ++i) {
             label[i] = new JLabel();
             label[i].setIcon(new ImageIcon(images.get(i).getImage(currentSize)));
             add(label[i]);
@@ -178,7 +178,7 @@ public class ImageBrowser extends JComponent
      * size
      */
     public void setupNextScreen() {
-        for (int i = 0; i < images.size(); ++i) {
+        for (var i = 0; i < images.size(); ++i) {
             label[i].setIcon(new ImageIcon(images.get(i).getImage(currentSize)));
         }
         // revalidation is necessary for the LayoutManager to do its job
@@ -221,7 +221,7 @@ public class ImageBrowser extends JComponent
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException
@@ -250,8 +250,8 @@ class ImageHolder {
      * versions of this image down to some MIN_SIZE
      */
     ImageHolder(BufferedImage originalImage) {
-        int imageW = originalImage.getWidth();
-        int imageH = originalImage.getHeight();
+        var imageW = originalImage.getWidth();
+        var imageH = originalImage.getHeight();
         scaledImages.add(originalImage);
         @SuppressWarnings("UnnecessaryLocalVariable")
         var prevImage = originalImage;
@@ -275,7 +275,7 @@ class ImageHolder {
      */
     BufferedImage getImage(int width) {
         for (var scaledImage : scaledImages) {
-            int scaledW = scaledImage.getWidth();
+            var scaledW = scaledImage.getWidth();
             // This is the one to scale from if:
             // - the requested size is larger than this size
             // - the requested size is between this size and 
@@ -287,8 +287,8 @@ class ImageHolder {
                     // Create new version scaled to this width
                     // Set the width at this width, scale the
                     // height proportional to the image width
-                    float scaleFactor = (float) width / scaledW;
-                    int scaledH = (int) (scaledImage.getHeight() *
+                    var scaleFactor = (float) width / scaledW;
+                    var scaledH = (int) (scaledImage.getHeight() *
                                          scaleFactor + .5f);
                     var image = new BufferedImage(width, scaledH, scaledImage.getType());
                     var g2d = image.createGraphics();

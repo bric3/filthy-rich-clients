@@ -42,10 +42,12 @@ public class RepaintManagerDemo extends JFrame {
     private ReflectionPanel reflectionPanel;
     private CallbackMediaPlayerComponent mediaPlayerComponent;
     private final String media;
+    private final boolean repeat;
 
-    public RepaintManagerDemo(String media) {
+    public RepaintManagerDemo(String media, boolean repeat) {
         super("Repaint Manager Demo");
         this.media = media;
+        this.repeat = repeat;
 
         setContentPane(new GradientPanel());
         getContentPane().setLayout(new GridBagLayout());
@@ -87,6 +89,7 @@ public class RepaintManagerDemo extends JFrame {
         CallbackMediaPlayerComponent component = null;
         try {
             component = new CallbackMediaPlayerComponent();
+            component.mediaPlayer().controls().setRepeat(repeat);
             if (!component.mediaPlayer().media().play(media)) {
                 component.release();
                 System.err.println("VLC could not start media '" + media
@@ -125,13 +128,13 @@ public class RepaintManagerDemo extends JFrame {
                     new Color(0x202737),
                     0.0f, getHeight() * 0.7f,
                     Color.BLACK, true));
-            Rectangle clip = g.getClipBounds();
+            var clip = g.getClipBounds();
             g2.fillRect(clip.x, clip.y, clip.width, clip.height);
             g2.dispose();
         }
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (IllegalAccessException
@@ -141,7 +144,8 @@ public class RepaintManagerDemo extends JFrame {
             ex.printStackTrace();
         }
 
-        final String media = args.length > 0 ? args[0] : null;
-        SwingUtilities.invokeLater(() -> new RepaintManagerDemo(media).setVisible(true));
+        final var media = args.length > 0 ? args[0] : null;
+        final var repeat = args.length > 1 && "--loop".equals(args[1]);
+        SwingUtilities.invokeLater(() -> new RepaintManagerDemo(media, repeat).setVisible(true));
     }
 }

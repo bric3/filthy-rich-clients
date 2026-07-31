@@ -35,11 +35,7 @@
 package composite;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
@@ -134,8 +130,8 @@ public class BlendCompositeDemo extends JFrame {
                 repaint = false;
             }
 
-            int x = (getWidth() - image.getWidth()) / 2;
-            int y = (getHeight() - image.getHeight()) / 2;
+            var x = (getWidth() - image.getWidth()) / 2;
+            var y = (getHeight() - image.getHeight()) / 2;
             g.drawImage(image, x, y, null);
         }
 
@@ -152,7 +148,7 @@ public class BlendCompositeDemo extends JFrame {
         }
     }
 
-    public static void main(String... args) {
+    static void main(String... args) {
         SwingUtilities.invokeLater(() -> new BlendCompositeDemo().setVisible(true));
     }
 }

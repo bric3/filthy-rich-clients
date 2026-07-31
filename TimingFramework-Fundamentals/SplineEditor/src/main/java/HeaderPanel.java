@@ -1,21 +1,21 @@
 /**
  * Copyright (c) 2006, Sun Microsystems, Inc
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials provided
- *     with the distribution.
- *   * Neither the name of the TimingFramework project nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
+ * <p>
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided
+ * with the distribution.
+ * * Neither the name of the TimingFramework project nor the names of its
+ * contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -29,27 +29,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.Paint;
-import java.awt.Rectangle;
-
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 class HeaderPanel extends JPanel {
 
-    private ImageIcon icon;
+    private final ImageIcon icon;
 
     HeaderPanel(ImageIcon icon,
                 String title,
@@ -59,12 +45,12 @@ class HeaderPanel extends JPanel {
 
         this.icon = icon;
 
-        JPanel titlesPanel = new JPanel(new GridLayout(3, 1));
+        var titlesPanel = new JPanel(new GridLayout(3, 1));
         titlesPanel.setOpaque(false);
         titlesPanel.setBorder(new EmptyBorder(12, 0, 12, 0));
 
-        JLabel headerTitle = new JLabel(title);
-        Font police = headerTitle.getFont().deriveFont(Font.BOLD);
+        var headerTitle = new JLabel(title);
+        var police = headerTitle.getFont().deriveFont(Font.BOLD);
         headerTitle.setFont(police);
         headerTitle.setBorder(new EmptyBorder(0, 12, 0, 0));
         titlesPanel.add(headerTitle);
@@ -96,14 +82,14 @@ class HeaderPanel extends JPanel {
         if (!isOpaque()) {
             return;
         }
-        
-        Rectangle bounds = g.getClipBounds();
 
-        Color control = UIManager.getColor("control");
-        int width = getWidth();
+        var bounds = g.getClipBounds();
 
-        Graphics2D g2 = (Graphics2D) g;
-        Paint storedPaint = g2.getPaint();
+        var control = UIManager.getColor("control");
+        var width = getWidth();
+
+        var g2 = (Graphics2D) g;
+        var storedPaint = g2.getPaint();
         g2.setPaint(new GradientPaint(this.icon.getIconWidth(), 0, Color.white, width, 0, control));
         g2.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
         g2.setPaint(storedPaint);

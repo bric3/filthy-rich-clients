@@ -33,13 +33,13 @@
 
 package org.jdesktop.animation.transitions.effects;
 
-import java.awt.Point;
-
 import org.jdesktop.animation.transitions.ComponentState;
 import org.jdesktop.animation.transitions.Effect;
 import org.jdesktop.core.animation.timing.Animator;
 import org.jdesktop.core.animation.timing.PropertySetter;
 import org.jdesktop.core.animation.timing.TimingTarget;
+
+import java.awt.*;
 
 /**
  * Effect that moves a component from its position in the start state to its position in the end state, based on linear
@@ -67,11 +67,11 @@ public class Move extends Effect {
      */
     @Override
     public void init(Animator animator, Effect parentEffect) {
-        Effect targetEffect = (parentEffect == null) ? this : parentEffect;
+        var targetEffect = (parentEffect == null) ? this : parentEffect;
         ps = PropertySetter.getTarget(targetEffect,
-                                      "location",
-                                      new Point(getStart().getX(), getStart().getY()),
-                                      new Point(getEnd().getX(), getEnd().getY()));
+                "location",
+                new Point(getStart().getX(), getStart().getY()),
+                new Point(getEnd().getX(), getEnd().getY()));
         animator.addTarget(ps);
         super.init(animator, null);
     }

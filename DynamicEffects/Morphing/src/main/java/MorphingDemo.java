@@ -99,7 +99,7 @@ public class MorphingDemo extends JFrame {
         }
 
         private void setupTriggers() {
-            Animator animator = PropertySetter.createAnimator(
+            var animator = PropertySetter.createAnimator(
                     150, this, "morphing", 0.0f, 1.0f);
             animator.setAcceleration(0.2f);
             animator.setDeceleration(0.3f);
@@ -138,7 +138,7 @@ public class MorphingDemo extends JFrame {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
             if (desktopHints == null) {
-                Toolkit tk = Toolkit.getDefaultToolkit();
+                var tk = Toolkit.getDefaultToolkit();
                 @SuppressWarnings("unchecked")
                 var hints = (Map<RenderingHints.Key, Object>)
                         tk.getDesktopProperty("awt.font.desktophints");
@@ -181,10 +181,10 @@ public class MorphingDemo extends JFrame {
                 g2.translate(-getWidth(), 0.0);
             }
 
-            int width = g2.getFontMetrics().stringWidth(getText());
+            var width = g2.getFontMetrics().stringWidth(getText());
 
-            int x = (getWidth() - width) / 2;
-            int y = getHeight() / 2 + g2.getFontMetrics().getAscent() / 2 - 1;
+            var x = (getWidth() - width) / 2;
+            var y = getHeight() / 2 + g2.getFontMetrics().getAscent() / 2 - 1;
 
             g2.setColor(Color.BLACK);
             g2.drawString(getText(), x, y + 1);
@@ -216,7 +216,7 @@ public class MorphingDemo extends JFrame {
         }
 
         public void next() {
-            Animator animator = new Animator(500);
+            var animator = new Animator(500);
             animator.addTarget(new PropertySetter(this, "alpha", 1.0f));
             animator.setAcceleration(0.2f);
             animator.setDeceleration(0.4f);
@@ -224,7 +224,7 @@ public class MorphingDemo extends JFrame {
         }
 
         public void previous() {
-            Animator animator = new Animator(500);
+            var animator = new Animator(500);
             animator.addTarget(new PropertySetter(this, "alpha", 0.0f));
             animator.setAcceleration(0.2f);
             animator.setDeceleration(0.4f);
@@ -251,7 +251,7 @@ public class MorphingDemo extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MorphingDemo().setVisible(true));
     }
 }

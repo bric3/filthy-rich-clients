@@ -36,11 +36,10 @@ package org.jdesktop.animation.transitions;
 /**
  * This interface is implemented by the "target" of ScreenTransition. This target will be called by ScreenTransition
  * during the transition setup process, so that the application can modify the application state appropriately.
- * 
- * @see ScreenTransition#ScreenTransition(javax.swing.JComponent, TransitionTarget,
- *      org.jdesktop.animation.transitions.EffectsManager, org.jdesktop.core.animation.timing.Animator)
- * 
+ *
  * @author Chet Haase
+ * @see ScreenTransition#ScreenTransition(javax.swing.JComponent, TransitionTarget,
+ * EffectsManager, org.jdesktop.core.animation.timing.Animator)
  */
 public interface TransitionTarget {
 
@@ -51,6 +50,6 @@ public interface TransitionTarget {
      * end-state of the components for the upcoming transition. After this method is complete,
      * <code>ScreenTransition</code> has the information it needs to run the transition and the animation will begin.
      */
-    public void setupNextScreen();
+    void setupNextScreen();
 
 }

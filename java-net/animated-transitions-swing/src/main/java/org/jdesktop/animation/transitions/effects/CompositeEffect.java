@@ -33,18 +33,18 @@
 
 package org.jdesktop.animation.transitions.effects;
 
-import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jdesktop.animation.transitions.ComponentState;
 import org.jdesktop.animation.transitions.Effect;
 import org.jdesktop.core.animation.timing.Animator;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This Effect combines one or more sub-effects to create a more complex and interesting effect. For example, you could
  * create an effect that both moves and scales by creating a CompositeEffect with the Move and Scale effects.
- *
+ * <p>
  * Composite effects are created by simply adding effects in the order that you want them combined.
  *
  * @author Chet Haase
@@ -54,7 +54,7 @@ public class CompositeEffect extends Effect {
     /**
      * The list of effects in the CompositeEffect.
      */
-    private final List<Effect> effects = new ArrayList<Effect>();
+    private final List<Effect> effects = new ArrayList<>();
 
     /**
      * Creates a CompositeEffect with no sub-effects. Additional sub-effects should be added via the
@@ -93,7 +93,7 @@ public class CompositeEffect extends Effect {
      * start state for each effect.
      */
     public void setStart(ComponentState start) {
-        for (Effect effect : effects) {
+        for (var effect : effects) {
             effect.setStart(start);
         }
         super.setStart(start);
@@ -104,7 +104,7 @@ public class CompositeEffect extends Effect {
      */
     @Override
     public void init(Animator animator, Effect parentEffect) {
-        for (Effect effect : effects) {
+        for (var effect : effects) {
             effect.init(animator, this);
         }
         super.init(animator, null);
@@ -115,7 +115,7 @@ public class CompositeEffect extends Effect {
      */
     @Override
     public void cleanup(Animator animator) {
-        for (Effect effect : effects) {
+        for (var effect : effects) {
             effect.cleanup(animator);
         }
     }
@@ -125,7 +125,7 @@ public class CompositeEffect extends Effect {
      * state for each effect.
      */
     public void setEnd(ComponentState end) {
-        for (Effect effect : effects) {
+        for (var effect : effects) {
             effect.setEnd(end);
         }
         super.setEnd(end);
@@ -137,8 +137,7 @@ public class CompositeEffect extends Effect {
      */
     @Override
     public void setup(Graphics2D g2d) {
-        for (int i = 0; i < effects.size(); ++i) {
-            Effect effect = effects.get(i);
+        for (var effect : effects) {
             effect.setup(g2d);
             // Grab the image for this effect from one of the sub-effects
             // REMIND: This breaks down if we have a CompositeEffect

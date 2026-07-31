@@ -31,28 +31,23 @@
 
 package org.progx.artemis.ui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-
 import org.progx.artemis.Application;
+
+import javax.swing.*;
+import java.awt.*;
 
 class DoneStepPanel extends JPanel {
     public DoneStepPanel() {
         setLayout(new GridBagLayout());
         setBackground(Color.BLACK);
         setOpaque(false);
-        JLabel label = new JLabel(
+        var label = new JLabel(
                 Application.getResourceBundle().getString("step.3.doneTitle"));
         label.setFont(new Font("Helvetica", Font.BOLD, 64)); // NON-NLS
         label.setForeground(Color.WHITE);
         add(label, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
-                                          GridBagConstraints.CENTER,
-                                          GridBagConstraints.NONE,
-                                          new Insets(0, 0, 0, 0), 0, 0));
+                GridBagConstraints.CENTER,
+                GridBagConstraints.NONE,
+                new Insets(0, 0, 0, 0), 0, 0));
     }
 }

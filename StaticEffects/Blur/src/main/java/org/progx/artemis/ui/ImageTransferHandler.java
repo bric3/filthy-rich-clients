@@ -31,18 +31,15 @@
 
 package org.progx.artemis.ui;
 
+import org.progx.artemis.Application;
+import org.progx.artemis.graphics.GraphicsUtilities;
+
+import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
-import javax.swing.TransferHandler;
-
-import org.progx.artemis.graphics.GraphicsUtilities;
-import org.progx.artemis.Application;
 
 class ImageTransferHandler extends TransferHandler {
     @Override
@@ -53,7 +50,7 @@ class ImageTransferHandler extends TransferHandler {
         if (!support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
             return false;
         }
-        boolean copySupported = (COPY & support.getSourceDropActions()) == COPY;
+        var copySupported = (COPY & support.getSourceDropActions()) == COPY;
         if (copySupported) {
             support.setDropAction(COPY);
             return true;
@@ -70,30 +67,26 @@ class ImageTransferHandler extends TransferHandler {
             return false;
         }
 
-        Transferable t = support.getTransferable();
+        var t = support.getTransferable();
         try {
-            Object data =
+            var data =
                     t.getTransferData(DataFlavor.javaFileListFlavor);
-            final File file = ((List<File>) data).get(0);
+            @SuppressWarnings("unchecked") final var file = ((List<File>) data).getFirst();
 
-            Thread loader = new Thread(new Runnable() {
-                public void run() {
-                    Application.getMainFrame().showWaitGlassPane();
-                    try {
-                        BufferedImage image = GraphicsUtilities
-                                .loadCompatibleImage(file.toURI().toURL());
-                        Application.getMainFrame().setImage(image, file.getName());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Application.getMainFrame().hideWaitGlassPane();
-                    }
+            var loader = new Thread(() -> {
+                Application.getMainFrame().showWaitGlassPane();
+                try {
+                    var image = GraphicsUtilities
+                            .loadCompatibleImage(file.toURI().toURL());
+                    Application.getMainFrame().setImage(image, file.getName());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Application.getMainFrame().hideWaitGlassPane();
                 }
             });
             loader.start();
         } catch (UnsupportedFlavorException e) {
             return false;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

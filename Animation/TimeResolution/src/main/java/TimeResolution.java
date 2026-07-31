@@ -1,6 +1,6 @@
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Timer;
 /*
  * TimeResolution.java
  *
@@ -41,13 +41,13 @@ import javax.swing.Timer;
  * @author Chet
  */
 public class TimeResolution implements ActionListener {
-    
+
     private static final int INCREMENT = 5;
     private static final int MAX = 50;
-    
+
     /**
      * Measures how much time has elapsed according to both currentTimeMillis()
-     * and nanoTime() at each interval. Note that the time reported for 
+     * and nanoTime() at each interval. Note that the time reported for
      * sleep() may not be accurate since the internal sleep timer may not
      * have the appropriate resolution to sleep for the requested time.
      * The main utility of this function is to compare the two timing
@@ -55,8 +55,8 @@ public class TimeResolution implements ActionListener {
      * time varies from the sleep() time.
      */
     private void measureTimeFunctions(int increment, int max) {
-        long startTime = System.currentTimeMillis();
-        long startNanos = System.nanoTime();
+        var startTime = System.currentTimeMillis();
+        var startNanos = System.nanoTime();
         long elapsedTimeActual = 0;
         long elapsedTimeMeasured = 0;
         long elapsedNanosMeasured = 0;
@@ -64,9 +64,10 @@ public class TimeResolution implements ActionListener {
         while (elapsedTimeActual < max) {
             try {
                 Thread.sleep(increment);
-            } catch (Exception _) {}
-            long currentTime = System.currentTimeMillis();
-            long currentNanos = System.nanoTime();
+            } catch (Exception _) {
+            }
+            var currentTime = System.currentTimeMillis();
+            var currentNanos = System.nanoTime();
             elapsedTimeActual += increment;
             elapsedTimeMeasured = currentTime - startTime;
             elapsedNanosMeasured = (currentNanos - startNanos) / 1000000;
@@ -78,24 +79,25 @@ public class TimeResolution implements ActionListener {
     /**
      * This method measures the actual time slept, compared to the requested
      * sleep() time. We run many iterations for each value of sleep() to
-     * get more accurate timing values; this accounts for possible 
+     * get more accurate timing values; this accounts for possible
      * inaccuracies of our nanoTime() method for small time differences.
      */
     private void measureSleep() {
         System.out.print("                                 measured\n");
         System.out.print("sleep time   iterations   total time   per-sleep\n");
-        for (int sleepTime = 0; sleepTime <= 20; ++sleepTime) {
-            int iterations = (sleepTime == 0) ? 10000 : (1000 / sleepTime);
-            long startTime = System.nanoTime();
-            for (int i = 0; i < iterations; ++i) {
+        for (var sleepTime = 0; sleepTime <= 20; ++sleepTime) {
+            var iterations = (sleepTime == 0) ? 10000 : (1000 / sleepTime);
+            var startTime = System.nanoTime();
+            for (var i = 0; i < iterations; ++i) {
                 try {
                     Thread.sleep(sleepTime);
-                } catch (Exception _) {}
+                } catch (Exception _) {
+                }
             }
-            long endTime = System.nanoTime();
-            long totalTime = (endTime - startTime) / 1000000;
-            float calculatedSleepTime = totalTime / (float)iterations;
-            System.out.printf("   %2d          %5d         %4d       %5.2f\n", 
+            var endTime = System.nanoTime();
+            var totalTime = (endTime - startTime) / 1000000;
+            var calculatedSleepTime = totalTime / (float) iterations;
+            System.out.printf("   %2d          %5d         %4d       %5.2f\n",
                     sleepTime, iterations, totalTime, calculatedSleepTime);
         }
     }
@@ -107,10 +109,10 @@ public class TimeResolution implements ActionListener {
     private synchronized void measureWait() {
         System.out.print("                                measured\n");
         System.out.print("wait time   iterations   total time   per-wait\n");
-        for (int sleepTime = 1; sleepTime <= 20; ++sleepTime) {
-            int iterations = 1000 / sleepTime;
-            long startTime = System.nanoTime();
-            for (int i = 0; i < iterations; ++i) {
+        for (var sleepTime = 1; sleepTime <= 20; ++sleepTime) {
+            var iterations = 1000 / sleepTime;
+            var startTime = System.nanoTime();
+            for (var i = 0; i < iterations; ++i) {
                 try {
                     wait(sleepTime);
                 } catch (Exception e) {
@@ -118,21 +120,21 @@ public class TimeResolution implements ActionListener {
                     Thread.dumpStack();
                 }
             }
-            long endTime = System.nanoTime();
-            long totalTime = (endTime - startTime) / 1000000;
-            float calculatedSleepTime = totalTime / (float)iterations;
-            System.out.printf("  %2d          %5d         %4d       %5.2f\n", 
+            var endTime = System.nanoTime();
+            var totalTime = (endTime - startTime) / 1000000;
+            var calculatedSleepTime = totalTime / (float) iterations;
+            System.out.printf("  %2d          %5d         %4d       %5.2f\n",
                     sleepTime, iterations, totalTime, calculatedSleepTime);
         }
     }
-    
+
     // Variables used in measurement of Swing timer
     int timerIteration = 0;
     int iterations = 0;
     Timer timer;
     long startTime, endTime;
     int sleepTime;
-    
+
     /**
      * This method is called during the execution of the Swing timer.
      */
@@ -141,15 +143,15 @@ public class TimeResolution implements ActionListener {
             timer.stop();
             timerIteration = 0;
             endTime = System.nanoTime();
-            long totalTime = (endTime - startTime) / 1000000;
-            float calculatedDelayTime = totalTime / (float)iterations;
-            System.out.printf("  %2d          %5d         %5d        %5.2f\n", 
+            var totalTime = (endTime - startTime) / 1000000;
+            var calculatedDelayTime = totalTime / (float) iterations;
+            System.out.printf("  %2d          %5d         %5d        %5.2f\n",
                     sleepTime, iterations, totalTime, calculatedDelayTime);
         }
     }
-       
+
     /**
-     * This method measures the accuracy of the Swing timer, which is 
+     * This method measures the accuracy of the Swing timer, which is
      * internally dependent upon both the internal timing mechanisms
      * (either currentTimeMillis() or nanoTime()) and the wait() method.
      * So the results we see here should be predictable from the results
@@ -167,7 +169,8 @@ public class TimeResolution implements ActionListener {
             while (timerIteration > 0) {
                 try {
                     Thread.sleep(1000);
-                } catch (Exception _) {}
+                } catch (Exception _) {
+                }
             }
         }
     }
@@ -175,12 +178,12 @@ public class TimeResolution implements ActionListener {
     /**
      * Execute the various timer resolution tests.
      */
-    public static void main(String[] args) {
-        TimeResolution timeResolution = new TimeResolution();
+    static void main(String[] args) {
+        var timeResolution = new TimeResolution();
         timeResolution.measureTimer();
         timeResolution.measureTimeFunctions(INCREMENT, MAX);
         timeResolution.measureSleep();
         timeResolution.measureWait();
     }
-    
+
 }

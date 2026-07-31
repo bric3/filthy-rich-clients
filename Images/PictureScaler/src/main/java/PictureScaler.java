@@ -1,16 +1,7 @@
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.Transparency;
-import java.awt.image.BufferedImage;
-import java.net.URL;
 import javax.imageio.ImageIO;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 /*
  * PictureScaler.java
  *
@@ -56,16 +47,18 @@ public class PictureScaler extends JComponent {
     private static final int PADDING = 10;
     private static final double SCALE_FACTOR = .05;
     private int scaleW, scaleH;
-    
-    /** Creates a new instance of PictureScaler */
+
+    /**
+     * Creates a new instance of PictureScaler
+     */
     public PictureScaler() {
         try {
-            URL url = getClass().getResource("images/BB.jpg");
+            var url = getClass().getResource("images/BB.jpg");
             picture = ImageIO.read(url);
-            scaleW = (int)(SCALE_FACTOR * picture.getWidth());
-            scaleH = (int)(SCALE_FACTOR * picture.getHeight());
+            scaleW = (int) (SCALE_FACTOR * picture.getWidth());
+            scaleH = (int) (SCALE_FACTOR * picture.getHeight());
             System.out.println("w, h = " + picture.getWidth() + ", " + picture.getHeight());
-            setPreferredSize(new Dimension(PADDING + (5 * (scaleW + PADDING)), 
+            setPreferredSize(new Dimension(PADDING + (5 * (scaleW + PADDING)),
                     scaleH + (4 * PADDING)));
         } catch (Exception e) {
             System.out.println("Problem reading image file: " + e);
@@ -76,38 +69,36 @@ public class PictureScaler extends JComponent {
     /**
      * Convenience method that returns a scaled instance of the
      * provided BufferedImage.
-     * 
-     * 
-     * @param img the original image to be scaled
-     * @param targetWidth the desired width of the scaled instance,
-     *    in pixels
-     * @param targetHeight the desired height of the scaled instance,
-     *    in pixels
-     * @param hint one of the rendering hints that corresponds to
-     *    RenderingHints.KEY_INTERPOLATION (e.g.
-     *    RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR,
-     *    RenderingHints.VALUE_INTERPOLATION_BILINEAR,
-     *    RenderingHints.VALUE_INTERPOLATION_BICUBIC)
+     *
+     * @param img                 the original image to be scaled
+     * @param targetWidth         the desired width of the scaled instance,
+     *                            in pixels
+     * @param targetHeight        the desired height of the scaled instance,
+     *                            in pixels
+     * @param hint                one of the rendering hints that corresponds to
+     *                            RenderingHints.KEY_INTERPOLATION (e.g.
+     *                            RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR,
+     *                            RenderingHints.VALUE_INTERPOLATION_BILINEAR,
+     *                            RenderingHints.VALUE_INTERPOLATION_BICUBIC)
      * @param progressiveBilinear if true, this method will use a multi-step
-     *    scaling technique that provides higher quality than the usual
-     *    one-step technique (only useful in down-scaling cases, where
-     *    targetWidth or targetHeight is
-     *    smaller than the original dimensions)
+     *                            scaling technique that provides higher quality than the usual
+     *                            one-step technique (only useful in down-scaling cases, where
+     *                            targetWidth or targetHeight is
+     *                            smaller than the original dimensions)
      * @return a scaled version of the original BufferedImage
      */
     public BufferedImage getFasterScaledInstance(BufferedImage img,
-            int targetWidth, int targetHeight, Object hint,
-            boolean progressiveBilinear)
-    {
-        int type = (img.getTransparency() == Transparency.OPAQUE) ?
-            BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
-        BufferedImage ret = img;
+                                                 int targetWidth, int targetHeight, Object hint,
+                                                 boolean progressiveBilinear) {
+        var type = (img.getTransparency() == Transparency.OPAQUE) ?
+                BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+        var ret = img;
         BufferedImage scratchImage = null;
         Graphics2D g2 = null;
         int w, h;
-        int prevW = ret.getWidth();
-        int prevH = ret.getHeight();
-        boolean isTranslucent = img.getTransparency() !=  Transparency.OPAQUE; 
+        var prevW = ret.getWidth();
+        var prevH = ret.getHeight();
+        var isTranslucent = img.getTransparency() != Transparency.OPAQUE;
 
         if (progressiveBilinear) {
             // Use multi-step technique: start with original size, then
@@ -121,7 +112,7 @@ public class PictureScaler extends JComponent {
             w = targetWidth;
             h = targetHeight;
         }
-        
+
         do {
             if (progressiveBilinear && w > targetWidth) {
                 w /= 2;
@@ -151,7 +142,7 @@ public class PictureScaler extends JComponent {
 
             ret = scratchImage;
         } while (w != targetWidth || h != targetHeight);
-        
+
         if (g2 != null) {
             g2.dispose();
         }
@@ -165,12 +156,12 @@ public class PictureScaler extends JComponent {
             g2.dispose();
             ret = scratchImage;
         }
-        
+
         return ret;
     }
-    
+
     /**
-     * Render all scaled versions 10 times, timing each version and 
+     * Render all scaled versions 10 times, timing each version and
      * reporting the results below the appropriate scaled image.
      */
     protected void paintComponent(Graphics g) {
@@ -178,99 +169,95 @@ public class PictureScaler extends JComponent {
         int xLoc = PADDING, yLoc = PADDING;
         long startTime, endTime;
         float totalTime;
-        int iterations = 10;
-        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+        var iterations = 10;
+        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         startTime = System.nanoTime();
-        for (int i = 0; i < iterations; ++i) {
+        for (var i = 0; i < iterations; ++i) {
             g.drawImage(picture, xLoc, yLoc, scaleW, scaleH, null);
         }
         endTime = System.nanoTime();
-        totalTime = (float)((endTime - startTime) / 1000000) / iterations;
+        totalTime = (float) ((endTime - startTime) / 1000000) / iterations;
         g.drawString("NEAREST ", xLoc, yLoc + scaleH + PADDING);
-        g.drawString(Float.toString(totalTime) + " ms", 
+        g.drawString(totalTime + " ms",
                 xLoc, yLoc + scaleH + PADDING + 10);
         System.out.println("NEAREST: " + ((endTime - startTime) / 1000000));
-        
+
         // Scale with BILINEAR
         xLoc += scaleW + PADDING;
-        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         startTime = System.nanoTime();
-        for (int i = 0; i < iterations; ++i) {
+        for (var i = 0; i < iterations; ++i) {
             g.drawImage(picture, xLoc, yLoc, scaleW, scaleH, null);
         }
         endTime = System.nanoTime();
-        totalTime = (float)((endTime - startTime) / 1000000) / iterations;
+        totalTime = (float) ((endTime - startTime) / 1000000) / iterations;
         g.drawString("BILINEAR", xLoc, yLoc + scaleH + PADDING);
-        g.drawString(Float.toString(totalTime) + " ms", 
+        g.drawString(totalTime + " ms",
                 xLoc, yLoc + scaleH + PADDING + 10);
         System.out.println("BILINEAR: " + ((endTime - startTime) / 1000000));
 
         // Scale with BICUBIC
         xLoc += scaleW + PADDING;
-        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, 
+        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                 RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         startTime = System.nanoTime();
-        for (int i = 0; i < iterations; ++i) {
+        for (var i = 0; i < iterations; ++i) {
             g.drawImage(picture, xLoc, yLoc, scaleW, scaleH, null);
         }
         endTime = System.nanoTime();
-        totalTime = (float)((endTime - startTime) / 1000000) / iterations;
+        totalTime = (float) ((endTime - startTime) / 1000000) / iterations;
         g.drawString("BICUBIC", xLoc, yLoc + scaleH + PADDING);
-        g.drawString(Float.toString(totalTime) + " ms", 
+        g.drawString(totalTime + " ms",
                 xLoc, yLoc + scaleH + PADDING + 10);
         System.out.println("BICUBIC: " + ((endTime - startTime) / 1000000));
 
         // Scale with getScaledInstance
         xLoc += scaleW + PADDING;
         startTime = System.nanoTime();
-        for (int i = 0; i < iterations; ++i) {
-            Image scaledPicture = picture.getScaledInstance(scaleW, scaleH, 
+        for (var i = 0; i < iterations; ++i) {
+            var scaledPicture = picture.getScaledInstance(scaleW, scaleH,
                     Image.SCALE_AREA_AVERAGING);
             g.drawImage(scaledPicture, xLoc, yLoc, null);
         }
         endTime = System.nanoTime();
-        totalTime = (float)((endTime - startTime) / 1000000) / iterations;
+        totalTime = (float) ((endTime - startTime) / 1000000) / iterations;
         g.drawString("getScaled", xLoc, yLoc + scaleH + PADDING);
-        g.drawString(Float.toString(totalTime) + " ms", 
+        g.drawString(totalTime + " ms",
                 xLoc, yLoc + scaleH + PADDING + 10);
         System.out.println("getScaled: " + ((endTime - startTime) / 1000000));
-        
+
         // Scale with Progressive Bilinear
         xLoc += scaleW + PADDING;
         startTime = System.nanoTime();
-        for (int i = 0; i < iterations; ++i) {
-            Image scaledPicture = getFasterScaledInstance(picture, scaleW, scaleH, 
+        for (var i = 0; i < iterations; ++i) {
+            Image scaledPicture = getFasterScaledInstance(picture, scaleW, scaleH,
                     RenderingHints.VALUE_INTERPOLATION_BILINEAR, true);
             g.drawImage(scaledPicture, xLoc, yLoc, null);
         }
         endTime = System.nanoTime();
-        totalTime = (float)((endTime - startTime) / 1000000) / iterations;
+        totalTime = (float) ((endTime - startTime) / 1000000) / iterations;
         g.drawString("Progressive", xLoc, yLoc + scaleH + PADDING);
-        g.drawString(Float.toString(totalTime) + " ms", 
+        g.drawString(totalTime + " ms",
                 xLoc, yLoc + scaleH + PADDING + 10);
         System.out.println("Progressive: " + ((endTime - startTime) / 1000000));
     }
-    
+
     private static void createAndShowGUI() {
-        JFrame f = new JFrame();
+        var f = new JFrame();
         f.setLayout(new BorderLayout());
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        PictureScaler test = new PictureScaler();
-        //f.setSize(scaleW + (4 * PADDING), scaleH + (4 * PADDING));
-        f.add(test);        
+        var test = new PictureScaler();
+        // f.setSize(scaleW + (4 * PADDING), scaleH + (4 * PADDING));
+        f.add(test);
         f.validate();
         f.pack();
         f.setVisible(true);
     }
-    
-    public static void main(String args[]) {
-        Runnable doCreateAndShowGUI = new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        };
+
+    static void main(String[] args) {
+        Runnable doCreateAndShowGUI = PictureScaler::createAndShowGUI;
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
 }

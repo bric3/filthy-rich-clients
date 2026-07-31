@@ -33,15 +33,10 @@
 
 package org.jdesktop.animation.transitions;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-
-import javax.swing.JComponent;
-
 import org.jdesktop.core.animation.timing.Animator;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * This is the base class for all effects that are used during screen transitions.
@@ -53,31 +48,45 @@ import org.jdesktop.core.animation.timing.Animator;
  */
 public abstract class Effect {
 
-    /** Information about the start state used by this effect. */
+    /**
+     * Information about the start state used by this effect.
+     */
     private ComponentState start;
-    /** Information about the end state used by this effect. */
+    /**
+     * Information about the end state used by this effect.
+     */
     private ComponentState end;
-    /** Flag to indicate whether effect needs to re-render Component */
+    /**
+     * Flag to indicate whether effect needs to re-render Component
+     */
     private boolean renderComponent = false;
     /**
      * The image that will be used during the transition, for effects that opt to not re-render the components directly.
      * The image will be set when the start and end states are set.
      */
     private Image componentImage;
-    /** Current x location. */
+    /**
+     * Current x location.
+     */
     private int x;
-    /** Current y location. */
+    /**
+     * Current y location.
+     */
     private int y;
-    /** Current width. */
+    /**
+     * Current width.
+     */
     private int width;
-    /** Current height. */
+    /**
+     * Current height.
+     */
     private int height;
 
     // The bounds and location fields are used as utility objects to
     // be able to change the x/y and width/height fields from
     // single PropertySetter objects
     private Rectangle bounds = new Rectangle();
-    private Point location = new Point();
+    private final Point location = new Point();
 
     /**
      * Set the location and size of the component state being animated by this effect
@@ -185,11 +194,10 @@ public abstract class Effect {
      * transition. For example, components that are being scaled during a transition which contain text should probably
      * be redrawn rather than simply scaling an image, as scaling an image of the text does not generally look the same
      * as text rendered directly at a particular size.
-     * 
-     * @param renderComponent
-     *            whether the component should be re-rendered during the transition. If <code>true</code>, then the
-     *            component will be re-rendered during the animation. If <code>false</code>, the system may choose to
-     *            render an image representation of the component instead.
+     *
+     * @param renderComponent whether the component should be re-rendered during the transition. If <code>true</code>, then the
+     *                        component will be re-rendered during the animation. If <code>false</code>, the system may choose to
+     *                        render an image representation of the component instead.
      */
     public void setRenderComponent(boolean renderComponent) {
         this.renderComponent = renderComponent;
@@ -198,7 +206,7 @@ public abstract class Effect {
     /**
      * Returns whether the effect will re-render its component during transitions, as opposed to using an image
      * representation of it.
-     * 
+     *
      * @return boolean whether the effect will re-render the component during the transition
      */
     public boolean getRenderComponent() {
@@ -267,8 +275,8 @@ public abstract class Effect {
         } else if (start.getWidth() != end.getWidth() || start.getHeight() != end.getHeight()) {
             // This block grabs the targetImage
             // that best represents the component; the larger the better.
-            float widthFraction = (float) end.getWidth() / start.getWidth();
-            float heightFraction = (float) end.getHeight() / start.getHeight();
+            var widthFraction = (float) end.getWidth() / start.getWidth();
+            var heightFraction = (float) end.getHeight() / start.getHeight();
             if (Math.abs(widthFraction - 1.0f) > Math.abs(heightFraction - 1.0f)) {
                 // difference greater in width
                 if (widthFraction < 1.0f) {
@@ -301,9 +309,8 @@ public abstract class Effect {
      * <p>
      * Subclasses that override this method should call this superclass method, because it may set up state used later
      * during rendering.
-     * 
-     * @param g2d
-     *            the Graphics2D destination for this rendering
+     *
+     * @param g2d the Graphics2D destination for this rendering
      */
     public void setup(Graphics2D g2d) {
         if (!renderComponent && componentImage == null) {
@@ -319,9 +326,8 @@ public abstract class Effect {
      * Most subclasses may elect to not override the method, since this version version of the method already handles
      * the basic painting operation of a component. Only subclasses that need facilities beyond the basic drawing of the
      * component should consider overriding.
-     * 
-     * @param g2d
-     *            The Graphics2D destination for this rendering. Note that the state of this Graphics2D object is
+     *
+     * @param g2d The Graphics2D destination for this rendering. Note that the state of this Graphics2D object is
      *            affected by the previous call to <code>setup()</code> so there may be no more need to perturb the
      *            graphics state further. Functionality in this method should focus, instead, on the rendering details
      *            instead of the graphics state.

@@ -21,7 +21,7 @@ val javaToolchainCompiler = javaToolchains.compilerFor(java.toolchain)
 // Due to https://github.com/gradle/gradle/issues/18426, do not access `javaToolchains` from within the task scope
 tasks {
     withType<JavaExec>().configureEach {
-        //group = "class-with-main"
+        // group = "class-with-main"
         classpath(sourceSets.main.get().runtimeClasspath)
 
         // Need to set the toolchain https://github.com/gradle/gradle/issues/16791

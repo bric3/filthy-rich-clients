@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2007, Sun Microsystems, Inc
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- *
+ * <p>
  *   * Redistributions of source code must retain the above copyright
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
@@ -15,7 +15,7 @@
  *   * Neither the name of the TimingFramework project nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
- *
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -29,8 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.applet.Applet;
 import java.applet.AudioClip;
-import java.net.URL;
+
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.KeyFrames;
 
@@ -44,16 +45,16 @@ public class SoundEffects implements TimingTarget {
     
     AudioClip drivingClip;
     AudioClip turningClip;
-    KeyFrames keyFrames;
+    final KeyFrames keyFrames;
     
     /** Creates a new instance of SoundEffects */
     public SoundEffects(KeyFrames keyFrames) {
         this.keyFrames = keyFrames;
         try {
-            URL url  = SoundEffects.class.getResource("sounds/vroom.wav");
-            drivingClip = java.applet.Applet.newAudioClip(url);
+            var url  = SoundEffects.class.getResource("sounds/vroom.wav");
+            drivingClip = Applet.newAudioClip(url);
             url  = SoundEffects.class.getResource("sounds/drift.wav");
-            turningClip = java.applet.Applet.newAudioClip(url);
+            turningClip = Applet.newAudioClip(url);
         } catch (Exception e) {
             System.out.println("Problem loading track/car images: " + e);
         }

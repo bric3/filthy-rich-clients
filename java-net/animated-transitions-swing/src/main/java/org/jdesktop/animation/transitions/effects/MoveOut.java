@@ -33,19 +33,19 @@
 
 package org.jdesktop.animation.transitions.effects;
 
-import java.awt.Point;
-
 import org.jdesktop.animation.transitions.Effect;
 import org.jdesktop.core.animation.timing.Animator;
 import org.jdesktop.core.animation.timing.PropertySetter;
 import org.jdesktop.core.animation.timing.TimingTargetAdapter;
+
+import java.awt.*;
 
 /**
  * Effect that moves a component from its starting location to a specified end point
  */
 public class MoveOut extends Effect {
 
-    private Point endLocation = new Point();
+    private final Point endLocation = new Point();
     private TimingTargetAdapter ps;
 
     public MoveOut(int x, int y) {
@@ -58,11 +58,11 @@ public class MoveOut extends Effect {
      */
     @Override
     public void init(Animator animator, Effect parentEffect) {
-        Effect targetEffect = (parentEffect == null) ? this : parentEffect;
+        var targetEffect = (parentEffect == null) ? this : parentEffect;
         ps = PropertySetter.getTarget(targetEffect,
-                                      "location",
-                                      new Point(getStart().getX(), getStart().getY()),
-                                      endLocation);
+                "location",
+                new Point(getStart().getX(), getStart().getY()),
+                endLocation);
         animator.addTarget(ps);
         super.init(animator, parentEffect);
     }

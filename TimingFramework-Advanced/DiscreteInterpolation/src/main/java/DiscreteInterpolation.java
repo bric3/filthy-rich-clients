@@ -1,4 +1,3 @@
-import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.interpolation.DiscreteInterpolator;
 import org.jdesktop.animation.timing.interpolation.KeyFrames;
 import org.jdesktop.animation.timing.interpolation.KeyValues;
@@ -43,25 +42,27 @@ import org.jdesktop.animation.timing.interpolation.PropertySetter;
  * @author Chet
  */
 public class DiscreteInterpolation {
-    
+
     private int intValue;
-    
-    /** Creates a new instance of DiscreteInterpolation */
+
+    /**
+     * Creates a new instance of DiscreteInterpolation
+     */
     public DiscreteInterpolation() {
     }
-    
+
     public void setIntValue(int intValue) {
         this.intValue = intValue;
         System.out.println("intValue = " + intValue);
     }
-    
-    public static void main(String[] args) {
-        KeyValues keyValues = KeyValues.create(2, 6, 3, 5, 4);
-        KeyFrames keyFrames = new KeyFrames(keyValues,
+
+    static void main(String[] args) {
+        var keyValues = KeyValues.create(2, 6, 3, 5, 4);
+        var keyFrames = new KeyFrames(keyValues,
                 DiscreteInterpolator.getInstance());
-        Animator anim = PropertySetter.createAnimator(1000, 
+        var anim = PropertySetter.createAnimator(1000,
                 new DiscreteInterpolation(), "intValue", keyFrames);
         anim.start();
-        
+
     }
 }

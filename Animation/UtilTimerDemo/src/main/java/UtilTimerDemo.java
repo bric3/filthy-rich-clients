@@ -40,7 +40,7 @@ import java.util.TimerTask;
  * @author Chet
  */
 public class UtilTimerDemo extends TimerTask {
-    
+
     private static long prevTime = 0;
     private static long startTime = 0;
     private static final long DELAY = 100;
@@ -50,8 +50,8 @@ public class UtilTimerDemo extends TimerTask {
     private static Timer timer = null;
     private boolean firstTime = true;
     private static final boolean runningFixedRate = false;
-    
-    /** 
+
+    /**
      * This method will be called during every tick of the Timers.
      * We insert an artificial delay each time, to simulate some processing.
      * The first time through, this delay is greater than the delay between
@@ -59,9 +59,9 @@ public class UtilTimerDemo extends TimerTask {
      * fixed-rate and fixed-delay timers.
      */
     public void run() {
-        long nowTime = System.currentTimeMillis();
-        long elapsedTime = nowTime - prevTime;
-        long totalTime = nowTime - startTime;
+        var nowTime = System.currentTimeMillis();
+        var elapsedTime = nowTime - prevTime;
+        var totalTime = nowTime - startTime;
         System.out.println("Elapsed time = " + elapsedTime);
         if (totalTime > DURATION) {
             timer.cancel();
@@ -74,12 +74,14 @@ public class UtilTimerDemo extends TimerTask {
             } else {
                 Thread.sleep(PROCESSING_TIME);
             }
-        } catch (Exception _) {}
+        } catch (Exception _) {
+        }
     }
-    
-    public UtilTimerDemo() {}
-    
-    public static void main(String[] args) {
+
+    public UtilTimerDemo() {
+    }
+
+    static void main(String[] args) {
         // Start and run a fixed-delay timer
         timer = new Timer();
         startTime = prevTime = System.currentTimeMillis();
@@ -88,9 +90,10 @@ public class UtilTimerDemo extends TimerTask {
 
         // Sleep long enough to let the first timer finish
         try {
-            Thread.sleep(DURATION*2);
-        } catch (Exception _) {}
-        
+            Thread.sleep(DURATION * 2);
+        } catch (Exception _) {
+        }
+
         // Start and run a fixed-rate timer
         timer = new Timer();
         startTime = prevTime = System.currentTimeMillis();

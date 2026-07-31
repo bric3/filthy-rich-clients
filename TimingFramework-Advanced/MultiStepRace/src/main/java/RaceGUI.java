@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2007, Sun Microsystems, Inc
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- *
+ * <p>
  *   * Redistributions of source code must retain the above copyright
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
@@ -15,7 +15,7 @@
  *   * Neither the name of the TimingFramework project nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
- *
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -42,15 +42,15 @@ import javax.swing.UIManager;
  */
 public class RaceGUI {
 
-    private TrackView track;
-    private RaceControlPanel controlPanel;
+    private final TrackView track;
+    private final RaceControlPanel controlPanel;
 
     /**
      * Creates a new instance of RaceGUI
      */
     public RaceGUI(String appName) {
         UIManager.put("swing.boldMetal", Boolean.FALSE);
-        JFrame f = new JFrame(appName);
+        var f = new JFrame(appName);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setLayout(new BorderLayout());
         

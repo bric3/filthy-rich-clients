@@ -146,7 +146,7 @@ public class FadingDemo extends JFrame {
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    Animator animator = new Animator(200);
+                    var animator = new Animator(200);
                     animator.addTarget(new PropertySetter(
                             HelpGlassPane.this, "alpha", 0.0f));
                     animator.setAcceleration(0.2f);
@@ -242,7 +242,7 @@ public class FadingDemo extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new FadingDemo().setVisible(true));
     }
 }

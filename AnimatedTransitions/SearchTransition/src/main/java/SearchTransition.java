@@ -131,13 +131,13 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
      * Arrange the GUI for the initial search screen.
      */
     private void setupSearchScreen() {
-        int instructionsX = (getWidth() - INSTRUCTIONS_W) / 2;
-        int instructionsY = getHeight() / 4;
-        int searchX = (getWidth() - LABEL_W - FIELD_W - 10) / 2;
-        int searchY = instructionsY + INSTRUCTIONS_H + 20;
-        int fieldX = searchX + LABEL_W + 10;
-        //noinspection UnnecessaryLocalVariable
-        int fieldY = searchY;
+        var instructionsX = (getWidth() - INSTRUCTIONS_W) / 2;
+        var instructionsY = getHeight() / 4;
+        var searchX = (getWidth() - LABEL_W - FIELD_W - 10) / 2;
+        var searchY = instructionsY + INSTRUCTIONS_H + 20;
+        var fieldX = searchX + LABEL_W + 10;
+        // noinspection UnnecessaryLocalVariable
+        var fieldY = searchY;
         add(instructions);
         add(searchLabel);
         add(searchField);
@@ -151,13 +151,13 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
      * Arrange the GUI for the results screen
      */
     public void setupResultsScreen() {
-        int searchX = getWidth() - LABEL_W - FIELD_W - RESULTS_X - 10;
-        int searchY = 10;
-        int fieldX = searchX + LABEL_W + 10;
-        //noinspection UnnecessaryLocalVariable
-        int fieldY = searchY;
-        int resultsX = RESULTS_X;
-        int resultsY = searchY + LABEL_H + 20;
+        var searchX = getWidth() - LABEL_W - FIELD_W - RESULTS_X - 10;
+        var searchY = 10;
+        var fieldX = searchX + LABEL_W + 10;
+        // noinspection UnnecessaryLocalVariable
+        var fieldY = searchY;
+        var resultsX = RESULTS_X;
+        var resultsY = searchY + LABEL_H + 20;
         add(searchLabel);
         add(searchField);
         add(scroller);
@@ -237,7 +237,7 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException

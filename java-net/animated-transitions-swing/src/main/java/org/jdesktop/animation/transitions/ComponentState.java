@@ -33,15 +33,8 @@
 
 package org.jdesktop.animation.transitions;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Transparency;
-
-import javax.swing.JComponent;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * This class stores the state of a component that will be used during the transition. The state includes the position,
@@ -51,16 +44,24 @@ import javax.swing.JComponent;
  */
 public class ComponentState {
 
-    /** The component. */
-    private JComponent component;
+    /**
+     * The component.
+     */
+    private final JComponent component;
 
-    /** The location of the component. */
+    /**
+     * The location of the component.
+     */
     private final Point location;
 
-    /** The width of the component. */
-    private int width;
-    /** The height of the component. */
-    private int height;
+    /**
+     * The width of the component.
+     */
+    private final int width;
+    /**
+     * The height of the component.
+     */
+    private final int height;
 
     /**
      * The image snapshot of the component in this state; this may be used later by effects which use images to render
@@ -71,8 +72,7 @@ public class ComponentState {
     /**
      * The constructor takes a component and derives the state information needed (location, size, and image snapshot)
      *
-     * @param component
-     *            the JComponent associated with this ComponentState
+     * @param component the JComponent associated with this ComponentState
      */
     public ComponentState(JComponent component) {
         this.component = component;
@@ -87,7 +87,7 @@ public class ComponentState {
      * transitioning component with an image.
      */
     private Image createSnapshot(JComponent component) {
-        GraphicsConfiguration gc = component.getGraphicsConfiguration();
+        var gc = component.getGraphicsConfiguration();
         if (gc == null) { // component may have null gc, get default
             gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         }
@@ -95,7 +95,7 @@ public class ComponentState {
             Image snapshot = gc.createCompatibleImage(width, height, component.isOpaque()
                     ? Transparency.OPAQUE
                     : Transparency.TRANSLUCENT);
-            Graphics2D gImg = (Graphics2D) snapshot.getGraphics();
+            var gImg = (Graphics2D) snapshot.getGraphics();
             paintSingleBuffered(component, gImg);
             gImg.dispose();
             return snapshot;
@@ -138,7 +138,7 @@ public class ComponentState {
         return componentSnapshot;
     }
 
-    /**
+    /*
      * The remaining methods exist solely to support the static paintSingleBuffered() method.
      */
 
@@ -146,10 +146,8 @@ public class ComponentState {
      * Paints the given JComponent in single-buffered mode, which is needed to avoid rendering artifacts when capturing
      * a non-opaque Swing component hierarchy into an offscreen image.
      *
-     * @param component
-     *            the JComponent (and its children) to be painted
-     * @param g
-     *            the Graphics into which component will be painted
+     * @param component the JComponent (and its children) to be painted
+     * @param g         the Graphics into which component will be painted
      */
     public static void paintSingleBuffered(JComponent component, Graphics g) {
         // The print() method in JComponent effectively does what we want;
@@ -167,10 +165,10 @@ public class ComponentState {
         // Walk the parent hierarchy to get the topmost JComponent parent
         // Calculate the relative XY location of the original component as we go
         int x = 0, y = 0;
-        int w = component.getWidth();
-        int h = component.getHeight();
-        JComponent topmost = component;
-        JComponent prevTopmost = component;
+        var w = component.getWidth();
+        var h = component.getHeight();
+        var topmost = component;
+        var prevTopmost = component;
         // We can stop when the current container is opaque or the
         // top level JComponent (probably redundant checks; a non-opaque
         // contentPane would cause artifacts)
@@ -198,14 +196,11 @@ public class ComponentState {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof ComponentState) {
-            ComponentState other = (ComponentState) obj;
-            if (this.location.equals(other.location)
-                && this.width == other.width
-                && this.height == other.height
-                && this.component == other.component) {
-                return true;
-            }
+        if (obj instanceof ComponentState other) {
+            return this.location.equals(other.location)
+                   && this.width == other.width
+                   && this.height == other.height
+                   && this.component == other.component;
         }
         return false;
     }
@@ -215,7 +210,7 @@ public class ComponentState {
      */
     @Override
     public int hashCode() {
-        int result = 17;
+        var result = 17;
         result = 37 * result + location.x;
         result = 37 * result + location.y;
         result = 37 * result + width;

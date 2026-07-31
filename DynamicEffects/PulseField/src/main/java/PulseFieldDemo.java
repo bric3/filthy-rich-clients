@@ -29,45 +29,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.RenderingHints;
-import java.awt.geom.Rectangle2D;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 /**
  *
  * @author Romain Guy <romain.guy@mac.com>
  */
 public class PulseFieldDemo extends JFrame {
-    
+
     public PulseFieldDemo() {
         super("PulseField Demo");
-        
+
         add(buildPulsatingField());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
+
         pack();
         setLocationRelativeTo(null);
     }
-    
+
     private JComponent buildPulsatingField() {
         var field = new JTextField(20);
 
@@ -85,17 +71,17 @@ public class PulseFieldDemo extends JFrame {
         panel.add(new JButton("Cancel"));
         return panel;
     }
-    
+
     public static class PulsatingBorder implements Border {
         private float thickness = 0.0f;
         private final JComponent c;
-        
+
         public PulsatingBorder(JComponent c) {
             this.c = c;
         }
-        
+
         public void paintBorder(Component c, Graphics g,
-                int x, int y, int width, int height) {
+                                int x, int y, int width, int height) {
             var g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                     RenderingHints.VALUE_ANTIALIAS_ON);
@@ -125,7 +111,7 @@ public class PulseFieldDemo extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (IllegalAccessException

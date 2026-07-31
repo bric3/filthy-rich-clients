@@ -1,8 +1,8 @@
 # Test card video
 
 `test-card-h265.mp4` is generated from FFmpeg's built-in animated `testsrc2`
-source. It contains no downloaded footage or audio. FFmpeg is only needed to
-regenerate the resource; running the demo requires VLC/LibVLC instead.
+source. It contains no downloaded footage or audio. FFmpeg is only needed to regenerate the resource; running the demo
+requires VLC/LibVLC instead.
 
 From this directory, generate a new test card with:
 
@@ -26,9 +26,8 @@ ffmpeg \
   test-card-h265.mp4
 ```
 
-This produces a four-second, 320 by 180 pixel, 24 FPS HEVC/H.265 video. Its
-size may vary with the FFmpeg and libx265 versions, so check that it remains
-below 1 MiB:
+This produces a four-second, 320 by 180 pixel, 24 FPS HEVC/H.265 video. Its size may vary with the FFmpeg and libx265
+versions, so check that it remains below 1 MiB:
 
 ```bash
 wc -c test-card-h265.mp4
@@ -44,5 +43,5 @@ ffprobe \
   test-card-h265.mp4
 ```
 
-The file itself is four seconds long. Continuous playback is provided by the
-demo's `--loop` option, which the Gradle `runTestCard` task supplies.
+The file itself is four seconds long. Continuous playback is provided by the demo's `--loop` option, which the Gradle
+`runTestCard` task supplies.

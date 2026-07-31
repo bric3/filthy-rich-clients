@@ -29,52 +29,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Paint;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.awt.font.FontRenderContext;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.font.TextLayout;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
+import java.awt.geom.*;
 import java.awt.image.BufferedImage;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import java.util.*;
-
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AvatarChooser extends JPanel {
     private static final double ANIM_SCROLL_DELAY = 450;
@@ -88,7 +57,7 @@ public class AvatarChooser extends JPanel {
     private Timer faderTimer = null;
     private Timer passwordTimer;
 
-    private float veilAlphaLevel = 0.0f;
+    private final float veilAlphaLevel = 0.0f;
     private float alphaLevel = 0.0f;
     private float textAlphaLevel = 0.0f;
 
@@ -115,7 +84,7 @@ public class AvatarChooser extends JPanel {
     private KeyScroller keyScroller;
 
     public AvatarChooser() {
-        GridBagLayout layout = new GridBagLayout();
+        var layout = new GridBagLayout();
         setLayout(layout);
 
         findAvatars();
@@ -185,11 +154,11 @@ public class AvatarChooser extends JPanel {
 
     @Override
     protected void paintChildren(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
+        var g2 = (Graphics2D) g;
 
-        Composite oldComposite = g2.getComposite();
+        var oldComposite = g2.getComposite();
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                                                   veilAlphaLevel));
+                veilAlphaLevel));
         super.paintChildren(g);
         g2.setComposite(oldComposite);
     }
@@ -202,20 +171,20 @@ public class AvatarChooser extends JPanel {
             return;
         }
 
-        Insets insets = getInsets();
+        var insets = getInsets();
 
-        int x = insets.left;
-        int y = insets.top;
+        var x = insets.left;
+        var y = insets.top;
 
-        int width = getWidth() - insets.left - insets.right;
-        int height = getHeight() - insets.top - insets.bottom;
+        var width = getWidth() - insets.left - insets.right;
+        var height = getHeight() - insets.top - insets.bottom;
 
-        Graphics2D g2 = (Graphics2D) g;
+        var g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                            RenderingHints.VALUE_ANTIALIAS_ON);
-        Composite oldComposite = g2.getComposite();
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        var oldComposite = g2.getComposite();
 
         if (damaged) {
             drawableAvatars = sortAvatarsByDepth(x, y, width, height);
@@ -232,40 +201,40 @@ public class AvatarChooser extends JPanel {
     }
 
     private void drawAvatars(Graphics2D g2, DrawableAvatar[] drawableAvatars) {
-        for (DrawableAvatar avatar: drawableAvatars) {
-            AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                                                                  (float) avatar.getAlpha());
+        for (var avatar : drawableAvatars) {
+            var composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+                    (float) avatar.getAlpha());
             g2.setComposite(composite);
             g2.drawImage(avatars.get(avatar.getIndex()),
-                         (int) avatar.getX(), (int) avatar.getY(),
-                         avatar.getWidth(), avatar.getHeight(), null);
+                    (int) avatar.getX(), (int) avatar.getY(),
+                    avatar.getWidth(), avatar.getHeight(), null);
         }
     }
 
     private DrawableAvatar[] sortAvatarsByDepth(int x, int y,
                                                 int width, int height) {
-        List<DrawableAvatar> drawables = new LinkedList<DrawableAvatar>();
-        for (int i = 0; i < avatars.size(); i++) {
+        List<DrawableAvatar> drawables = new LinkedList<>();
+        for (var i = 0; i < avatars.size(); i++) {
             promoteAvatarToDrawable(drawables,
-                                    x, y, width, height, i - avatarIndex);
+                    x, y, width, height, i - avatarIndex);
         }
 
-        DrawableAvatar[] drawableAvatars = new DrawableAvatar[drawables.size()];
+        var drawableAvatars = new DrawableAvatar[drawables.size()];
         drawableAvatars = drawables.toArray(drawableAvatars);
         Arrays.sort(drawableAvatars);
         return drawableAvatars;
     }
 
     private void drawAvatarName(Graphics2D g2) {
-        Composite composite = g2.getComposite();
+        var composite = g2.getComposite();
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                                                   textAlphaLevel));
+                textAlphaLevel));
 
-        double bulletWidth = 150.0;
-        double bulletHeight = 30.0;
+        var bulletWidth = 150.0;
+        var bulletHeight = 30.0;
 
-        double x = (getWidth() - bulletWidth) / 2.0;
-        double y = (getHeight() - 164) / 2.0 - bulletHeight * 1.4;
+        var x = (getWidth() - bulletWidth) / 2.0;
+        var y = (getHeight() - 164) / 2.0 - bulletHeight * 1.4;
 
         drawAvatarBullet(g2, x, y, bulletWidth, bulletHeight);
         drawAvatarText(g2, y, bulletHeight);
@@ -277,15 +246,15 @@ public class AvatarChooser extends JPanel {
         if (textAvatar == null) {
             return;
         }
-        FontRenderContext context = g2.getFontRenderContext();
-        Font font = new Font("Dialog", Font.PLAIN, 18);
-        TextLayout layout = new TextLayout(textAvatar, font, context);
-        Rectangle2D bounds = layout.getBounds();
+        var context = g2.getFontRenderContext();
+        var font = new Font("Dialog", Font.PLAIN, 18);
+        var layout = new TextLayout(textAvatar, font, context);
+        var bounds = layout.getBounds();
 
-        float text_x = (float) ((getWidth() - bounds.getWidth()) / 2.0);
-        float text_y = (float) (y + (bulletHeight - layout.getAscent() -
-                                     layout.getDescent()) / 2.0) +
-                                     layout.getAscent() - layout.getLeading();
+        var text_x = (float) ((getWidth() - bounds.getWidth()) / 2.0);
+        var text_y = (float) (y + (bulletHeight - layout.getAscent() -
+                                   layout.getDescent()) / 2.0) +
+                     layout.getAscent() - layout.getLeading();
 
         g2.setColor(Color.BLACK);
         layout.draw(g2, text_x, text_y + 1);
@@ -297,34 +266,34 @@ public class AvatarChooser extends JPanel {
                                   double x, double y,
                                   double bulletWidth, double bulletHeight) {
         RoundRectangle2D bullet = new RoundRectangle2D.Double(0.0, 0.0,
-                                                              bulletWidth, bulletHeight,
-                                                              bulletHeight, bulletHeight);
+                bulletWidth, bulletHeight,
+                bulletHeight, bulletHeight);
         Ellipse2D curve = new Ellipse2D.Double(-20.0, bulletHeight / 2.0,
-                                               bulletWidth + 40.0, bulletHeight);
+                bulletWidth + 40.0, bulletHeight);
 
         g2.translate(x, y);
 
         g2.translate(-1, -2);
         g2.setColor(new Color(0, 0, 0, 170));
         g2.fill(new RoundRectangle2D.Double(0.0, 0.0,
-                                            bulletWidth + 2, bulletHeight + 4,
-                                            bulletHeight + 4, bulletHeight + 4));
+                bulletWidth + 2, bulletHeight + 4,
+                bulletHeight + 4, bulletHeight + 4));
         g2.translate(1, 2);
 
-        Color startColor = new Color(10, 0, 40);
-        Color endColor = new Color(175, 165, 225);
+        var startColor = new Color(10, 0, 40);
+        var endColor = new Color(175, 165, 225);
 
-        Paint paint = g2.getPaint();
+        var paint = g2.getPaint();
         g2.setPaint(new GradientPaint(0.0f, 0.0f, startColor,
-                                      0.0f, (float) bulletHeight, endColor));
+                0.0f, (float) bulletHeight, endColor));
         g2.fill(bullet);
 
         startColor = new Color(5, 0, 50);
         endColor = new Color(105, 100, 155);
         g2.setPaint(new GradientPaint(0.0f, 0.0f, startColor,
-                                      0.0f, (float) bulletHeight, endColor));
+                0.0f, (float) bulletHeight, endColor));
 
-        Area area = new Area(bullet);
+        var area = new Area(bullet);
         area.intersect(new Area(curve));
         g2.fill(area);
 
@@ -335,35 +304,35 @@ public class AvatarChooser extends JPanel {
     private void promoteAvatarToDrawable(List<DrawableAvatar> drawables,
                                          int x, int y, int width, int height,
                                          int offset) {
-        double spacing = offset * avatarSpacing;
-        double avatarPosition = this.avatarPosition + spacing;
+        var spacing = offset * avatarSpacing;
+        var avatarPosition = this.avatarPosition + spacing;
 
         if (avatarIndex + offset < 0 ||
             avatarIndex + offset >= avatars.size()) {
             return;
         }
 
-        Image avatar = avatars.get(avatarIndex + offset);
+        var avatar = avatars.get(avatarIndex + offset);
 
-        int avatarWidth = avatar.getWidth(null);
-        int avatarHeight = avatar.getHeight(null);
+        var avatarWidth = avatar.getWidth(null);
+        var avatarHeight = avatar.getHeight(null);
 
-        double result = computeModifier(avatarPosition);
+        var result = computeModifier(avatarPosition);
 
-        int newWidth = (int) (avatarWidth * result);
+        var newWidth = (int) (avatarWidth * result);
         if (newWidth == 0) {
             return;
         }
 
-        int newHeight = (int) (avatarHeight * result);
+        var newHeight = (int) (avatarHeight * result);
         if (newHeight == 0) {
             return;
         }
 
-        double avatar_x = x + (width - newWidth) / 2.0;
-        double avatar_y = y + (height - newHeight / 2.0) / 2.0;
+        var avatar_x = x + (width - newWidth) / 2.0;
+        var avatar_y = y + (height - newHeight / 2.0) / 2.0;
 
-        double semiWidth = width / 2.0;
+        var semiWidth = width / 2.0;
 
         avatar_x += avatarPosition * semiWidth;
 
@@ -372,9 +341,9 @@ public class AvatarChooser extends JPanel {
         }
 
         drawables.add(new DrawableAvatar(avatarIndex + offset,
-                                         avatar_x, avatar_y,
-                                         newWidth, newHeight,
-                                         avatarPosition, result));
+                avatar_x, avatar_y,
+                newWidth, newHeight,
+                avatarPosition, result));
     }
 
     private void startFader() {
@@ -389,7 +358,7 @@ public class AvatarChooser extends JPanel {
 
     // XXX package access for debug purpose only
     double computeModifier(double x) {
-        double result = computeModifierUnprotected(x);
+        var result = computeModifierUnprotected(x);
         if (result > 1.0) {
             result = 1.0;
         } else if (result < -1.0) {
@@ -430,7 +399,7 @@ public class AvatarChooser extends JPanel {
     }
 
     private void findAvatars() {
-        avatars = new ArrayList<Image>();
+        avatars = new ArrayList<>();
 
         picturesFinder = new Thread(new PicturesFinderThread());
         picturesFinder.start();
@@ -458,7 +427,7 @@ public class AvatarChooser extends JPanel {
 
     private void scrollAndAnimateBy(int increment) {
         if (loadingDone && (scrollerTimer == null || !scrollerTimer.isRunning())) {
-            int index = avatarIndex + increment;
+            var index = avatarIndex + increment;
             if (index < 0) {
                 index = 0;
             } else if (index >= avatars.size()) {
@@ -467,7 +436,7 @@ public class AvatarChooser extends JPanel {
 
             DrawableAvatar drawable = null;
 
-            for (DrawableAvatar avatar: drawableAvatars) {
+            for (var avatar : drawableAvatars) {
                 if (avatar.index == index) {
                     drawable = avatar;
                     break;
@@ -488,21 +457,21 @@ public class AvatarChooser extends JPanel {
     }
 
     private BufferedImage createReflectedPicture(BufferedImage avatar) {
-        int avatarWidth = avatar.getWidth();
-        int avatarHeight = avatar.getHeight();
+        var avatarWidth = avatar.getWidth();
+        var avatarHeight = avatar.getHeight();
 
-        BufferedImage alphaMask = createGradientMask(avatarWidth, avatarHeight);
+        var alphaMask = createGradientMask(avatarWidth, avatarHeight);
 
         return createReflectedPicture(avatar, alphaMask);
     }
 
     private BufferedImage createReflectedPicture(BufferedImage avatar,
                                                  BufferedImage alphaMask) {
-        int avatarWidth = avatar.getWidth();
-        int avatarHeight = avatar.getHeight();
+        var avatarWidth = avatar.getWidth();
+        var avatarHeight = avatar.getHeight();
 
-        BufferedImage buffer = createReflection(avatar,
-                                                avatarWidth, avatarHeight);
+        var buffer = createReflection(avatar,
+                avatarWidth, avatarHeight);
         applyAlphaMask(buffer, alphaMask, avatarWidth, avatarHeight);
 
         return buffer;
@@ -511,7 +480,7 @@ public class AvatarChooser extends JPanel {
     private void applyAlphaMask(BufferedImage buffer,
                                 BufferedImage alphaMask,
                                 int avatarWidth, int avatarHeight) {
-        Graphics2D g2 = buffer.createGraphics();
+        var g2 = buffer.createGraphics();
         g2.setComposite(AlphaComposite.DstOut);
         g2.drawImage(alphaMask, null, 0, avatarHeight);
         g2.dispose();
@@ -520,14 +489,14 @@ public class AvatarChooser extends JPanel {
     private BufferedImage createReflection(BufferedImage avatar,
                                            int avatarWidth,
                                            int avatarHeight) {
-        BufferedImage buffer = new BufferedImage(avatarWidth, avatarHeight << 1,
-                                                 BufferedImage.TYPE_INT_ARGB);
+        var buffer = new BufferedImage(avatarWidth, avatarHeight << 1,
+                BufferedImage.TYPE_INT_ARGB);
 
-        Graphics2D g = buffer.createGraphics();
+        var g = buffer.createGraphics();
         g.drawImage(avatar, null, null);
         g.translate(0, avatarHeight << 1);
 
-        AffineTransform reflectTransform = AffineTransform.getScaleInstance(1.0, -1.0);
+        var reflectTransform = AffineTransform.getScaleInstance(1.0, -1.0);
         g.drawImage(avatar, reflectTransform, null);
         g.translate(0, -(avatarHeight << 1));
 
@@ -537,13 +506,13 @@ public class AvatarChooser extends JPanel {
     }
 
     private BufferedImage createGradientMask(int avatarWidth, int avatarHeight) {
-        BufferedImage gradient = new BufferedImage(avatarWidth, avatarHeight,
-                                                   BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = gradient.createGraphics();
-        GradientPaint painter = new GradientPaint(0.0f, 0.0f,
-                                                  new Color(1.0f, 1.0f, 1.0f, 0.5f),
-                                                  0.0f, avatarHeight / 2.0f,
-                                                  new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        var gradient = new BufferedImage(avatarWidth, avatarHeight,
+                BufferedImage.TYPE_INT_ARGB);
+        var g = gradient.createGraphics();
+        var painter = new GradientPaint(0.0f, 0.0f,
+                new Color(1.0f, 1.0f, 1.0f, 0.5f),
+                0.0f, avatarHeight / 2.0f,
+                new Color(1.0f, 1.0f, 1.0f, 1.0f));
         g.setPaint(painter);
         g.fill(new Rectangle2D.Double(0, 0, avatarWidth, avatarHeight));
 
@@ -553,9 +522,9 @@ public class AvatarChooser extends JPanel {
     }
 
     private DrawableAvatar getHitAvatar(int x, int y) {
-        for (DrawableAvatar avatar: drawableAvatars) {
-            Rectangle hit = new Rectangle((int) avatar.getX(), (int) avatar.getY(),
-                                          avatar.getWidth(), avatar.getHeight() / 2);
+        for (var avatar : drawableAvatars) {
+            var hit = new Rectangle((int) avatar.getX(), (int) avatar.getY(),
+                    avatar.getWidth(), avatar.getHeight() / 2);
             if (hit.contains(x, y)) {
                 return avatar;
             }
@@ -568,7 +537,7 @@ public class AvatarChooser extends JPanel {
         public void run() {
             try {
                 var files = findPictures();
-                for (int i = 0; i < files.size(); i++) {
+                for (var i = 0; i < files.size(); i++) {
                     BufferedImage image;
                     try (var stream = Files.newInputStream(files.get(i))) {
                         image = ImageIO.read(stream);
@@ -580,7 +549,7 @@ public class AvatarChooser extends JPanel {
                         startFader();
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException _) {
             }
 
             loadingDone = true;
@@ -637,14 +606,14 @@ public class AvatarChooser extends JPanel {
         }
     }
 
-    private class DrawableAvatar implements Comparable {
-        private int index;
-        private double x;
-        private double y;
-        private int width;
-        private int height;
-        private double zOrder;
-        private double position;
+    private class DrawableAvatar implements Comparable<DrawableAvatar> {
+        private final int index;
+        private final double x;
+        private final double y;
+        private final int width;
+        private final int height;
+        private final double zOrder;
+        private final double position;
 
         private DrawableAvatar(int index,
                                double x, double y, int width, int height,
@@ -658,8 +627,8 @@ public class AvatarChooser extends JPanel {
             this.zOrder = zOrder;
         }
 
-        public int compareTo(Object o) {
-            double zOrder2 = ((DrawableAvatar) o).zOrder;
+        public int compareTo(DrawableAvatar o) {
+            var zOrder2 = o.zOrder;
 
             if (zOrder < zOrder2) {
                 return -1;
@@ -700,7 +669,7 @@ public class AvatarChooser extends JPanel {
 
     private class MouseWheelScroller implements MouseWheelListener {
         public void mouseWheelMoved(MouseWheelEvent e) {
-            int increment = e.getWheelRotation();
+            var increment = e.getWheelRotation();
             scrollAndAnimateBy(increment);
         }
     }
@@ -708,7 +677,7 @@ public class AvatarChooser extends JPanel {
     private class KeyScroller extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            int keyCode = e.getKeyCode();
+            var keyCode = e.getKeyCode();
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
                 case KeyEvent.VK_UP:
@@ -751,7 +720,7 @@ public class AvatarChooser extends JPanel {
             }
 
             if (e.getButton() == MouseEvent.BUTTON1) {
-                DrawableAvatar avatar = getHitAvatar(e.getX(), e.getY());
+                var avatar = getHitAvatar(e.getX(), e.getY());
                 if (avatar != null && avatar.getIndex() != avatarIndex) {
                     scrollAndAnimate(avatar);
                 }
@@ -767,9 +736,9 @@ public class AvatarChooser extends JPanel {
     }
 
     private class AutoScroller implements ActionListener {
-        private double position;
-        private int index;
-        private long start;
+        private final double position;
+        private final int index;
+        private final long start;
 
         private AutoScroller(DrawableAvatar avatar) {
             this.index = avatar.getIndex();
@@ -778,7 +747,7 @@ public class AvatarChooser extends JPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            long elapsed = System.currentTimeMillis() - start;
+            var elapsed = System.currentTimeMillis() - start;
             if (elapsed < ANIM_SCROLL_DELAY / 2.0) {
                 textAlphaLevel = (float) (1.0 - 2.0 * (elapsed / ANIM_SCROLL_DELAY));
             } else {
@@ -793,7 +762,7 @@ public class AvatarChooser extends JPanel {
                 textAvatar = "LoginName" + index;
             }
 
-            double newPosition = (elapsed / ANIM_SCROLL_DELAY) * -position;
+            var newPosition = (elapsed / ANIM_SCROLL_DELAY) * -position;
 
             if (elapsed >= ANIM_SCROLL_DELAY) {
                 ((Timer) e.getSource()).stop();
@@ -815,7 +784,7 @@ public class AvatarChooser extends JPanel {
                 return;
             }
 
-            DrawableAvatar avatar = getHitAvatar(e.getX(), e.getY());
+            var avatar = getHitAvatar(e.getX(), e.getY());
             if (avatar != null) {
                 getParent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             } else {

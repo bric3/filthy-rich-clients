@@ -29,27 +29,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.util.Objects;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.animation.timing.triggers.ActionTrigger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Objects;
+
 /**
  *
  * @author Romain Guy <romain.guy@mac.com>
@@ -57,25 +44,25 @@ import org.jdesktop.animation.timing.triggers.ActionTrigger;
 public class MotionDemo extends JFrame {
     private JButton rightLayoutButton;
     private JButton leftLayoutButton;
-    
+
     private JButton saveButton;
     private JButton openButton;
 
     private JTextArea textArea;
-    
+
     public MotionDemo() {
         super("Motion Demo");
-        
+
         add(buildToolbar(), BorderLayout.NORTH);
         add(buildContentPane());
-        
+
         configureAnimations();
-        
+
         pack();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
     }
-    
+
     private void configureAnimations() {
         var leftAnimator = new Animator(200);
         leftAnimator.setAcceleration(0.3f);
@@ -89,7 +76,7 @@ public class MotionDemo extends JFrame {
         leftAnimator.addTarget(new PropertySetter(
                 textArea, "location",
                 new Point(16 + saveButton.getWidth() + 6, 16)));
-        
+
         ActionTrigger.addTrigger(leftLayoutButton, leftAnimator);
 
         var rightAnimator = new Animator(200);
@@ -101,57 +88,57 @@ public class MotionDemo extends JFrame {
                 openButton, "location", openButton.getLocation()));
         rightAnimator.addTarget(new PropertySetter(
                 textArea, "location", textArea.getLocation()));
-        
+
         ActionTrigger.addTrigger(rightLayoutButton, rightAnimator);
     }
-    
+
     private JComponent buildContentPane() {
         var panel = new JPanel(null);
-        
-        int x = 16;
-        int y = 16;
+
+        var x = 16;
+        var y = 16;
         Dimension size;
-        
+
         textArea = new JTextArea("Type your document here.", 12, 25);
         textArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         size = textArea.getPreferredSize();
         textArea.setBounds(x, y, size.width, size.height);
         panel.add(textArea);
-        
+
         x += size.width + 6;
 
         saveButton = new JButton("Save...");
         size = saveButton.getPreferredSize();
         saveButton.setBounds(x, y, size.width, size.height);
         panel.add(saveButton);
-        
+
         y += size.height + 4;
-        
+
         openButton = new JButton("Open...");
         size = openButton.getPreferredSize();
         openButton.setBounds(x, y, size.width, size.height);
         panel.add(openButton);
-        
+
         x += size.width + 16;
         y = textArea.getPreferredSize().height + 16 + 16;
-        
+
         panel.setPreferredSize(new Dimension(x, y));
-        
+
         return panel;
     }
-    
+
     private JComponent buildToolbar() {
         var panel = new JPanel(new FlowLayout(FlowLayout.LEADING)) {
             @Override
             protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                GradientPaint paint =new GradientPaint(0.0f, 0.0f, new Color(0xF2F2F2),
+                var g2 = (Graphics2D) g.create();
+                var paint = new GradientPaint(0.0f, 0.0f, new Color(0xF2F2F2),
                         0.0f, getHeight(), new Color(0xD7D7D7));
                 g2.setPaint(paint);
                 g2.fillRect(0, 0, getWidth(), getHeight());
             }
         };
-        
+
         leftLayoutButton = new JButton("Left Layout");
         leftLayoutButton.setIcon(new ImageIcon(
                 Objects.requireNonNull(getClass().getResource("images/left-layout.png"))));
@@ -161,7 +148,7 @@ public class MotionDemo extends JFrame {
         leftLayoutButton.setContentAreaFilled(false);
         leftLayoutButton.setBorderPainted(false);
         panel.add(leftLayoutButton);
-        
+
         rightLayoutButton = new JButton("Right Layout");
         rightLayoutButton.setIcon(new ImageIcon(
                 Objects.requireNonNull(getClass().getResource("images/right-layout.png"))));
@@ -183,11 +170,11 @@ public class MotionDemo extends JFrame {
         blackPanel.add(Box.createVerticalStrut(1));
         wrapper.add(blackPanel, BorderLayout.SOUTH);
         wrapper.add(panel);
-        
+
         return wrapper;
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MotionDemo().setVisible(true));
     }
 }

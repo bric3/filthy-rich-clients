@@ -21,8 +21,7 @@ public class FadeOutAndBack extends Fade {
     /**
      * Creates a new instance of FadeOut with the given start state.
      *
-     * @param targetOpacity
-     *            the opacity we are fading to in the first half of the transition and then from in the second half.
+     * @param targetOpacity the opacity we are fading to in the first half of the transition and then from in the second half.
      */
     public FadeOutAndBack(Float targetOpacity) {
         this.targetOpacity = targetOpacity;
@@ -31,10 +30,8 @@ public class FadeOutAndBack extends Fade {
     /**
      * Creates a new instance of FadeOut with the given start state.
      *
-     * @param start
-     *            The <code>ComponentState</code> at the beginning of the transition; this is what we are fading from.
-     * @param targetOpacity
-     *            the opacity we are fading to in the first half of the transition and then from in the second half.
+     * @param start         The <code>ComponentState</code> at the beginning of the transition; this is what we are fading from.
+     * @param targetOpacity the opacity we are fading to in the first half of the transition and then from in the second half.
      */
     public FadeOutAndBack(ComponentState start, Float targetOpacity) {
         this.targetOpacity = targetOpacity;

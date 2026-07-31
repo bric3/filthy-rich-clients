@@ -36,7 +36,7 @@ import java.awt.image.DirectColorModel;
  * @author Romain Guy
  */
 public class BrightPassFilter extends AbstractFilter {
-    private float brightnessThreshold;
+    private final float brightnessThreshold;
 
     public BrightPassFilter() {
         this(0.7f);
@@ -49,15 +49,15 @@ public class BrightPassFilter extends AbstractFilter {
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (dst == null) {
-            DirectColorModel directCM = new DirectColorModel(32,
+            var directCM = new DirectColorModel(32,
                     0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
             dst = createCompatibleDestImage(src, directCM);
         }
 
-        int width = src.getWidth();
-        int height = src.getHeight();
+        var width = src.getWidth();
+        var height = src.getHeight();
 
-        int[] pixels = new int[width * height];
+        var pixels = new int[width * height];
         GraphicsUtilities.getPixels(src, 0, 0, width, height, pixels);
         brightPass(pixels, width, height);
         GraphicsUtilities.setPixels(dst, 0, 0, width, height, pixels);
@@ -66,43 +66,43 @@ public class BrightPassFilter extends AbstractFilter {
     }
 
     private void brightPass(int[] pixels, int width, int height) {
-        int threshold = (int) (brightnessThreshold * 255);
-        
+        var threshold = (int) (brightnessThreshold * 255);
+
         int r;
         int g;
         int b;
 
         int luminance;
-        int[] luminanceData = new int[3 * 256];
-        
-        for (int i = 0; i < luminanceData.length; i += 3) {
-            luminanceData[i    ] = (int) (i * 0.2125f);
+        var luminanceData = new int[3 * 256];
+
+        for (var i = 0; i < luminanceData.length; i += 3) {
+            luminanceData[i] = (int) (i * 0.2125f);
             luminanceData[i + 1] = (int) (i * 0.7154f);
             luminanceData[i + 2] = (int) (i * 0.0721f);
         }
-        
-        int index = 0;
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int pixel = pixels[index];
+
+        var index = 0;
+        for (var y = 0; y < height; y++) {
+            for (var x = 0; x < width; x++) {
+                var pixel = pixels[index];
 
                 // unpack the pixel's components
                 r = pixel >> 16 & 0xFF;
-                g = pixel >> 8  & 0xFF;
-                b = pixel       & 0xFF;
-                
+                g = pixel >> 8 & 0xFF;
+                b = pixel & 0xFF;
+
                 // compute the luminance
                 luminance = luminanceData[r * 3] + luminanceData[g * 3 + 1] +
-                        luminanceData[b * 3 + 2];
-                
+                            luminanceData[b * 3 + 2];
+
                 // apply the treshold to select the brightest pixels
                 luminance = Math.max(0, luminance - threshold);
-                
-                int sign = (int) Math.signum(luminance);
+
+                var sign = (int) Math.signum(luminance);
 
                 // pack the components in a single pixel
                 pixels[index] = 0xFF000000 | (r * sign) << 16 |
-                        (g * sign) << 8 | (b * sign);
+                                (g * sign) << 8 | (b * sign);
 
                 index++;
             }

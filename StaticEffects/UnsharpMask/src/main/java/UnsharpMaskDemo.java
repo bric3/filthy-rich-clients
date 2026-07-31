@@ -29,25 +29,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
 /**
  *
  * @author Romain Guy <romain.guy@mac.com>
@@ -55,7 +44,7 @@ import javax.swing.event.ChangeListener;
 public class UnsharpMaskDemo extends JFrame {
     private BufferedImage image;
     private JLabel viewer;
-    
+
     private float amount;
     private int radius;
     private int threshold;
@@ -66,33 +55,33 @@ public class UnsharpMaskDemo extends JFrame {
     private JLabel amountLabel;
     private JLabel radiusLabel;
     private JLabel thresholdLabel;
-    
+
     public UnsharpMaskDemo() {
         super("Unsharp Mask Demo");
-        
-        UnsharpMaskFilter filter = new UnsharpMaskFilter();
+
+        var filter = new UnsharpMaskFilter();
         this.amount = filter.getAmount();
         this.radius = filter.getRadius();
         this.threshold = filter.getThreshold();
-        
+
         loadImage();
         add(buildInstructions(), BorderLayout.NORTH);
         add(buildControls(), BorderLayout.SOUTH);
         add(buildViewer());
-        
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
+
         pack();
         setResizable(false);
         setLocationRelativeTo(null);
     }
-    
+
     private JComponent buildInstructions() {
-        JLabel label = new JLabel("Click the image to see the original.");
+        var label = new JLabel("Click the image to see the original.");
         label.setBorder(new EmptyBorder(3, 3, 3, 3));
         return label;
     }
-    
+
     private JComponent buildViewer() {
         viewerPanel = new JPanel(carder = new CardLayout());
         viewer = new JLabel(new ImageIcon(image));
@@ -106,90 +95,84 @@ public class UnsharpMaskDemo extends JFrame {
             }
         });
         updateViewer();
-        
+
         viewerPanel.add(viewer, "sharp");
         viewerPanel.add(new JLabel(new ImageIcon(image)), "original");
-        
+
         return viewerPanel;
     }
-    
+
     private JComponent buildControls() {
-        JPanel panel = new JPanel(new GridBagLayout());
+        var panel = new JPanel(new GridBagLayout());
         JSlider slider;
-        
+
         panel.add(amountLabel = new JLabel("Amount: "),
                 new GridBagConstraints(0, 0, 1, 1,
-                    1.0, 1.0, GridBagConstraints.LINE_START,
-                    GridBagConstraints.NONE, new Insets(3, 3, 0, 3), 0, 0));
+                        1.0, 1.0, GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE, new Insets(3, 3, 0, 3), 0, 0));
         panel.add(slider = new JSlider(0, 500, (int) (amount * 100.0f)),
                 new GridBagConstraints(0, 1, 1, 1,
-                    1.0, 1.0, GridBagConstraints.LINE_START,
-                    GridBagConstraints.NONE, new Insets(0, 3, 0, 3), 0, 0));
-        slider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                JSlider slider = (JSlider) e.getSource();
-                float amount = slider.getValue() / 100.0f;
-                setAmount(amount);
-            }
+                        1.0, 1.0, GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE, new Insets(0, 3, 0, 3), 0, 0));
+        slider.addChangeListener(e -> {
+            var slider3 = (JSlider) e.getSource();
+            var amount = slider3.getValue() / 100.0f;
+            setAmount(amount);
         });
-        
+
         panel.add(radiusLabel = new JLabel("Radius: "),
                 new GridBagConstraints(0, 2, 1, 1,
-                    1.0, 1.0, GridBagConstraints.LINE_START,
-                    GridBagConstraints.NONE, new Insets(3, 3, 0, 3), 0, 0));
+                        1.0, 1.0, GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE, new Insets(3, 3, 0, 3), 0, 0));
         panel.add(slider = new JSlider(1, 50, radius),
                 new GridBagConstraints(0, 3, 1, 1,
-                    1.0, 1.0, GridBagConstraints.LINE_START,
-                    GridBagConstraints.NONE, new Insets(0, 3, 0, 3), 0, 0));
-        slider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                JSlider slider = (JSlider) e.getSource();
-                setRadius(slider.getValue());
-            }
+                        1.0, 1.0, GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE, new Insets(0, 3, 0, 3), 0, 0));
+        slider.addChangeListener(e -> {
+            var slider2 = (JSlider) e.getSource();
+            setRadius(slider2.getValue());
         });
-        
+
         panel.add(thresholdLabel = new JLabel("Threshold: "),
                 new GridBagConstraints(0, 4, 1, 1,
-                    1.0, 1.0, GridBagConstraints.LINE_START,
-                    GridBagConstraints.NONE, new Insets(3, 3, 0, 3), 0, 0));
+                        1.0, 1.0, GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE, new Insets(3, 3, 0, 3), 0, 0));
         panel.add(slider = new JSlider(0, 255, threshold),
                 new GridBagConstraints(0, 5, 1, 1,
-                    1.0, 1.0, GridBagConstraints.LINE_START,
-                    GridBagConstraints.NONE, new Insets(0, 3, 3, 3), 0, 0));
-         slider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                JSlider slider = (JSlider) e.getSource();
-                setThreshold(slider.getValue());
-            }
+                        1.0, 1.0, GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE, new Insets(0, 3, 3, 3), 0, 0));
+        slider.addChangeListener(e -> {
+            var slider1 = (JSlider) e.getSource();
+            setThreshold(slider1.getValue());
         });
-        
+
         return panel;
     }
-    
+
     private void setAmount(float amount) {
         this.amount = amount;
         updateViewer();
     }
-    
+
     private void setRadius(int radius) {
         this.radius = radius;
         updateViewer();
     }
-    
+
     private void setThreshold(int threshold) {
         this.threshold = threshold;
         updateViewer();
     }
-    
+
     private void updateViewer() {
         amountLabel.setText("Amount: " + (int) (amount * 100.0f) + "%");
-        radiusLabel.setText("Radius: " + radius  + " pixels");
+        radiusLabel.setText("Radius: " + radius + " pixels");
         thresholdLabel.setText("Threshold: " + threshold + " levels");
-        
-        UnsharpMaskFilter filter = new UnsharpMaskFilter(amount, radius, threshold);
+
+        var filter = new UnsharpMaskFilter(amount, radius, threshold);
         viewer.setIcon(new ImageIcon(filter.filter(image, null)));
     }
-    
+
     private void loadImage() {
         try {
             this.image = GraphicsUtilities.loadCompatibleImage(getClass().
@@ -200,11 +183,7 @@ public class UnsharpMaskDemo extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new UnsharpMaskDemo().setVisible(true);
-            } 
-        });
+    static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new UnsharpMaskDemo().setVisible(true));
     }
 }

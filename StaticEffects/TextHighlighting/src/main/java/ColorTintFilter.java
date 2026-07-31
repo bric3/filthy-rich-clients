@@ -32,8 +32,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.Color;
 
 /**
  * <p>A color tint filter can be used to mix a solid color to an image. The
@@ -60,9 +60,9 @@ public class ColorTintFilter extends AbstractFilter {
     private final Color mixColor;
     private final float mixValue;
 
-    private int[] preMultipliedRed;
-    private int[] preMultipliedGreen;
-    private int[] preMultipliedBlue;
+    private final int[] preMultipliedRed;
+    private final int[] preMultipliedGreen;
+    private final int[] preMultipliedBlue;
 
     /**
      * <p>Creates a new color mixer filter. The specified color will be used
@@ -71,7 +71,7 @@ public class ColorTintFilter extends AbstractFilter {
      *
      * @param mixColor the solid color to mix with the source image
      * @param mixValue the strength of the mix, between 0.0 and 1.0; if the
-     *   specified value lies outside this range, it is clamped
+     *                 specified value lies outside this range, it is clamped
      * @throws IllegalArgumentException if <code>mixColor</code> is null
      */
     public ColorTintFilter(Color mixColor, float mixValue) {
@@ -86,23 +86,23 @@ public class ColorTintFilter extends AbstractFilter {
             mixValue = 1.0f;
         }
         this.mixValue = mixValue;
-        
-        int mix_r = (int) (mixColor.getRed()   * mixValue);
-        int mix_g = (int) (mixColor.getGreen() * mixValue);
-        int mix_b = (int) (mixColor.getBlue()  * mixValue);
-        
+
+        var mix_r = (int) (mixColor.getRed() * mixValue);
+        var mix_g = (int) (mixColor.getGreen() * mixValue);
+        var mix_b = (int) (mixColor.getBlue() * mixValue);
+
         // Since we use only lookup tables to apply the filter, this filter
         // could be implemented as a LookupOp.
-        float factor = 1.0f - mixValue;
-        preMultipliedRed   = new int[256];
+        var factor = 1.0f - mixValue;
+        preMultipliedRed = new int[256];
         preMultipliedGreen = new int[256];
-        preMultipliedBlue  = new int[256];
+        preMultipliedBlue = new int[256];
 
-        for (int i = 0; i < 256; i++) {
-            int value = (int) (i * factor);
-            preMultipliedRed[i]   = value + mix_r;
+        for (var i = 0; i < 256; i++) {
+            var value = (int) (i * factor);
+            preMultipliedRed[i] = value + mix_r;
             preMultipliedGreen[i] = value + mix_g;
-            preMultipliedBlue[i]  = value + mix_b;
+            preMultipliedBlue[i] = value + mix_b;
         }
     }
 
@@ -116,7 +116,7 @@ public class ColorTintFilter extends AbstractFilter {
     }
 
     /**
-     * <p>Returns the solid mix color of this filter.</p> 
+     * <p>Returns the solid mix color of this filter.</p>
      *
      * @return the solid color used for mixing
      */
@@ -133,10 +133,10 @@ public class ColorTintFilter extends AbstractFilter {
             dst = createCompatibleDestImage(src, null);
         }
 
-        int width = src.getWidth();
-        int height = src.getHeight();
+        var width = src.getWidth();
+        var height = src.getHeight();
 
-        int[] pixels = new int[width * height];
+        var pixels = new int[width * height];
         GraphicsUtilities.getPixels(src, 0, 0, width, height, pixels);
         mixColor(pixels);
         GraphicsUtilities.setPixels(dst, 0, 0, width, height, pixels);
@@ -145,11 +145,11 @@ public class ColorTintFilter extends AbstractFilter {
     }
 
     private void mixColor(int[] pixels) {
-        for (int i = 0; i < pixels.length; i++) {
-            int argb = pixels[i];
+        for (var i = 0; i < pixels.length; i++) {
+            var argb = pixels[i];
             pixels[i] = (argb & 0xFF000000) |
-                        preMultipliedRed[(argb >> 16)   & 0xFF] << 16 |
-                        preMultipliedGreen[(argb >> 8)  & 0xFF] <<  8 |
+                        preMultipliedRed[(argb >> 16) & 0xFF] << 16 |
+                        preMultipliedGreen[(argb >> 8) & 0xFF] << 8 |
                         preMultipliedBlue[argb & 0xFF];
         }
     }

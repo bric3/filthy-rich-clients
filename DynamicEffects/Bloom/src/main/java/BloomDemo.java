@@ -29,23 +29,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.FlowLayout;
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author Romain Guy <romain.guy@mac.com>
@@ -66,49 +51,43 @@ public class BloomDemo extends JFrame {
         setSize(640, 480);
         setLocationRelativeTo(null);
     }
-    
+
     private JComponent buildControls() {
-        JPanel controls = new JPanel(new GridLayout(3, 1));
-        
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        var controls = new JPanel(new GridLayout(3, 1));
+
+        var panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
         panel.add(new JLabel("Bloom: 0.0"));
         JSlider slider;
         panel.add(slider = new JSlider(0, 300, 70));
-        slider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                float threshold = ((JSlider) e.getSource()).getValue() / 100.0f;
-                viewer.setThreshold(threshold);
-            }
+        slider.addChangeListener(e -> {
+            var threshold = ((JSlider) e.getSource()).getValue() / 100.0f;
+            viewer.setThreshold(threshold);
         });
         panel.add(new JLabel("3.0"));
         controls.add(panel);
-        
+
         panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
         panel.add(new JLabel("Smooth: 1"));
         panel.add(slider = new JSlider(10, 100, 40));
-        slider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                float smoothness = ((JSlider) e.getSource()).getValue() / 10.0f;
-                viewer.setSmoothness(smoothness);
-            }
+        slider.addChangeListener(e -> {
+            var smoothness = ((JSlider) e.getSource()).getValue() / 10.0f;
+            viewer.setSmoothness(smoothness);
         });
         panel.add(new JLabel("10"));
         controls.add(panel);
-        
+
         panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
         JButton button;
         panel.add(button = new JButton("Open Image..."));
-        button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
-                if (chooser.showOpenDialog(BloomDemo.this) == JFileChooser.APPROVE_OPTION) {
-                    viewer.loadImage(chooser.getSelectedFile());
-                    scroller.revalidate();
-                }
+        button.addActionListener(e -> {
+            var chooser = new JFileChooser();
+            if (chooser.showOpenDialog(BloomDemo.this) == JFileChooser.APPROVE_OPTION) {
+                viewer.loadImage(chooser.getSelectedFile());
+                scroller.revalidate();
             }
         });
         controls.add(panel);
-        
+
         return controls;
     }
 
@@ -120,11 +99,7 @@ public class BloomDemo extends JFrame {
         return scroller;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new BloomDemo().setVisible(true);
-            }
-        });
+    static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new BloomDemo().setVisible(true));
     }
 }

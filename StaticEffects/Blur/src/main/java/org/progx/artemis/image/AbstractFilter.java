@@ -34,8 +34,7 @@
 
 package org.progx.artemis.image;
 
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -70,9 +69,9 @@ public abstract class AbstractFilter implements BufferedImageOp {
         }
 
         return new BufferedImage(destCM,
-                                 destCM.createCompatibleWritableRaster(
-                                         src.getWidth(), src.getHeight()),
-                                 destCM.isAlphaPremultiplied(), null);
+                destCM.createCompatibleWritableRaster(
+                        src.getWidth(), src.getHeight()),
+                destCM.isAlphaPremultiplied(), null);
     }
 
     /**

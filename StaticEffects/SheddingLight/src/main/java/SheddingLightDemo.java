@@ -29,13 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.Color;
-import java.awt.FlowLayout;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
+import java.awt.*;
+
 /**
  *
  * @author Romain Guy <romain.guy@mac.com>
@@ -43,38 +39,29 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class SheddingLightDemo extends JFrame {
     public SheddingLightDemo() {
         super("Shedding Light");
-        
-        JPanel panel = new JPanel(new FlowLayout());
+
+        var panel = new JPanel(new FlowLayout());
         panel.setBackground(new Color(0x8B93A3));
-        
+
         panel.add(new LightButton("Shed"));
         panel.add(new LightButton("The"));
         panel.add(new LightButton("Light"));
-        
+
         add(panel);
-        
+
         pack();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | InstantiationException |
+                 IllegalAccessException ex) {
             ex.printStackTrace();
         }
-        
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new SheddingLightDemo().setVisible(true);
-            }
-        });
+
+        SwingUtilities.invokeLater(() -> new SheddingLightDemo().setVisible(true));
     }
 }

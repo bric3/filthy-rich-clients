@@ -41,7 +41,7 @@ import org.jdesktop.core.animation.timing.TimingTarget;
 
 /**
  * Effect that resizes a component during the transition.
- * 
+ *
  * @author Chet Haase
  */
 public class Scale extends Effect {
@@ -72,7 +72,7 @@ public class Scale extends Effect {
      */
     @Override
     public void init(Animator animator, Effect parentEffect) {
-        Effect targetEffect = (parentEffect == null) ? this : parentEffect;
+        var targetEffect = (parentEffect == null) ? this : parentEffect;
         psWidth = PropertySetter.getTarget(targetEffect, "width", getStart().getWidth(), getEnd().getWidth());
         animator.addTarget(psWidth);
         psHeight = PropertySetter.getTarget(targetEffect, "height", getStart().getHeight(), getEnd().getHeight());

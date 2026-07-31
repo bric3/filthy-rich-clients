@@ -33,18 +33,11 @@
 
 package org.jdesktop.animation.transitions;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
-import javax.swing.JComponent;
-
-import org.jdesktop.animation.transitions.effects.CompositeEffect;
-import org.jdesktop.animation.transitions.effects.FadeIn;
-import org.jdesktop.animation.transitions.effects.FadeOut;
-import org.jdesktop.animation.transitions.effects.Move;
-import org.jdesktop.animation.transitions.effects.Scale;
-import org.jdesktop.animation.transitions.effects.Unchanging;
+import org.jdesktop.animation.transitions.effects.*;
 import org.jdesktop.core.animation.timing.Animator;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * This class holds the start and/or end states for a <code>JComponent</code>. It also determines (at
@@ -61,7 +54,7 @@ class AnimationState {
      * The component for this AnimationState. There is one component per state, with either a start, an end, or both
      * states.
      */
-    private JComponent component;
+    private final JComponent component;
     /**
      * Start/end states for this AnimationState. These may be set to a non-null value or not, depending on whether the
      * component exists in the respective start/end screen(s) of the transition.
@@ -93,7 +86,7 @@ class AnimationState {
     AnimationState(EffectsManager effectsManager, JComponent component, boolean isStart) {
         this.effectsManager = effectsManager;
         this.component = component;
-        ComponentState compState = new ComponentState(component);
+        var compState = new ComponentState(component);
         if (isStart) {
             start = compState;
         } else {
@@ -161,8 +154,8 @@ class AnimationState {
             if (effect == null) {
                 // No custom effect exists; use move/scale combinations
                 // as appropriate
-                boolean move = false;
-                boolean scale = false;
+                var move = false;
+                var scale = false;
                 if (start.getX() != end.getX() || start.getY() != end.getY()) {
                     // position changes; use Move effect
                     move = true;
@@ -217,7 +210,7 @@ class AnimationState {
             // Create/use temporary Graphics object to avoid leaking
             // state between one AnimationState and the next during
             // the transition
-            Graphics2D g2d = (Graphics2D) g.create();
+            var g2d = (Graphics2D) g.create();
             effect.render(g2d);
             g2d.dispose();
         }

@@ -33,14 +33,8 @@
 
 package org.jdesktop.animation.transitions;
 
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-
-import javax.swing.JComponent;
-import javax.swing.JLayeredPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * This is the component where the transition animation is displayed. During a transition, this layer becomes visible as
@@ -73,10 +67,10 @@ class AnimationLayer extends JComponent {
      * Called from ScreenTransition to set up the correct location to copy the animation to in the layered pane
      */
     public void setupBackground(JComponent targetComponent) {
-        JLayeredPane layeredPane = targetComponent.getRootPane().getLayeredPane();
+        var layeredPane = targetComponent.getRootPane().getLayeredPane();
         setBounds(layeredPane.getBounds());
 
-        Rectangle visibleRect = targetComponent.getVisibleRect();
+        var visibleRect = targetComponent.getVisibleRect();
         visibleRectInLayeredPane = SwingUtilities.convertRectangle(targetComponent, visibleRect, layeredPane);
         componentLocationInLayeredPane = convertLocation(targetComponent, layeredPane);
     }
@@ -85,8 +79,8 @@ class AnimationLayer extends JComponent {
         // Walk the parent hierarchy up to target
         // Calculate the relative XY location of the original component as we go
         int x = 0, y = 0;
-        JComponent topmost = component;
-        JComponent prevTopmost = component;
+        var topmost = component;
+        var prevTopmost = component;
         while (topmost != target && topmost.getParent() != null && topmost.getParent() instanceof JComponent) {
             topmost = (JComponent) topmost.getParent();
             x += prevTopmost.getX();
@@ -103,11 +97,11 @@ class AnimationLayer extends JComponent {
     @Override
     public void paintComponent(Graphics g) {
         g.clipRect(visibleRectInLayeredPane.x,
-                   visibleRectInLayeredPane.y,
-                   visibleRectInLayeredPane.width,
-                   visibleRectInLayeredPane.height);
+                visibleRectInLayeredPane.y,
+                visibleRectInLayeredPane.width,
+                visibleRectInLayeredPane.height);
 
-        Image transitionImage = screenTransition.getTransitionImage();
+        var transitionImage = screenTransition.getTransitionImage();
         g.translate(componentLocationInLayeredPane.x, componentLocationInLayeredPane.y);
         g.drawImage(transitionImage, 0, 0, null);
     }

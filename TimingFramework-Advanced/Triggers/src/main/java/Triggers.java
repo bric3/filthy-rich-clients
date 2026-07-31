@@ -1,17 +1,7 @@
-import java.awt.BorderLayout;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import org.jdesktop.animation.timing.triggers.ActionTrigger;
-import org.jdesktop.animation.timing.triggers.FocusTrigger;
-import org.jdesktop.animation.timing.triggers.FocusTriggerEvent;
-import org.jdesktop.animation.timing.triggers.MouseTrigger;
-import org.jdesktop.animation.timing.triggers.MouseTriggerEvent;
-import org.jdesktop.animation.timing.triggers.TimingTrigger;
-import org.jdesktop.animation.timing.triggers.TimingTriggerEvent;
+import org.jdesktop.animation.timing.triggers.*;
+
+import javax.swing.*;
+import java.awt.*;
 /*
  * Triggers.java
  *
@@ -52,11 +42,17 @@ import org.jdesktop.animation.timing.triggers.TimingTriggerEvent;
  * @author Chet
  */
 public class Triggers extends JComponent {
-    
-    SpherePanel armed, over, action, focus, timing;
+
+    final SpherePanel armed;
+    final SpherePanel over;
+    final SpherePanel action;
+    final SpherePanel focus;
+    final SpherePanel timing;
     static JButton triggerButton;
-    
-    /** Creates a new instance of Triggers */
+
+    /**
+     * Creates a new instance of Triggers
+     */
     public Triggers() {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         action = new SpherePanel("yellow-sphere.png");
@@ -64,31 +60,31 @@ public class Triggers extends JComponent {
         armed = new SpherePanel("red-sphere.png");
         over = new SpherePanel("green-sphere.png");
         timing = new SpherePanel("gray-sphere.png");
-        
+
         add(action);
         add(focus);
         add(armed);
         add(over);
         add(timing);
-        
+
         // Add triggers for each sphere, depending on what we want to 
         // trigger them
         ActionTrigger.addTrigger(triggerButton, action.getAnimator());
         FocusTrigger.addTrigger(triggerButton,
                 focus.getAnimator(), FocusTriggerEvent.IN);
-        MouseTrigger.addTrigger(triggerButton, 
+        MouseTrigger.addTrigger(triggerButton,
                 armed.getAnimator(), MouseTriggerEvent.PRESS);
-        MouseTrigger.addTrigger(triggerButton, 
+        MouseTrigger.addTrigger(triggerButton,
                 over.getAnimator(), MouseTriggerEvent.ENTER);
         TimingTrigger.addTrigger(action.getAnimator(),
                 timing.getAnimator(), TimingTriggerEvent.STOP);
     }
-    
+
     private static void createAndShowGUI() {
-        JFrame f = new JFrame("Triggers");
+        var f = new JFrame("Triggers");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setLayout(new BorderLayout());
-        JPanel buttonPanel = new JPanel();
+        var buttonPanel = new JPanel();
         buttonPanel.setLayout(new BorderLayout());
         // Note: "Other Button" exists only to provide another component to
         // move focus from/to, in order to show how FocusTrigger works
@@ -100,14 +96,10 @@ public class Triggers extends JComponent {
         f.pack();
         f.setVisible(true);
     }
-    
-    public static void main(String args[]) {
-        Runnable doCreateAndShowGUI = new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        };
+
+    static void main(String[] args) {
+        Runnable doCreateAndShowGUI = Triggers::createAndShowGUI;
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
-    
+
 }

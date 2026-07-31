@@ -33,20 +33,18 @@
 
 package org.jdesktop.animation.transitions.effects;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-
 import org.jdesktop.animation.transitions.Effect;
+
+import java.awt.*;
 
 /**
  * Effect that performs a Fade (in or out) on the component. This is done by using an image of the component and
  * altering the translucency (or <code>AlphaComposite</code>) of the <code>Graphics2D</code> object according to how far
  * along the transition animation is.
- * 
+ * <p>
  * This is an abstract class that relies on the FadeIn or FadeOut subclasses to set up the end (FadeIn) or start
  * (FadeOut) states appropriately.
- * 
- * 
+ *
  * @author Chet Haase
  */
 public abstract class Fade extends Effect {
@@ -70,7 +68,7 @@ public abstract class Fade extends Effect {
      */
     @Override
     public void setup(Graphics2D g2d) {
-        AlphaComposite newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
+        var newComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
         g2d.setComposite(newComposite);
         super.setup(g2d);
     }

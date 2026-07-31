@@ -1,21 +1,21 @@
 /**
  * Copyright (c) 2006, Sun Microsystems, Inc
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials provided
- *     with the distribution.
- *   * Neither the name of the TimingFramework project nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
+ * <p>
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided
+ * with the distribution.
+ * * Neither the name of the TimingFramework project nor the names of its
+ * contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -29,17 +29,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.awt.image.ConvolveOp;
 import java.awt.image.DataBufferInt;
 import java.awt.image.Kernel;
-import java.awt.image.WritableRaster;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -112,7 +109,7 @@ import java.util.HashMap;
  * you can easily repaint the component when needed.</p>
  * <h2>Threading Issues</h2>
  * <p><code>ShadowFactory</code> is not guaranteed to be thread-safe.</p>
- * 
+ *
  * @author Romain Guy <romain.guy@mac.com>
  * @author Sébastien Petrucci <sebastien_petrucci@yahoo.fr>
  */
@@ -128,7 +125,7 @@ public class ShadowFactory {
      * hint for <code>KEY_BLUR_QUALITY</code>.</p>
      */
     public static final String VALUE_BLUR_QUALITY_FAST = "fast";
-    
+
     /**
      * <p>Selects the high quality rendering algorithm. With current implementation,
      * This algorithm does not guarantee a better rendering quality and should
@@ -142,14 +139,14 @@ public class ShadowFactory {
      * value are provided as <code>Integer</code> instances.</p>
      */
     public static final String SIZE_CHANGED_PROPERTY = "shadow_size";
-    
+
     /**
      * <p>Identifies a change to the opacity used to render the shadow.</p>
      * <p>When the property change event is fired, the old value and the new
      * value are provided as <code>Float</code> instances.</p>
      */
     public static final String OPACITY_CHANGED_PROPERTY = "shadow_opacity";
-    
+
     /**
      * <p>Identifies a change to the color used to render the shadow.</p>
      */
@@ -157,18 +154,18 @@ public class ShadowFactory {
 
     // size of the shadow in pixels (defines the fuzziness)
     private int size = 5;
-    
+
     // opacity of the shadow
     private float opacity = 0.5f;
-    
+
     // color of the shadow
     private Color color = Color.BLACK;
 
     // rendering hints map
-    private HashMap<Object, Object> hints;
-    
+    private final HashMap<Object, Object> hints;
+
     // notifies listeners of properties changes
-    private PropertyChangeSupport changeSupport;
+    private final PropertyChangeSupport changeSupport;
 
     /**
      * <p>Creates a default good looking shadow generator.
@@ -184,7 +181,7 @@ public class ShadowFactory {
     public ShadowFactory() {
         this(5, 0.5f, Color.BLACK);
     }
-    
+
     /**
      * <p>A shadow factory needs three properties to generate shadows.
      * These properties are:</p> 
@@ -204,9 +201,9 @@ public class ShadowFactory {
      * @see #setRenderingHint(Object, Object)
      */
     public ShadowFactory(final int size, final float opacity, final Color color) {
-        hints = new HashMap<Object, Object>();
+        hints = new HashMap<>();
         hints.put(KEY_BLUR_QUALITY, VALUE_BLUR_QUALITY_FAST);
-        
+
         changeSupport = new PropertyChangeSupport(this);
 
         setSize(size);
@@ -266,11 +263,11 @@ public class ShadowFactory {
      */
     public void setColor(final Color shadowColor) {
         if (shadowColor != null) {
-            Color oldColor = this.color;
+            var oldColor = this.color;
             this.color = shadowColor;
             changeSupport.firePropertyChange(COLOR_CHANGED_PROPERTY,
-                                             oldColor,
-                                             this.color);
+                    oldColor,
+                    this.color);
         }
     }
 
@@ -294,19 +291,15 @@ public class ShadowFactory {
      * @param shadowOpacity the generated shadows opacity
      */
     public void setOpacity(final float shadowOpacity) {
-        float oldOpacity = this.opacity;
-        
+        var oldOpacity = this.opacity;
+
         if (shadowOpacity < 0.0) {
             this.opacity = 0.0f;
-        } else if (shadowOpacity > 1.0f) {
-            this.opacity = 1.0f;
-        } else {
-            this.opacity = shadowOpacity;
-        }
-        
+        } else this.opacity = Math.min(shadowOpacity, 1.0f);
+
         changeSupport.firePropertyChange(OPACITY_CHANGED_PROPERTY,
-                                         new Float(oldOpacity),
-                                         new Float(this.opacity));
+                oldOpacity,
+                this.opacity);
     }
 
     /**
@@ -334,17 +327,13 @@ public class ShadowFactory {
      * @param shadowSize the generated shadows size in pixels (fuzziness)
      */
     public void setSize(final int shadowSize) {
-        int oldSize = this.size;
-        
-        if (shadowSize < 0) {
-            this.size = 0;
-        } else {
-            this.size = shadowSize;
-        }
-        
+        var oldSize = this.size;
+
+        this.size = Math.max(shadowSize, 0);
+
         changeSupport.firePropertyChange(SIZE_CHANGED_PROPERTY,
-                                         new Integer(oldSize),
-                                         new Integer(this.size));
+                Integer.valueOf(oldSize),
+                Integer.valueOf(this.size));
     }
 
     /**
@@ -367,11 +356,11 @@ public class ShadowFactory {
             // it goes through all the pixels of the original picture at least
             // three times to generate the shadow
             // it is easy to understand but very slow
-            BufferedImage subject = prepareImage(image);
-            BufferedImage shadow = new BufferedImage(subject.getWidth(),
-                                                     subject.getHeight(),
-                                                     BufferedImage.TYPE_INT_ARGB);
-            BufferedImage shadowMask = createShadowMask(subject);
+            var subject = prepareImage(image);
+            var shadow = new BufferedImage(subject.getWidth(),
+                    subject.getHeight(),
+                    BufferedImage.TYPE_INT_ARGB);
+            var shadowMask = createShadowMask(subject);
             getLinearBlurOp(size).filter(shadowMask, shadow);
             return shadow;
         }
@@ -379,14 +368,14 @@ public class ShadowFactory {
         // call the fast rendering algorithm
         return createShadowFast(image);
     }
-    
+
     // prepares the picture for the high quality rendering algorithm
     private BufferedImage prepareImage(final BufferedImage image) {
-        BufferedImage subject = new BufferedImage(image.getWidth() + size * 2,
-                                                  image.getHeight() + size * 2,
-                                                  BufferedImage.TYPE_INT_ARGB);
+        var subject = new BufferedImage(image.getWidth() + size * 2,
+                image.getHeight() + size * 2,
+                BufferedImage.TYPE_INT_ARGB);
 
-        Graphics2D g2 = subject.createGraphics();
+        var g2 = subject.createGraphics();
         g2.drawImage(image, null, size, size);
         g2.dispose();
 
@@ -399,36 +388,36 @@ public class ShadowFactory {
     // the kernel is simulated by an horizontal and a vertical pass
     // implemented by Sébastien Petrucci
     private BufferedImage createShadowFast(final BufferedImage src) {
-        int shadowSize = this.size;
+        var shadowSize = this.size;
 
-        int srcWidth = src.getWidth();
-        int srcHeight = src.getHeight();
+        var srcWidth = src.getWidth();
+        var srcHeight = src.getHeight();
 
-        int dstWidth = srcWidth + size;
-        int dstHeight = srcHeight + size;
+        var dstWidth = srcWidth + size;
+        var dstHeight = srcHeight + size;
 
-        int left = (shadowSize - 1) >> 1;
-        int right = shadowSize - left;
+        var left = (shadowSize - 1) >> 1;
+        var right = shadowSize - left;
 
-        int yStop = dstHeight - right;
+        var yStop = dstHeight - right;
 
-        BufferedImage dst = new BufferedImage(dstWidth, dstHeight,
-                                              BufferedImage.TYPE_INT_ARGB);
+        var dst = new BufferedImage(dstWidth, dstHeight,
+                BufferedImage.TYPE_INT_ARGB);
 
-        int shadowRgb = color.getRGB() & 0x00FFFFFF;
+        var shadowRgb = color.getRGB() & 0x00FFFFFF;
 
-        int[] aHistory = new int[shadowSize];
+        var aHistory = new int[shadowSize];
         int historyIdx;
 
         int aSum;
 
-        ColorModel srcColorModel = src.getColorModel();
-        WritableRaster srcRaster = src.getRaster();
-        int[] dstBuffer = ((DataBufferInt) dst.getRaster().getDataBuffer()).getData();
+        var srcColorModel = src.getColorModel();
+        var srcRaster = src.getRaster();
+        var dstBuffer = ((DataBufferInt) dst.getRaster().getDataBuffer()).getData();
 
-        int lastPixelOffset = right * dstWidth;
-        float hSumDivider = 1.0f / size;
-        float vSumDivider = opacity / size;
+        var lastPixelOffset = right * dstWidth;
+        var hSumDivider = 1.0f / size;
+        var vSumDivider = opacity / size;
 
         // horizontal pass : extract the alpha mask from the source picture and
         // blur it into the destination picture
@@ -443,11 +432,11 @@ public class ShadowFactory {
             historyIdx = 0;
 
             // compute the blur average with pixels from the source image
-            for (int srcX = 0; srcX < srcWidth; srcX++) {
+            for (var srcX = 0; srcX < srcWidth; srcX++) {
 
-                int a = (int) (aSum * hSumDivider); // calculate alpha value
+                var a = (int) (aSum * hSumDivider); // calculate alpha value
                 dstBuffer[dstOffset++] = a << 24;   // store the alpha value only
-                                                    // the shadow color will be added in the next pass
+                // the shadow color will be added in the next pass
 
                 aSum -= aHistory[historyIdx]; // substract the oldest pixel from the sum
 
@@ -462,9 +451,9 @@ public class ShadowFactory {
             }
 
             // blur the end of the row - no new pixels to grab
-            for (int i = 0; i < shadowSize; i++) {
+            for (var i = 0; i < shadowSize; i++) {
 
-                int a = (int) (aSum * hSumDivider);
+                var a = (int) (aSum * hSumDivider);
                 dstBuffer[dstOffset++] = a << 24;
 
                 // substract the oldest pixel from the sum ... and nothing new to add !
@@ -482,13 +471,13 @@ public class ShadowFactory {
             aSum = 0;
 
             // first pixels are empty
-            for (historyIdx = 0; historyIdx < left;) {
+            for (historyIdx = 0; historyIdx < left; ) {
                 aHistory[historyIdx++] = 0;
             }
 
             // and then they come from the dstBuffer
-            for (int y = 0; y < right; y++, bufferOffset += dstWidth) {
-                int a = dstBuffer[bufferOffset] >>> 24;         // extract alpha
+            for (var y = 0; y < right; y++, bufferOffset += dstWidth) {
+                var a = dstBuffer[bufferOffset] >>> 24;         // extract alpha
                 aHistory[historyIdx++] = a;                     // store into history
                 aSum += a;                                      // and add to sum
             }
@@ -497,9 +486,9 @@ public class ShadowFactory {
             historyIdx = 0;
 
             // compute the blur average with pixels from the previous pass
-            for (int y = 0; y < yStop; y++, bufferOffset += dstWidth) {
+            for (var y = 0; y < yStop; y++, bufferOffset += dstWidth) {
 
-                int a = (int) (aSum * vSumDivider);             // calculate alpha value
+                var a = (int) (aSum * vSumDivider);             // calculate alpha value
                 dstBuffer[bufferOffset] = a << 24 | shadowRgb;  // store alpha value + shadow color
 
                 aSum -= aHistory[historyIdx];   // substract the oldest pixel from the sum
@@ -514,9 +503,9 @@ public class ShadowFactory {
             }
 
             // blur the end of the column - no pixels to grab anymore
-            for (int y = yStop; y < dstHeight; y++, bufferOffset += dstWidth) {
+            for (var y = yStop; y < dstHeight; y++, bufferOffset += dstWidth) {
 
-                int a = (int) (aSum * vSumDivider);
+                var a = (int) (aSum * vSumDivider);
                 dstBuffer[bufferOffset] = a << 24 | shadowRgb;
 
                 aSum -= aHistory[historyIdx];   // substract the oldest pixel from the sum
@@ -534,14 +523,14 @@ public class ShadowFactory {
     // it colorize all the pixels with the shadow color according to their
     // original transparency
     private BufferedImage createShadowMask(final BufferedImage image) {
-        BufferedImage mask = new BufferedImage(image.getWidth(),
-                                               image.getHeight(),
-                                               BufferedImage.TYPE_INT_ARGB);
+        var mask = new BufferedImage(image.getWidth(),
+                image.getHeight(),
+                BufferedImage.TYPE_INT_ARGB);
 
-        Graphics2D g2d = mask.createGraphics();
+        var g2d = mask.createGraphics();
         g2d.drawImage(image, 0, 0, null);
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN,
-                                                    opacity));
+                opacity));
         g2d.setColor(color);
         g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
         g2d.dispose();
@@ -552,11 +541,9 @@ public class ShadowFactory {
     // creates a blur convolve operation by generating a kernel of
     // dimensions (size, size).
     private ConvolveOp getLinearBlurOp(final int size) {
-        float[] data = new float[size * size];
-        float value = 1.0f / (float) (size * size);
-        for (int i = 0; i < data.length; i++) {
-            data[i] = value;
-        }
+        var data = new float[size * size];
+        var value = 1.0f / (float) (size * size);
+        Arrays.fill(data, value);
         return new ConvolveOp(new Kernel(size, size, data));
     }
 }

@@ -1,11 +1,7 @@
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 /*
  * CopyAreaPerformance.java
  *
@@ -46,7 +42,7 @@ import javax.swing.SwingUtilities;
  * @author Chet
  */
 public class CopyAreaPerformance extends JComponent implements KeyListener {
-    
+
     private static final int SMILEY_SIZE = 10;
     private static final int PADDING = 2;
     private static final int MIN_COLOR = 0;
@@ -59,12 +55,14 @@ public class CopyAreaPerformance extends JComponent implements KeyListener {
     private boolean useClip = false;
     int prevVX;
     int prevVY;
-    
-    /** Creates a new instance of CopyAreaPerformance */
+
+    /**
+     * Creates a new instance of CopyAreaPerformance
+     */
     public CopyAreaPerformance() {
         setOpaque(true);
     }
-    
+
     private void drawSmiley(Graphics g, Color faceColor, int x, int y) {
         // fill face color
         g.setColor(faceColor);
@@ -73,25 +71,25 @@ public class CopyAreaPerformance extends JComponent implements KeyListener {
         // draw head
         g.drawOval(x, y, SMILEY_SIZE, SMILEY_SIZE);
         // draw smile
-        g.drawArc(x + (int)((SMILEY_SIZE * .2)), (int)(y + (SMILEY_SIZE * .2)),
-                (int)(SMILEY_SIZE * .6), (int)(SMILEY_SIZE * .6), 200, 140);
+        g.drawArc(x + (int) ((SMILEY_SIZE * .2)), (int) (y + (SMILEY_SIZE * .2)),
+                (int) (SMILEY_SIZE * .6), (int) (SMILEY_SIZE * .6), 200, 140);
         // draw eyes
-        int eyeSize = Math.max(2, (int)(SMILEY_SIZE * .1));
-        g.fillOval(x + (int)((SMILEY_SIZE * .5) - (SMILEY_SIZE * .1) - eyeSize),
-                y + (int)(SMILEY_SIZE * .3),
+        var eyeSize = Math.max(2, (int) (SMILEY_SIZE * .1));
+        g.fillOval(x + (int) ((SMILEY_SIZE * .5) - (SMILEY_SIZE * .1) - eyeSize),
+                y + (int) (SMILEY_SIZE * .3),
                 eyeSize, eyeSize);
-        g.fillOval(x + (int)((SMILEY_SIZE * .5) + (SMILEY_SIZE * .1)),
-                y + (int)(SMILEY_SIZE * .3),
+        g.fillOval(x + (int) ((SMILEY_SIZE * .5) + (SMILEY_SIZE * .1)),
+                y + (int) (SMILEY_SIZE * .3),
                 eyeSize, eyeSize);
     }
-    
+
     protected void paintComponent(Graphics g) {
-        long startTime = System.nanoTime();
+        var startTime = System.nanoTime();
         // prevVX is set to -10000 when first enabled
         if (useCopyArea && prevVX > -9999) {
             // Most of this code determines the proper areas to copy and clip
-            int scrollX = viewX - prevVX;
-            int scrollY = viewY - prevVY;
+            var scrollX = viewX - prevVX;
+            var scrollY = viewY - prevVY;
             int copyFromY, copyFromX;
             int clipFromY, clipFromX;
             if (scrollX == 0) {
@@ -117,7 +115,7 @@ public class CopyAreaPerformance extends JComponent implements KeyListener {
                     clipFromX = getWidth() - scrollX;
                 }
                 // copy the old content, set the clip to the new area
-                g.copyArea(copyFromX, 0, getWidth() - Math.abs(scrollX), 
+                g.copyArea(copyFromX, 0, getWidth() - Math.abs(scrollX),
                         getHeight(), -scrollX, 0);
                 g.setClip(clipFromX, 0, Math.abs(scrollX), getHeight());
             }
@@ -126,38 +124,38 @@ public class CopyAreaPerformance extends JComponent implements KeyListener {
         prevVX = viewX;
         prevVY = viewY;
         // Get the clip in case we need it later
-        Rectangle clipRect = g.getClip().getBounds();
-        int clipL = (int)(clipRect.getX());
-        int clipT = (int)(clipRect.getY());
-        int clipR = (int)(clipRect.getMaxX());
-        int clipB = (int)(clipRect.getMaxY());
+        var clipRect = g.getClip().getBounds();
+        var clipL = (int) (clipRect.getX());
+        var clipT = (int) (clipRect.getY());
+        var clipR = (int) (clipRect.getMaxX());
+        var clipB = (int) (clipRect.getMaxY());
         g.setColor(Color.WHITE);
-        g.fillRect(clipL, clipT, (int)clipRect.getWidth(), (int)clipRect.getHeight());
-        for (int column = 0; column < 256; ++column) {
-            int x = column * (SMILEY_SIZE + PADDING) - viewX;
+        g.fillRect(clipL, clipT, (int) clipRect.getWidth(), (int) clipRect.getHeight());
+        for (var column = 0; column < 256; ++column) {
+            var x = column * (SMILEY_SIZE + PADDING) - viewX;
             if (useClip) {
                 if (x > clipR || (x + (SMILEY_SIZE + PADDING)) < clipL) {
                     // trivial reject; outside to the left or right
                     continue;
                 }
             }
-            for (int row = 0; row < 256; ++row) {
-                int y = row * (SMILEY_SIZE + PADDING) - viewY;
+            for (var row = 0; row < 256; ++row) {
+                var y = row * (SMILEY_SIZE + PADDING) - viewY;
                 if (useClip) {
                     if (y > clipB || (y + (SMILEY_SIZE + PADDING)) < clipT) {
                         // trivial reject; outside to the top or bottom
                         continue;
                     }
                 }
-                Color faceColor = new Color(column, row, 0);
+                var faceColor = new Color(column, row, 0);
                 drawSmiley(g, faceColor, x, y);
             }
         }
-        long stopTime = System.nanoTime();
-        System.out.println("Painted in " + 
-                ((stopTime - startTime) / 1000000) + " ms");
+        var stopTime = System.nanoTime();
+        System.out.println("Painted in " +
+                           ((stopTime - startTime) / 1000000) + " ms");
     }
-    
+
     private void scroll(int scrollX, int scrollY) {
         viewX += scrollX;
         viewY += scrollY;
@@ -167,9 +165,9 @@ public class CopyAreaPerformance extends JComponent implements KeyListener {
         viewY = Math.min(viewY, CANVAS_H - viewY);
         repaint();
     }
-    
+
     // KeyListener methods
-    
+
     /**
      * Arrow keys scroll the view around. The 'c' key toggles clip area
      * optimization. The 'a' key toggles copyArea optimization.
@@ -192,27 +190,25 @@ public class CopyAreaPerformance extends JComponent implements KeyListener {
             System.out.println("useCopyArea = " + useCopyArea);
         }
     }
+
     public void keyReleased(KeyEvent e) {
     }
+
     public void keyTyped(KeyEvent e) {
     }
 
     private static void createAndShowGUI() {
-        JFrame f = new JFrame("CopyAreaPerformance");
+        var f = new JFrame("CopyAreaPerformance");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(600, 600);
-        CopyAreaPerformance component = new CopyAreaPerformance();
+        var component = new CopyAreaPerformance();
         f.add(component);
         f.addKeyListener(component);
         f.setVisible(true);
     }
-    
-    public static void main(String args[]) {
-        Runnable doCreateAndShowGUI = new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        };
+
+    static void main(String[] args) {
+        Runnable doCreateAndShowGUI = CopyAreaPerformance::createAndShowGUI;
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
 }

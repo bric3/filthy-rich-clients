@@ -29,26 +29,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.Graphics;
-import java.awt.Point;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import javax.imageio.ImageIO;
-import javax.swing.JComponent;
-import javax.swing.JViewport;
-import javax.swing.SwingUtilities;
 
 /**
  *
  * @author Romain Guy <romain.guy@mac.com>
  */
 public class Validator extends JComponent {
-    private Set<JComponent> invalidFields = new HashSet<JComponent>();
+    private final Set<JComponent> invalidFields = new HashSet<>();
     private BufferedImage warningIcon;
-    
-    /** Creates a new instance of Validator */
+
+    /**
+     * Creates a new instance of Validator
+     */
     public Validator() {
         loadImages();
     }
@@ -66,15 +65,15 @@ public class Validator extends JComponent {
     }
 
     private void repaintBadge(JComponent field) {
-        Point p = field.getLocationOnScreen();
+        var p = field.getLocationOnScreen();
         SwingUtilities.convertPointFromScreen(p, this);
-        
-        int x = p.x - warningIcon.getWidth() / 2;
-        int y = (int) (p.y + field.getHeight() - warningIcon.getHeight() / 1.5);
-        
+
+        var x = p.x - warningIcon.getWidth() / 2;
+        var y = (int) (p.y + field.getHeight() - warningIcon.getHeight() / 1.5);
+
         repaint(x, y, warningIcon.getWidth(), warningIcon.getHeight());
     }
-    
+
     private void loadImages() {
         try {
             warningIcon = ImageIO.read(getClass().getResource("images/dialog-warning.png"));
@@ -82,22 +81,21 @@ public class Validator extends JComponent {
             ex.printStackTrace();
         }
     }
-    
+
     @Override
     protected void paintComponent(Graphics g) {
-        for (JComponent invalid : invalidFields) {
-            if (invalid.getParent() instanceof JViewport) {
-                JViewport viewport = (JViewport) invalid.getParent();
+        for (var invalid : invalidFields) {
+            if (invalid.getParent() instanceof JViewport viewport) {
                 // the parent of the viewport is a JScrollPane
                 invalid = (JComponent) viewport.getParent();
             }
-            
-            Point p = invalid.getLocationOnScreen();
+
+            var p = invalid.getLocationOnScreen();
             SwingUtilities.convertPointFromScreen(p, this);
-            
-            int x = p.x - warningIcon.getWidth() / 2;
-            int y = (int) (p.y + invalid.getHeight() - warningIcon.getHeight() / 1.5);
-            
+
+            var x = p.x - warningIcon.getWidth() / 2;
+            var y = (int) (p.y + invalid.getHeight() - warningIcon.getHeight() / 1.5);
+
             if (g.getClipBounds().intersects(x, y,
                     warningIcon.getWidth(), warningIcon.getHeight())) {
                 g.drawImage(warningIcon, x, y, null);

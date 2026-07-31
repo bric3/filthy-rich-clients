@@ -1,21 +1,11 @@
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.Image;
-import java.awt.Transparency;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.net.URL;
-import javax.imageio.ImageIO;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 /*
  * SmoothMoves.java
  *
@@ -56,53 +46,71 @@ import javax.swing.Timer;
  * @author Chet
  */
 public class SmoothMoves extends JComponent implements ActionListener, KeyListener {
-        
-    /** image holds the graphics we render for each animating object */
+
+    /**
+     * image holds the graphics we render for each animating object
+     */
     BufferedImage image = null;
-    static int imageW = 100;
-    static int imageH = 150;
-    
-    /** Location of fading animation */
-    int fadeX = 50;
-    int fadeY = 50;
-    
-    /** X values that moving animation will move between */
-    static int moveMinX = 150;
-    static int moveMaxX = 350;
-    
-    /** Current x/y location of moving animation */
+    static final int imageW = 100;
+    static final int imageH = 150;
+
+    /**
+     * Location of fading animation
+     */
+    final int fadeX = 50;
+    final int fadeY = 50;
+
+    /**
+     * X values that moving animation will move between
+     */
+    static final int moveMinX = 150;
+    static final int moveMaxX = 350;
+
+    /**
+     * Current x/y location of moving animation
+     */
     int moveX = moveMinX;
-    int moveY = 50;
-    
-    /** Current opacity of fading animation */
+    final int moveY = 50;
+
+    /**
+     * Current opacity of fading animation
+     */
     float opacity = 0.0f;
-    
-    /** Toggles for various demo options (key to toggle in parentheses) */
+
+    /**
+     * Toggles for various demo options (key to toggle in parentheses)
+     */
     boolean useImage = false;   // (i) image instead of rectangle
     boolean useAA = false;      // (a) anti-aliased edges (rectangle only)
     boolean motionBlur = false; // (b) ghost images behind moving animation
     boolean alterColor = false; // (c) light-gray instead of black rectangle
     boolean linear = true;      // (l) linear vs. non-linear motion
 
-    /** Used for motion blur rendering; holds information for ghost trail */
+    /**
+     * Used for motion blur rendering; holds information for ghost trail
+     */
     int blurSize = 5;
-    int prevMoveX[];
-    int prevMoveY[];
-    float trailOpacity[];
-    
-    /** Basic Timer animation info */
+    int[] prevMoveX;
+    int[] prevMoveY;
+    float[] trailOpacity;
+
+    /**
+     * Basic Timer animation info
+     */
     final static int CYCLE_TIME = 2000;     // One cycle takes 2 seconds
     int currentResolution = 50;             // current Timer resolution
     Timer timer = null;                     // animation Timer
     long cycleStart;                        // track start time for each cycle
-    
-    /** Creates a new instance of SmoothAnimation */
+
+    /**
+     * Creates a new instance of SmoothAnimation
+     */
     public SmoothMoves() {
-        //createAnimationImage();
+        // createAnimationImage();
         cycleStart = System.nanoTime() / 1000000;
         startTimer(currentResolution);
     }
-    
+
     /**
      * Create the image that will be animated. This image may be an actual
      * image (duke.gif), or some graphics (a variation on a black filled
@@ -111,15 +119,16 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
      * set when this method is called.
      */
     void createAnimationImage() {
-        GraphicsConfiguration gc = getGraphicsConfiguration();
+        var gc = getGraphicsConfiguration();
         image = gc.createCompatibleImage(imageW, imageH, Transparency.TRANSLUCENT);
-        Graphics2D gImg = image.createGraphics();
+        var gImg = image.createGraphics();
         if (useImage) {
             try {
-	        URL url = getClass().getResource("images/duke.gif");
+                var url = getClass().getResource("images/duke.gif");
                 Image originalImage = ImageIO.read(url);
                 gImg.drawImage(originalImage, 0, 0, imageW, imageH, null);
-            } catch (Exception e) {}
+            } catch (Exception _) {
+            }
         } else {
             // use graphics
             Color graphicsColor;
@@ -134,9 +143,9 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
                 // Antialiasing hack - just draw a fading-out border around the
                 // rectangle
                 gImg.setComposite(AlphaComposite.Src);
-                int red = graphicsColor.getRed();
-                int green = graphicsColor.getRed();
-                int blue = graphicsColor.getRed();
+                var red = graphicsColor.getRed();
+                var green = graphicsColor.getRed();
+                var blue = graphicsColor.getRed();
                 gImg.setColor(new Color(red, green, blue, 50));
                 gImg.drawRect(0, 0, imageW - 1, imageH - 1);
                 gImg.setColor(new Color(red, green, blue, 100));
@@ -151,22 +160,22 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
         }
         gImg.dispose();
     }
-    
+
     public void paintComponent(Graphics g) {
         if (image == null) {
             createAnimationImage();
         }
-        
+
         // Erase the background
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, getWidth(), getHeight());
-        
+
         // Draw the fading image
-        Graphics2D gFade = (Graphics2D)g.create();
+        var gFade = (Graphics2D) g.create();
         gFade.setComposite(AlphaComposite.SrcOver.derive(opacity));
         gFade.drawImage(image, fadeX, fadeY, null);
         gFade.dispose();
-        
+
         // Draw the moving image
         if (motionBlur) {
             // Draw previous locations of the image as a trail of 
@@ -176,8 +185,8 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
                 prevMoveX = new int[blurSize];
                 prevMoveY = new int[blurSize];
                 trailOpacity = new float[blurSize];
-                float incrementalFactor = .2f / (blurSize + 1);
-                for (int i = 0; i < blurSize; ++i) {
+                var incrementalFactor = .2f / (blurSize + 1);
+                for (var i = 0; i < blurSize; ++i) {
                     // default values, act as flag to not render these
                     // until they have real values
                     prevMoveX[i] = -1;
@@ -185,12 +194,12 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
                     // vary the translucency by the number of the ghost
                     // image; the further away it is from the current one,
                     // the more faded it will be
-                    trailOpacity[i] = (.2f - incrementalFactor) - 
-                            i * incrementalFactor;
+                    trailOpacity[i] = (.2f - incrementalFactor) -
+                                      i * incrementalFactor;
                 }
             } else {
-                Graphics2D gTrail = (Graphics2D)g.create();
-                for (int i = 0; i < blurSize; ++i) {
+                var gTrail = (Graphics2D) g.create();
+                for (var i = 0; i < blurSize; ++i) {
                     if (prevMoveX[i] >= 0) {
                         // Render each blur image with the appropriate
                         // amount of translucency
@@ -205,7 +214,7 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
         if (motionBlur) {
             // shift the ghost positions to add the current position and
             // drop the oldest one
-            for (int i = blurSize - 1; i > 0; --i) {
+            for (var i = blurSize - 1; i > 0; --i) {
                 prevMoveX[i] = prevMoveX[i - 1];
                 prevMoveY[i] = prevMoveY[i - 1];
             }
@@ -213,19 +222,19 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
             prevMoveY[0] = moveY;
         }
     }
-    
+
     /**
      * This method handles the events from the Swing Timer
      */
     public void actionPerformed(ActionEvent ae) {
         // calculate the fraction elapsed of the animation and call animate()
         // to alter the values accordingly
-        long currentTime = System.nanoTime() / 1000000;
-        long totalTime = currentTime - cycleStart;
+        var currentTime = System.nanoTime() / 1000000;
+        var totalTime = currentTime - cycleStart;
         if (totalTime > CYCLE_TIME) {
             cycleStart = currentTime;
         }
-        float fraction = (float)totalTime / CYCLE_TIME;
+        var fraction = (float) totalTime / CYCLE_TIME;
         fraction = Math.min(1.0f, fraction);
         fraction = 1 - Math.abs(1 - (2 * fraction));
         animate(fraction);
@@ -242,7 +251,7 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
         } else {
             // Our "nonlinear" motion just uses a sin function to get a 
             // simple bounce behavior
-            animationFactor = (float)Math.sin(fraction * (float)Math.PI/2);
+            animationFactor = (float) Math.sin(fraction * (float) Math.PI / 2);
         }
         // Clamp the value to make sure it does not exceed the bounds
         animationFactor = Math.min(animationFactor, 1.0f);
@@ -252,12 +261,12 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
         opacity = animationFactor;
         // The move animation will calculate a location based on a linear
         // interpolation between its start and end points using the fraction
-        moveX = moveMinX + (int)(.5f + animationFactor * 
-                (float)(moveMaxX - moveMinX));
+        moveX = moveMinX + (int) (.5f + animationFactor *
+                                        (float) (moveMaxX - moveMinX));
         // redisplay our component with the new animated values
         repaint();
     }
-    
+
     /**
      * Moves the frame rate up or down by changing the Timer resolution
      */
@@ -271,7 +280,7 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
         currentResolution = Math.min(currentResolution, 500);
         startTimer(currentResolution);
     }
-    
+
     /**
      * Starts the animation
      */
@@ -289,7 +298,7 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
      * Toggles various rendering flags
      */
     public void keyPressed(KeyEvent ke) {
-        int keyCode = ke.getKeyCode();
+        var keyCode = ke.getKeyCode();
         if (keyCode == KeyEvent.VK_B) {
             // B: Motion blur - displays trail of ghost images
             motionBlur = !motionBlur;
@@ -323,26 +332,25 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
     }
 
     // Unused KeyListener implementations
-    public void keyReleased(KeyEvent ke) {}
-    public void keyTyped(KeyEvent ke) {}
-    
+    public void keyReleased(KeyEvent ke) {
+    }
+
+    public void keyTyped(KeyEvent ke) {
+    }
+
     private static void createAndShowGUI() {
-	JFrame f = new JFrame("Smooth Moves");
-	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	f.setSize(moveMaxX + imageW + 50, 300);
-	SmoothMoves component = new SmoothMoves();
-	f.add(component);
-	f.setVisible(true);
+        var f = new JFrame("Smooth Moves");
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setSize(moveMaxX + imageW + 50, 300);
+        var component = new SmoothMoves();
+        f.add(component);
+        f.setVisible(true);
         f.addKeyListener(component);
     }
 
-    public static void main(String[] args) {
-	Runnable doCreateAndShowGUI = new Runnable() {
-	    public void run() {
-		createAndShowGUI();
-	    }
-	};
-	SwingUtilities.invokeLater(doCreateAndShowGUI);
+    static void main(String[] args) {
+        Runnable doCreateAndShowGUI = SmoothMoves::createAndShowGUI;
+        SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
-    
+
 }

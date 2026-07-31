@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2007, Sun Microsystems, Inc
  * All rights reserved.
- *
+ * <p>
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- *
+ * <p>
  *   * Redistributions of source code must retain the above copyright
  *     notice, this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above
@@ -15,7 +15,7 @@
  *   * Neither the name of the TimingFramework project nor the names of its
  *     contributors may be used to endorse or promote products derived
  *     from this software without specific prior written permission.
- *
+ * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -31,7 +31,6 @@
 
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
@@ -43,8 +42,8 @@ public class RaceControlPanel extends JPanel {
     
     /** Make these static so that outside classes can easily
      *  add themselves as listeners */
-    JButton goButton = new JButton("Go");
-    JButton stopButton = new JButton("Stop");
+    final JButton goButton = new JButton("Go");
+    final JButton stopButton = new JButton("Stop");
 
     /**
      * Creates a new instance of RaceControlPanel

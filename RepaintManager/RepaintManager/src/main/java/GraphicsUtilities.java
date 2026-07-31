@@ -55,9 +55,9 @@ import java.net.URL;
  * compatible images, thus automatically resulting into better runtime
  * performance.</p>
  * <p>All these methodes are both faster than
- * {@link java.awt.Image#getScaledInstance(int, int, int)} and produce
+ * {@link Image#getScaledInstance(int, int, int)} and produce
  * better-looking results than the various <code>drawImage()</code> methods
- * in {@link java.awt.Graphics}, which can be used for image scaling.</p>
+ * in {@link Graphics}, which can be used for image scaling.</p>
  * <h2>Image Manipulation</h2>
  * <p>This class provides two methods to get and set pixels in a buffered image.
  * These methods try to avoid unmanaging the image in order to keep good
@@ -72,7 +72,7 @@ public class GraphicsUtilities {
     // Returns the graphics configuration for the primary screen
     private static GraphicsConfiguration getGraphicsConfiguration() {
         return GraphicsEnvironment.getLocalGraphicsEnvironment().
-                    getDefaultScreenDevice().getDefaultConfiguration();
+                getDefaultScreenDevice().getDefaultConfiguration();
     }
 
     /**
@@ -82,32 +82,32 @@ public class GraphicsUtilities {
      * image is compatible with the hardware.</p>
      *
      * @param image the reference image from which the color model of the new
-     *   image is obtained
+     *              image is obtained
      * @return a new <code>BufferedImage</code>, compatible with the color model
-     *   of <code>image</code>
+     * of <code>image</code>
      */
     public static BufferedImage createColorModelCompatibleImage(BufferedImage image) {
         var cm = image.getColorModel();
         return new BufferedImage(cm,
-            cm.createCompatibleWritableRaster(image.getWidth(),
-                                              image.getHeight()),
-            cm.isAlphaPremultiplied(), null);
+                cm.createCompatibleWritableRaster(image.getWidth(),
+                        image.getHeight()),
+                cm.isAlphaPremultiplied(), null);
     }
 
     /**
      * <p>Returns a new compatible image with the same width, height and
      * transparency as the image specified as a parameter.</p>
      *
-     * @see java.awt.Transparency
-     * @see #createCompatibleImage(int, int)
-     * @see #createCompatibleImage(java.awt.image.BufferedImage, int, int)
-     * @see #createCompatibleTranslucentImage(int, int)
-     * @see #loadCompatibleImage(java.net.URL)
-     * @see #toCompatibleImage(java.awt.image.BufferedImage)
      * @param image the reference image from which the dimension and the
-     *   transparency of the new image are obtained
+     *              transparency of the new image are obtained
      * @return a new compatible <code>BufferedImage</code> with the same
-     *   dimension and transparency as <code>image</code>
+     * dimension and transparency as <code>image</code>
+     * @see Transparency
+     * @see #createCompatibleImage(int, int)
+     * @see #createCompatibleImage(BufferedImage, int, int)
+     * @see #createCompatibleTranslucentImage(int, int)
+     * @see #loadCompatibleImage(URL)
+     * @see #toCompatibleImage(BufferedImage)
      */
     public static BufferedImage createCompatibleImage(BufferedImage image) {
         return createCompatibleImage(image, image.getWidth(), image.getHeight());
@@ -117,38 +117,38 @@ public class GraphicsUtilities {
      * <p>Returns a new compatible image of the specified width and height, and
      * the same transparency setting as the image specified as a parameter.</p>
      *
-     * @see java.awt.Transparency
-     * @see #createCompatibleImage(java.awt.image.BufferedImage)
+     * @param width  the width of the new image
+     * @param height the height of the new image
+     * @param image  the reference image from which the transparency of the new
+     *               image is obtained
+     * @return a new compatible <code>BufferedImage</code> with the same
+     * transparency as <code>image</code> and the specified dimension
+     * @see Transparency
+     * @see #createCompatibleImage(BufferedImage)
      * @see #createCompatibleImage(int, int)
      * @see #createCompatibleTranslucentImage(int, int)
-     * @see #loadCompatibleImage(java.net.URL)
-     * @see #toCompatibleImage(java.awt.image.BufferedImage)
-     * @param width the width of the new image
-     * @param height the height of the new image
-     * @param image the reference image from which the transparency of the new
-     *   image is obtained
-     * @return a new compatible <code>BufferedImage</code> with the same
-     *   transparency as <code>image</code> and the specified dimension
+     * @see #loadCompatibleImage(URL)
+     * @see #toCompatibleImage(BufferedImage)
      */
     public static BufferedImage createCompatibleImage(BufferedImage image,
                                                       int width, int height) {
         return getGraphicsConfiguration().createCompatibleImage(width, height,
-                                                   image.getTransparency());
+                image.getTransparency());
     }
 
     /**
      * <p>Returns a new opaque compatible image of the specified width and
      * height.</p>
      *
-     * @see #createCompatibleImage(java.awt.image.BufferedImage)
-     * @see #createCompatibleImage(java.awt.image.BufferedImage, int, int)
-     * @see #createCompatibleTranslucentImage(int, int)
-     * @see #loadCompatibleImage(java.net.URL)
-     * @see #toCompatibleImage(java.awt.image.BufferedImage)
-     * @param width the width of the new image
+     * @param width  the width of the new image
      * @param height the height of the new image
      * @return a new opaque compatible <code>BufferedImage</code> of the
-     *   specified width and height
+     * specified width and height
+     * @see #createCompatibleImage(BufferedImage)
+     * @see #createCompatibleImage(BufferedImage, int, int)
+     * @see #createCompatibleTranslucentImage(int, int)
+     * @see #loadCompatibleImage(URL)
+     * @see #toCompatibleImage(BufferedImage)
      */
     public static BufferedImage createCompatibleImage(int width, int height) {
         return getGraphicsConfiguration().createCompatibleImage(width, height);
@@ -158,20 +158,20 @@ public class GraphicsUtilities {
      * <p>Returns a new translucent compatible image of the specified width
      * and height.</p>
      *
-     * @see #createCompatibleImage(java.awt.image.BufferedImage)
-     * @see #createCompatibleImage(java.awt.image.BufferedImage, int, int)
-     * @see #createCompatibleImage(int, int)
-     * @see #loadCompatibleImage(java.net.URL)
-     * @see #toCompatibleImage(java.awt.image.BufferedImage)
-     * @param width the width of the new image
+     * @param width  the width of the new image
      * @param height the height of the new image
      * @return a new translucent compatible <code>BufferedImage</code> of the
-     *   specified width and height
+     * specified width and height
+     * @see #createCompatibleImage(BufferedImage)
+     * @see #createCompatibleImage(BufferedImage, int, int)
+     * @see #createCompatibleImage(int, int)
+     * @see #loadCompatibleImage(URL)
+     * @see #toCompatibleImage(BufferedImage)
      */
     public static BufferedImage createCompatibleTranslucentImage(int width,
                                                                  int height) {
         return getGraphicsConfiguration().createCompatibleImage(width, height,
-                                                   Transparency.TRANSLUCENT);
+                Transparency.TRANSLUCENT);
     }
 
     /**
@@ -179,15 +179,15 @@ public class GraphicsUtilities {
      * specified location and then turned, if necessary into a compatible
      * image.</p>
      *
-     * @see #createCompatibleImage(java.awt.image.BufferedImage)
-     * @see #createCompatibleImage(java.awt.image.BufferedImage, int, int)
-     * @see #createCompatibleImage(int, int)
-     * @see #createCompatibleTranslucentImage(int, int)
-     * @see #toCompatibleImage(java.awt.image.BufferedImage)
      * @param resource the URL of the picture to load as a compatible image
      * @return a new translucent compatible <code>BufferedImage</code> of the
-     *   specified width and height
-     * @throws java.io.IOException if the image cannot be read or loaded
+     * specified width and height
+     * @throws IOException if the image cannot be read or loaded
+     * @see #createCompatibleImage(BufferedImage)
+     * @see #createCompatibleImage(BufferedImage, int, int)
+     * @see #createCompatibleImage(int, int)
+     * @see #createCompatibleTranslucentImage(int, int)
+     * @see #toCompatibleImage(BufferedImage)
      */
     public static BufferedImage loadCompatibleImage(URL resource)
             throws IOException {
@@ -200,14 +200,14 @@ public class GraphicsUtilities {
      * image. This method ensures an image is compatible with the hardware,
      * and therefore optimized for fast blitting operations.</p>
      *
-     * @see #createCompatibleImage(java.awt.image.BufferedImage)
-     * @see #createCompatibleImage(java.awt.image.BufferedImage, int, int)
-     * @see #createCompatibleImage(int, int)
-     * @see #createCompatibleTranslucentImage(int, int)
-     * @see #loadCompatibleImage(java.net.URL)
      * @param image the image to copy into a new compatible image
      * @return a new compatible copy, with the
-     *   same width and height and transparency and content, of <code>image</code>
+     * same width and height and transparency and content, of <code>image</code>
+     * @see #createCompatibleImage(BufferedImage)
+     * @see #createCompatibleImage(BufferedImage, int, int)
+     * @see #createCompatibleImage(int, int)
+     * @see #createCompatibleTranslucentImage(int, int)
+     * @see #loadCompatibleImage(URL)
      */
     public static BufferedImage toCompatibleImage(BufferedImage image) {
         if (image.getColorModel().equals(
@@ -217,8 +217,8 @@ public class GraphicsUtilities {
 
         var compatibleImage =
                 getGraphicsConfiguration().createCompatibleImage(
-                    image.getWidth(), image.getHeight(),
-                    image.getTransparency());
+                        image.getWidth(), image.getHeight(),
+                        image.getTransparency());
         var g = compatibleImage.getGraphics();
         g.drawImage(image, 0, 0, null);
         g.dispose();
@@ -238,15 +238,15 @@ public class GraphicsUtilities {
      * to ensure the quality of the result without sacrificing too much
      * performance.</p>
      *
-     * @see #createThumbnailFast(java.awt.image.BufferedImage, int, int)
-     * @see #createThumbnail(java.awt.image.BufferedImage, int)
-     * @see #createThumbnail(java.awt.image.BufferedImage, int, int)
-     * @param image the source image
+     * @param image   the source image
      * @param newSize the length of the largest dimension of the thumbnail
      * @return a new compatible <code>BufferedImage</code> containing a
-     *   thumbnail of <code>image</code>
+     * thumbnail of <code>image</code>
      * @throws IllegalArgumentException if <code>newSize</code> is larger than
-     *   the largest dimension of <code>image</code> or &lt;= 0
+     *                                  the largest dimension of <code>image</code> or &lt;= 0
+     * @see #createThumbnailFast(BufferedImage, int, int)
+     * @see #createThumbnail(BufferedImage, int)
+     * @see #createThumbnail(BufferedImage, int, int)
      */
     public static BufferedImage createThumbnailFast(BufferedImage image,
                                                     int newSize) {
@@ -259,8 +259,8 @@ public class GraphicsUtilities {
                 throw new IllegalArgumentException("newSize must be lower than" +
                                                    " the image width");
             } else if (newSize <= 0) {
-                 throw new IllegalArgumentException("newSize must" +
-                                                    " be greater than 0");
+                throw new IllegalArgumentException("newSize must" +
+                                                   " be greater than 0");
             }
 
             ratio = (float) width / (float) height;
@@ -271,8 +271,8 @@ public class GraphicsUtilities {
                 throw new IllegalArgumentException("newSize must be lower than" +
                                                    " the image height");
             } else if (newSize <= 0) {
-                 throw new IllegalArgumentException("newSize must" +
-                                                    " be greater than 0");
+                throw new IllegalArgumentException("newSize must" +
+                                                   " be greater than 0");
             }
 
             ratio = (float) height / (float) width;
@@ -283,7 +283,7 @@ public class GraphicsUtilities {
         var temp = createCompatibleImage(image, width, height);
         var g2 = temp.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.drawImage(image, 0, 0, temp.getWidth(), temp.getHeight(), null);
         g2.dispose();
 
@@ -299,18 +299,18 @@ public class GraphicsUtilities {
      * to ensure the quality of the result without sacrificing too much
      * performance.</p>
      *
-     * @see #createThumbnailFast(java.awt.image.BufferedImage, int)
-     * @see #createThumbnail(java.awt.image.BufferedImage, int)
-     * @see #createThumbnail(java.awt.image.BufferedImage, int, int)
-     * @param image the source image
-     * @param newWidth the width of the thumbnail
+     * @param image     the source image
+     * @param newWidth  the width of the thumbnail
      * @param newHeight the height of the thumbnail
      * @return a new compatible <code>BufferedImage</code> containing a
-     *   thumbnail of <code>image</code>
+     * thumbnail of <code>image</code>
      * @throws IllegalArgumentException if <code>newWidth</code> is larger than
-     *   the width of <code>image</code> or if code>newHeight</code> is larger
-     *   than the height of <code>image</code> or if one of the dimensions
-     *   is &lt;= 0
+     *                                  the width of <code>image</code> or if code>newHeight</code> is larger
+     *                                  than the height of <code>image</code> or if one of the dimensions
+     *                                  is &lt;= 0
+     * @see #createThumbnailFast(BufferedImage, int)
+     * @see #createThumbnail(BufferedImage, int)
+     * @see #createThumbnail(BufferedImage, int, int)
      */
     public static BufferedImage createThumbnailFast(BufferedImage image,
                                                     int newWidth, int newHeight) {
@@ -327,7 +327,7 @@ public class GraphicsUtilities {
         var temp = createCompatibleImage(image, newWidth, newHeight);
         var g2 = temp.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.drawImage(image, 0, 0, temp.getWidth(), temp.getHeight(), null);
         g2.dispose();
 
@@ -341,19 +341,19 @@ public class GraphicsUtilities {
      * original picture.</p>
      * <p>This method offers a good trade-off between speed and quality.
      * The result looks better than
-     * {@link #createThumbnailFast(java.awt.image.BufferedImage, int)} when
+     * {@link #createThumbnailFast(BufferedImage, int)} when
      * the new size is less than half the longest dimension of the source
      * image, yet the rendering speed is almost similar.</p>
      *
-     * @see #createThumbnailFast(java.awt.image.BufferedImage, int, int)
-     * @see #createThumbnailFast(java.awt.image.BufferedImage, int)
-     * @see #createThumbnail(java.awt.image.BufferedImage, int, int)
-     * @param image the source image
+     * @param image   the source image
      * @param newSize the length of the largest dimension of the thumbnail
      * @return a new compatible <code>BufferedImage</code> containing a
-     *   thumbnail of <code>image</code>
+     * thumbnail of <code>image</code>
      * @throws IllegalArgumentException if <code>newSize</code> is larger than
-     *   the largest dimension of <code>image</code> or &lt;= 0
+     *                                  the largest dimension of <code>image</code> or &lt;= 0
+     * @see #createThumbnailFast(BufferedImage, int, int)
+     * @see #createThumbnailFast(BufferedImage, int)
+     * @see #createThumbnail(BufferedImage, int, int)
      */
     public static BufferedImage createThumbnail(BufferedImage image,
                                                 int newSize) {
@@ -401,7 +401,7 @@ public class GraphicsUtilities {
             var temp = createCompatibleImage(image, width, height);
             var g2 = temp.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g2.drawImage(thumb, 0, 0, temp.getWidth(), temp.getHeight(), null);
             g2.dispose();
 
@@ -415,21 +415,21 @@ public class GraphicsUtilities {
      * <p>Returns a thumbnail of a source image.</p>
      * <p>This method offers a good trade-off between speed and quality.
      * The result looks better than
-     * {@link #createThumbnailFast(java.awt.image.BufferedImage, int)} when
+     * {@link #createThumbnailFast(BufferedImage, int)} when
      * the new size is less than half the longest dimension of the source
      * image, yet the rendering speed is almost similar.</p>
      *
-     * @see #createThumbnailFast(java.awt.image.BufferedImage, int)
-     * @see #createThumbnailFast(java.awt.image.BufferedImage, int, int)
-     * @see #createThumbnail(java.awt.image.BufferedImage, int)
-     * @param image the source image
-     * @param newWidth the width of the thumbnail
+     * @param image     the source image
+     * @param newWidth  the width of the thumbnail
      * @param newHeight the height of the thumbnail
      * @return a new compatible <code>BufferedImage</code> containing a
-     *   thumbnail of <code>image</code>
+     * thumbnail of <code>image</code>
      * @throws IllegalArgumentException if <code>newWidth</code> is larger than
-     *   the width of <code>image</code> or if code>newHeight</code> is larger
-     *   than the height of <code>image or if one the dimensions is not &gt; 0</code>
+     *                                  the width of <code>image</code> or if code>newHeight</code> is larger
+     *                                  than the height of <code>image or if one the dimensions is not &gt; 0</code>
+     * @see #createThumbnailFast(BufferedImage, int)
+     * @see #createThumbnailFast(BufferedImage, int, int)
+     * @see #createThumbnail(BufferedImage, int)
      */
     public static BufferedImage createThumbnail(BufferedImage image,
                                                 int newWidth, int newHeight) {
@@ -465,7 +465,7 @@ public class GraphicsUtilities {
             var temp = createCompatibleImage(image, width, height);
             var g2 = temp.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g2.drawImage(thumb, 0, 0, temp.getWidth(), temp.getHeight(), null);
             g2.dispose();
 
@@ -482,16 +482,16 @@ public class GraphicsUtilities {
      * an image of type different from <code>BufferedImage.TYPE_INT_ARGB</code>
      * and <code>BufferedImage.TYPE_INT_RGB</code> will unmanage the image.</p>
      *
-     * @param img the source image
-     * @param x the x location at which to start grabbing pixels
-     * @param y the y location at which to start grabbing pixels
-     * @param w the width of the rectangle of pixels to grab
-     * @param h the height of the rectangle of pixels to grab
+     * @param img    the source image
+     * @param x      the x location at which to start grabbing pixels
+     * @param y      the y location at which to start grabbing pixels
+     * @param w      the width of the rectangle of pixels to grab
+     * @param h      the height of the rectangle of pixels to grab
      * @param pixels a pre-allocated array of pixels of size w*h; can be null
      * @return <code>pixels</code> if non-null, a new array of integers
-     *   otherwise
+     * otherwise
      * @throws IllegalArgumentException is <code>pixels</code> is non-null and
-     *   of length &lt; w*h
+     *                                  of length &lt; w*h
      */
     public static int[] getPixels(BufferedImage img,
                                   int x, int y, int w, int h, int[] pixels) {
@@ -523,14 +523,14 @@ public class GraphicsUtilities {
      * an image of type different from <code>BufferedImage.TYPE_INT_ARGB</code>
      * and <code>BufferedImage.TYPE_INT_RGB</code> will unmanage the image.</p>
      *
-     * @param img the destination image
-     * @param x the x location at which to start storing pixels
-     * @param y the y location at which to start storing pixels
-     * @param w the width of the rectangle of pixels to store
-     * @param h the height of the rectangle of pixels to store
+     * @param img    the destination image
+     * @param x      the x location at which to start storing pixels
+     * @param y      the y location at which to start storing pixels
+     * @param w      the width of the rectangle of pixels to store
+     * @param h      the height of the rectangle of pixels to store
      * @param pixels an array of pixels, stored as integers
      * @throws IllegalArgumentException is <code>pixels</code> is non-null and
-     *   of length &lt; w*h
+     *                                  of length &lt; w*h
      */
     public static void setPixels(BufferedImage img,
                                  int x, int y, int w, int h, int[] pixels) {

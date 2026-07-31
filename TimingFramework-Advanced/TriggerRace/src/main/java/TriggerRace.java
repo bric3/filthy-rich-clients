@@ -1,7 +1,7 @@
-import java.awt.event.ActionEvent;
-import javax.swing.JButton;
-import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.triggers.ActionTrigger;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 /*
  * TriggerRace.java
  *
@@ -45,15 +45,17 @@ import org.jdesktop.animation.timing.triggers.ActionTrigger;
  * @author Chet
  */
 public class TriggerRace extends NonLinearRace {
-    
-    /** Creates a new instance of TriggerRace */
+
+    /**
+     * Creates a new instance of TriggerRace
+     */
     public TriggerRace(String appName) {
         super(appName);
         // Clicks on the Go button will atuomatically start the animator
-        JButton goButton = controlPanel.getGoButton();
-        ActionTrigger trigger = ActionTrigger.addTrigger(goButton, animator);
+        var goButton = controlPanel.getGoButton();
+        var trigger = ActionTrigger.addTrigger(goButton, animator);
     }
-    
+
     /**
      * Handle clicks on the Stop button. Clicks on Go are handled through
      * the ActionTrigger above.
@@ -63,13 +65,11 @@ public class TriggerRace extends NonLinearRace {
             animator.stop();
         }
     }
-        
-    
-    public static void main(String args[]) {
-        Runnable doCreateAndShowGUI = new Runnable() {
-            public void run() {
-                TriggerRace race = new TriggerRace("Trigger Race");
-            }
+
+
+    static void main(String[] args) {
+        Runnable doCreateAndShowGUI = () -> {
+            var race = new TriggerRace("Trigger Race");
         };
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }

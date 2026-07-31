@@ -29,36 +29,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
-import java.awt.Paint;
-import java.awt.Rectangle;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.JCheckBox;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  * @author Romain Guy <romain.guy@mac.com>
  */
 public class ReflectionDemo extends JFrame {
-    private ReflectionPanel reflectionPanel;
-    private JSlider opacitySlider;
-    private JSlider lengthSlider;
-    private JSlider radiusSlider;
+    private final ReflectionPanel reflectionPanel;
+    private final JSlider opacitySlider;
+    private final JSlider lengthSlider;
+    private final JSlider radiusSlider;
 
     public ReflectionDemo() {
         super("Reflections");
@@ -69,109 +52,93 @@ public class ReflectionDemo extends JFrame {
         add(reflectionPanel);
 
         opacitySlider = new JSlider(0, 100, 35);
-        opacitySlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                reflectionPanel.setOpacity(opacitySlider.getValue() / 100.0f);
-            }
-        });
+        opacitySlider.addChangeListener(e -> reflectionPanel.setOpacity(opacitySlider.getValue() / 100.0f));
 
         lengthSlider = new JSlider(0, 100, 40);
-        lengthSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                reflectionPanel.setLength(lengthSlider.getValue() / 100.0f);
-            }
-        });
+        lengthSlider.addChangeListener(e -> reflectionPanel.setLength(lengthSlider.getValue() / 100.0f));
 
         radiusSlider = new JSlider(1, 20, 1);
-        radiusSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                reflectionPanel.setRadius(radiusSlider.getValue());
-            }
-        });
+        radiusSlider.addChangeListener(e -> reflectionPanel.setRadius(radiusSlider.getValue()));
 
-        JPanel controls = new JPanel(new GridBagLayout());
+        var controls = new JPanel(new GridBagLayout());
         JLabel label;
         controls.setOpaque(false);
         controls.add(label = new JLabel("Opacity: 0%"),
-                     new GridBagConstraints(0, 0, 1, 1, 0.0, 1.0,
-                                            GridBagConstraints.LINE_START,
-                                            GridBagConstraints.NONE,
-                                            new Insets(0, 6, 0, 0),
-                                            0, 0));
+                new GridBagConstraints(0, 0, 1, 1, 0.0, 1.0,
+                        GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE,
+                        new Insets(0, 6, 0, 0),
+                        0, 0));
         label.setForeground(Color.WHITE);
         controls.add(opacitySlider,
-                     new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0,
-                                            GridBagConstraints.LINE_START,
-                                            GridBagConstraints.NONE,
-                                            new Insets(0, 0, 0, 0),
-                                            0, 0));
+                new GridBagConstraints(1, 0, 1, 1, 0.0, 1.0,
+                        GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE,
+                        new Insets(0, 0, 0, 0),
+                        0, 0));
         controls.add(label = new JLabel("100%"),
-                     new GridBagConstraints(2, 0, 1, 1, 0.0, 1.0,
-                                            GridBagConstraints.LINE_START,
-                                            GridBagConstraints.NONE,
-                                            new Insets(0, 0, 0, 0),
-                                            0, 0));
+                new GridBagConstraints(2, 0, 1, 1, 0.0, 1.0,
+                        GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE,
+                        new Insets(0, 0, 0, 0),
+                        0, 0));
         label.setForeground(Color.WHITE);
 
         controls.add(label = new JLabel("Length: 0%"),
-                     new GridBagConstraints(0, 1, 1, 1, 0.0, 1.0,
-                                            GridBagConstraints.LINE_START,
-                                            GridBagConstraints.NONE,
-                                            new Insets(0, 6, 0, 0),
-                                            0, 0));
+                new GridBagConstraints(0, 1, 1, 1, 0.0, 1.0,
+                        GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE,
+                        new Insets(0, 6, 0, 0),
+                        0, 0));
         label.setForeground(Color.WHITE);
         controls.add(lengthSlider,
-                     new GridBagConstraints(1, 1, 1, 1, 0.0, 1.0,
-                                            GridBagConstraints.LINE_START,
-                                            GridBagConstraints.NONE,
-                                            new Insets(0, 0, 0, 0),
-                                            0, 0));
+                new GridBagConstraints(1, 1, 1, 1, 0.0, 1.0,
+                        GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE,
+                        new Insets(0, 0, 0, 0),
+                        0, 0));
         controls.add(label = new JLabel("100%"),
-                     new GridBagConstraints(2, 1, 1, 1, 0.0, 1.0,
-                                            GridBagConstraints.LINE_START,
-                                            GridBagConstraints.NONE,
-                                            new Insets(0, 0, 0, 0),
-                                            0, 0));
+                new GridBagConstraints(2, 1, 1, 1, 0.0, 1.0,
+                        GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE,
+                        new Insets(0, 0, 0, 0),
+                        0, 0));
         label.setForeground(Color.WHITE);
 
         controls.add(label = new JLabel("Blur Radius: 1px"),
-                     new GridBagConstraints(0, 2, 1, 1, 0.0, 1.0,
-                                            GridBagConstraints.LINE_START,
-                                            GridBagConstraints.NONE,
-                                            new Insets(0, 6, 0, 0),
-                                            0, 0));
+                new GridBagConstraints(0, 2, 1, 1, 0.0, 1.0,
+                        GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE,
+                        new Insets(0, 6, 0, 0),
+                        0, 0));
         label.setForeground(Color.WHITE);
         controls.add(radiusSlider,
-                     new GridBagConstraints(1, 2, 1, 1, 0.0, 1.0,
-                                            GridBagConstraints.LINE_START,
-                                            GridBagConstraints.NONE,
-                                            new Insets(0, 0, 0, 0),
-                                            0, 0));
+                new GridBagConstraints(1, 2, 1, 1, 0.0, 1.0,
+                        GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE,
+                        new Insets(0, 0, 0, 0),
+                        0, 0));
         controls.add(label = new JLabel("20px"),
-                     new GridBagConstraints(2, 2, 1, 1, 0.0, 1.0,
-                                            GridBagConstraints.LINE_START,
-                                            GridBagConstraints.NONE,
-                                            new Insets(0, 0, 0, 0),
-                                            0, 0));
+                new GridBagConstraints(2, 2, 1, 1, 0.0, 1.0,
+                        GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE,
+                        new Insets(0, 0, 0, 0),
+                        0, 0));
         label.setForeground(Color.WHITE);
 
-        JCheckBox blurCheckBox = new JCheckBox("Blur Enabled");
-        blurCheckBox.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent changeEvent) {
-                reflectionPanel.setBlurEnabled(
-                        ((JCheckBox) changeEvent.getSource()).isSelected());
-            }
-        });
+        var blurCheckBox = new JCheckBox("Blur Enabled");
+        blurCheckBox.addChangeListener(changeEvent -> reflectionPanel.setBlurEnabled(
+                ((JCheckBox) changeEvent.getSource()).isSelected()));
         blurCheckBox.setOpaque(false);
         blurCheckBox.setForeground(Color.WHITE);
         controls.add(blurCheckBox,
-                     new GridBagConstraints(0, 3, 1, 1, 0.0, 1.0,
-                                            GridBagConstraints.LINE_START,
-                                            GridBagConstraints.NONE,
-                                            new Insets(0, 0, 6, 0),
-                                            0, 0));
+                new GridBagConstraints(0, 3, 1, 1, 0.0, 1.0,
+                        GridBagConstraints.LINE_START,
+                        GridBagConstraints.NONE,
+                        new Insets(0, 0, 6, 0),
+                        0, 0));
 
-        //add(controls, BorderLayout.SOUTH);
+        // add(controls, BorderLayout.SOUTH);
         reflectionPanel.setLayout(new BorderLayout());
         reflectionPanel.add(controls, BorderLayout.SOUTH);
 
@@ -183,7 +150,7 @@ public class ReflectionDemo extends JFrame {
     private static class ReflectionPanel extends JPanel {
         private BufferedImage image = null;
         private BufferedImage imageA;
-        private ReflectionRenderer renderer = new ReflectionRenderer();
+        private final ReflectionRenderer renderer = new ReflectionRenderer();
 
         public ReflectionPanel() {
             try {
@@ -202,8 +169,8 @@ public class ReflectionDemo extends JFrame {
 
         @Override
         protected void paintComponent(Graphics g) {
-            int x = (getWidth() - imageA.getWidth()) / 2;
-            int y = 24;
+            var x = (getWidth() - imageA.getWidth()) / 2;
+            var y = 24;
             if (renderer.isBlurEnabled()) {
                 x -= renderer.getEffectiveBlurRadius();
                 y -= renderer.getEffectiveBlurRadius() + 1;
@@ -248,23 +215,19 @@ public class ReflectionDemo extends JFrame {
 
         @Override
         protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g;
-            Rectangle clip = g2.getClipBounds();
-            Paint paint = g2.getPaint();
+            var g2 = (Graphics2D) g;
+            var clip = g2.getClipBounds();
+            var paint = g2.getPaint();
             g2.setPaint(new GradientPaint(0.0f, getHeight() * 0.22f,
-                                          new Color(0x202737),
-                                          0.0f, getHeight() * 0.7f,
-                                          Color.BLACK));
+                    new Color(0x202737),
+                    0.0f, getHeight() * 0.7f,
+                    Color.BLACK));
             g2.fillRect(clip.x, clip.y, clip.width, clip.height);
             g2.setPaint(paint);
         }
     }
 
-    public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new ReflectionDemo().setVisible(true);
-            }
-        });
+    static void main(String... args) {
+        SwingUtilities.invokeLater(() -> new ReflectionDemo().setVisible(true));
     }
 }

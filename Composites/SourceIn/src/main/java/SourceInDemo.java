@@ -29,20 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
-import javax.imageio.ImageIO;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -50,21 +42,21 @@ import javax.swing.SwingUtilities;
  */
 public class SourceInDemo extends JFrame {
     private final JCheckBox shadow;
-    
+
     public SourceInDemo() {
         super("Source In");
-        
+
         add(new ImageViewer(), BorderLayout.CENTER);
         var panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
         panel.add(shadow = new JCheckBox("Drop Shadow"));
         shadow.addChangeListener(_ -> repaint());
         add(panel, BorderLayout.SOUTH);
-        
+
         setSize(350, 250);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    
+
     private class ImageViewer extends JComponent {
         private BufferedImage image, landscape;
 
@@ -76,14 +68,14 @@ public class SourceInDemo extends JFrame {
                 ex.printStackTrace();
             }
         }
-        
+
         @Override
         protected void paintComponent(Graphics g) {
             var temp = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
             var g2 = temp.createGraphics();
 
-            int x = (getWidth() - image.getWidth()) / 2;
-            int y = (getHeight() - image.getHeight()) / 2;
+            var x = (getWidth() - image.getWidth()) / 2;
+            var y = (getHeight() - image.getHeight()) / 2;
             if (shadow.isSelected()) {
                 g2.drawImage(image, x + 4, y + 10, null);
 
@@ -103,13 +95,13 @@ public class SourceInDemo extends JFrame {
                 g2.drawImage(landscape, x, y, null);
                 g2.setComposite(oldComposite);
             }
-            
+
             g2.dispose();
             g.drawImage(temp, 0, 0, null);
         }
     }
-    
-    public static void main(String... args) {
+
+    static void main(String... args) {
         SwingUtilities.invokeLater(() -> new SourceInDemo().setVisible(true));
     }
 }

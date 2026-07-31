@@ -30,14 +30,13 @@
  */
 
 
-import java.awt.*;
 import javax.swing.*;
 
 /**
  * @author Romain Guy
  */
 public class SafeRepaint extends JFrame {
-    private SafeComponent safeComponent;
+    private final SafeComponent safeComponent;
 
     public SafeRepaint() {
         super("Safe Repaint");
@@ -50,25 +49,21 @@ public class SafeRepaint extends JFrame {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-                    safeComponent.repaint();
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                    }
+        new Thread(() -> {
+            while (true) {
+                safeComponent.repaint();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException _) {
                 }
             }
         }).start();
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                SafeRepaint repaint = new SafeRepaint();
-                repaint.setVisible(true);
-            }
+    static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            var repaint = new SafeRepaint();
+            repaint.setVisible(true);
         });
     }
 }

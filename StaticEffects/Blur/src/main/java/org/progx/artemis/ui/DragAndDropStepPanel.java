@@ -31,13 +31,12 @@
 
 package org.progx.artemis.ui;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import org.progx.artemis.graphics.GraphicsUtilities;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.swing.JComponent;
-
-import org.progx.artemis.graphics.GraphicsUtilities;
 
 class DragAndDropStepPanel extends JComponent {
     private BufferedImage dropHere;
@@ -52,7 +51,7 @@ class DragAndDropStepPanel extends JComponent {
         try {
             dropHere = GraphicsUtilities.loadCompatibleImage(
                     getClass().getResource("/org/progx/artemis/ui/images/drop-here.png")); // NON-NLS
-            //dropHere = Reflection.createReflection(dropHere);
+            // dropHere = Reflection.createReflection(dropHere);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,13 +59,13 @@ class DragAndDropStepPanel extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
-        //Rectangle clip = g.getClipBounds();
+        // Rectangle clip = g.getClipBounds();
 
-        //g.setColor(getBackground());
-        //g.fillRect(clip.x, clip.y, clip.width, clip.height);
+        // g.setColor(getBackground());
+        // g.fillRect(clip.x, clip.y, clip.width, clip.height);
 
-        int x = (getWidth() - dropHere.getWidth()) / 2;
-        int y = (getHeight() - dropHere.getHeight()) / 2;
+        var x = (getWidth() - dropHere.getWidth()) / 2;
+        var y = (getHeight() - dropHere.getHeight()) / 2;
 
         g.drawImage(dropHere, x, y, null);
     }

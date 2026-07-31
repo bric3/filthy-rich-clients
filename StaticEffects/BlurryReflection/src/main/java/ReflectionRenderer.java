@@ -29,10 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -71,7 +68,7 @@ import java.beans.PropertyChangeSupport;
  * <h2>Generating Reflections</h2>
  * <p>A reflection is generated as a <code>BufferedImage</code> from another
  * <code>BufferedImage</code>. Once the renderer is set up, you must call
- * {@link #createReflection(java.awt.image.BufferedImage)} to actually generate
+ * {@link #createReflection(BufferedImage)} to actually generate
  * the reflection:
  * <pre>
  * ReflectionRenderer renderer = new ReflectionRenderer();
@@ -124,7 +121,7 @@ public class ReflectionRenderer {
     private boolean blurEnabled;
 
     // notifies listeners of properties changes
-    private PropertyChangeSupport changeSupport;
+    private final PropertyChangeSupport changeSupport;
     private StackBlurFilter stackBlurFilter;
 
     /**
@@ -180,8 +177,8 @@ public class ReflectionRenderer {
      * <p>Enabling the blur generates a different kind of reflections that might
      * look more natural. The default blur radius is 1 pixel</p>
      *
-     * @param opacity the opacity of the reflection
-     * @param length the length of the reflection
+     * @param opacity     the opacity of the reflection
+     * @param length      the length of the reflection
      * @param blurEnabled if true, the reflection is blurred
      * @see #getOpacity(),#setOpacity(float),#getLength(),#setLength(float)
      * @see #isBlurEnabled(),#setBlurEnabled(boolean)
@@ -189,7 +186,7 @@ public class ReflectionRenderer {
      * @see #setBlurRadius(int)
      */
     public ReflectionRenderer(float opacity, float length, boolean blurEnabled) {
-        //noinspection ThisEscapedInObjectConstruction
+        // noinspection ThisEscapedInObjectConstruction
         this.changeSupport = new PropertyChangeSupport(this);
         this.stackBlurFilter = new StackBlurFilter(1);
 
@@ -232,8 +229,8 @@ public class ReflectionRenderer {
      *
      * @return this factory's shadow opacity
      * @see #getOpacity()
-     * @see #createReflection(java.awt.image.BufferedImage)
-     * @see #appendReflection(java.awt.image.BufferedImage)
+     * @see #createReflection(BufferedImage)
+     * @see #appendReflection(BufferedImage)
      */
     public float getOpacity() {
         return opacity;
@@ -249,11 +246,11 @@ public class ReflectionRenderer {
      *
      * @param opacity the generated reflection opacity
      * @see #setOpacity(float)
-     * @see #createReflection(java.awt.image.BufferedImage)
-     * @see #appendReflection(java.awt.image.BufferedImage)
+     * @see #createReflection(BufferedImage)
+     * @see #appendReflection(BufferedImage)
      */
     public void setOpacity(float opacity) {
-        float oldOpacity = this.opacity;
+        var oldOpacity = this.opacity;
 
         if (opacity < 0.0f) {
             opacity = 0.0f;
@@ -264,8 +261,8 @@ public class ReflectionRenderer {
         if (oldOpacity != opacity) {
             this.opacity = opacity;
             changeSupport.firePropertyChange(OPACITY_CHANGED_PROPERTY,
-                                             oldOpacity,
-                                             this.opacity);
+                    oldOpacity,
+                    this.opacity);
         }
     }
 
@@ -275,10 +272,10 @@ public class ReflectionRenderer {
      * image that is used to compute the size of the reflection.</p>
      *
      * @return the length of the reflection, as a fraction of the source image
-     *   height
+     * height
      * @see #setLength(float)
-     * @see #createReflection(java.awt.image.BufferedImage)
-     * @see #appendReflection(java.awt.image.BufferedImage)
+     * @see #createReflection(BufferedImage)
+     * @see #appendReflection(BufferedImage)
      */
     public float getLength() {
         return length;
@@ -294,13 +291,13 @@ public class ReflectionRenderer {
      * boundaries, it will be restrained to the closest boundary.</p>
      *
      * @param length the length of the reflection, as a fraction of the source
-     *   image height
+     *               image height
      * @see #getLength()
-     * @see #createReflection(java.awt.image.BufferedImage)
-     * @see #appendReflection(java.awt.image.BufferedImage)
+     * @see #createReflection(BufferedImage)
+     * @see #appendReflection(BufferedImage)
      */
     public void setLength(float length) {
-        float oldLength = this.length;
+        var oldLength = this.length;
 
         if (length < 0.0f) {
             length = 0.0f;
@@ -311,8 +308,8 @@ public class ReflectionRenderer {
         if (oldLength != length) {
             this.length = length;
             changeSupport.firePropertyChange(LENGTH_CHANGED_PROPERTY,
-                                             oldLength,
-                                             this.length);
+                    oldLength,
+                    this.length);
         }
     }
 
@@ -323,8 +320,8 @@ public class ReflectionRenderer {
      *
      * @return true if blur is enabled, false otherwise
      * @see #setBlurEnabled(boolean)
-     * @see #createReflection(java.awt.image.BufferedImage)
-     * @see #appendReflection(java.awt.image.BufferedImage)
+     * @see #createReflection(BufferedImage)
+     * @see #appendReflection(BufferedImage)
      */
     public boolean isBlurEnabled() {
         return blurEnabled;
@@ -341,17 +338,17 @@ public class ReflectionRenderer {
      *
      * @param blurEnabled true to enable the blur, false otherwise
      * @see #isBlurEnabled()
-     * @see #createReflection(java.awt.image.BufferedImage)
-     * @see #appendReflection(java.awt.image.BufferedImage)
+     * @see #createReflection(BufferedImage)
+     * @see #appendReflection(BufferedImage)
      */
     public void setBlurEnabled(boolean blurEnabled) {
         if (blurEnabled != this.blurEnabled) {
-            boolean oldBlur = this.blurEnabled;
-            this.blurEnabled= blurEnabled;
+            var oldBlur = this.blurEnabled;
+            this.blurEnabled = blurEnabled;
 
             changeSupport.firePropertyChange(BLUR_ENABLED_CHANGED_PROPERTY,
-                                             oldBlur,
-                                             this.blurEnabled);
+                    oldBlur,
+                    this.blurEnabled);
         }
     }
 
@@ -360,7 +357,7 @@ public class ReflectionRenderer {
      * renderer when {@link #isBlurEnabled()} is true.</p>
      *
      * @return the effective radius of the blur used when
-     *   <code>isBlurEnabled</code> is true
+     * <code>isBlurEnabled</code> is true
      * @see #isBlurEnabled()
      * @see #setBlurEnabled(boolean)
      * @see #setBlurRadius(int)
@@ -375,7 +372,7 @@ public class ReflectionRenderer {
      * {@link #isBlurEnabled()} is true.</p>
      *
      * @return the radius of the blur used when <code>isBlurEnabled</code>
-     *         is true
+     * is true
      * @see #isBlurEnabled()
      * @see #setBlurEnabled(boolean)
      * @see #setBlurRadius(int)
@@ -414,19 +411,19 @@ public class ReflectionRenderer {
      * if the length is 0.5 (or 50%) and the source image is 480 pixels high,
      * then the reflection will be 246 (480 * 0.5 + 3 * 2) pixels high.</p>
      * <p>You can create only the reflection by calling
-     * {@link #createReflection(java.awt.image.BufferedImage)}.</p>
+     * {@link #createReflection(BufferedImage)}.</p>
      *
      * @param image the source image
      * @return the source image with its reflection below
-     * @see #createReflection(java.awt.image.BufferedImage)
+     * @see #createReflection(BufferedImage)
      */
     public BufferedImage appendReflection(BufferedImage image) {
-        BufferedImage reflection = createReflection(image);
-        BufferedImage buffer = GraphicsUtilities.createCompatibleTranslucentImage(
+        var reflection = createReflection(image);
+        var buffer = GraphicsUtilities.createCompatibleTranslucentImage(
                 reflection.getWidth(), image.getHeight() + reflection.getHeight());
-        Graphics2D g2 = buffer.createGraphics();
+        var g2 = buffer.createGraphics();
 
-        int effectiveRadius = isBlurEnabled() ? stackBlurFilter.getEffectiveRadius() : 0;
+        var effectiveRadius = isBlurEnabled() ? stackBlurFilter.getEffectiveRadius() : 0;
         g2.drawImage(image, effectiveRadius, 0, null);
         g2.drawImage(reflection, 0, image.getHeight() - effectiveRadius, null);
 
@@ -453,27 +450,27 @@ public class ReflectionRenderer {
      * <p>The returned image contains <strong>only</strong>
      * the reflection. You will have to append it to the source image to produce
      * the illusion of a reflective environement. The method
-     * {@link #appendReflection(java.awt.image.BufferedImage)} provides an easy
+     * {@link #appendReflection(BufferedImage)} provides an easy
      * way to create an image containing both the source and the reflection.</p>
      *
      * @param image the source image
      * @return the reflection of the source image
-     * @see #appendReflection(java.awt.image.BufferedImage)
+     * @see #appendReflection(BufferedImage)
      */
     public BufferedImage createReflection(BufferedImage image) {
         if (length == 0.0f) {
             return GraphicsUtilities.createCompatibleTranslucentImage(1, 1);
         }
 
-        int blurOffset = isBlurEnabled() ?
-                         stackBlurFilter.getEffectiveRadius() : 0;
-        int height = (int) (image.getHeight() * length);
+        var blurOffset = isBlurEnabled() ?
+                stackBlurFilter.getEffectiveRadius() : 0;
+        var height = (int) (image.getHeight() * length);
 
-        BufferedImage buffer =
+        var buffer =
                 GraphicsUtilities.createCompatibleTranslucentImage(
                         image.getWidth() + blurOffset * 2,
                         height + blurOffset * 2);
-        Graphics2D g2 = buffer.createGraphics();
+        var g2 = buffer.createGraphics();
 
         g2.translate(0, image.getHeight());
         g2.scale(1.0, -1.0);
@@ -485,9 +482,9 @@ public class ReflectionRenderer {
 
         g2.setComposite(AlphaComposite.DstIn);
         g2.setPaint(new GradientPaint(0.0f, 0.0f,
-                                      new Color(0.0f, 0.0f, 0.0f, getOpacity()),
-                                      0.0f, buffer.getHeight(),
-                                      new Color(0.0f, 0.0f, 0.0f, 0.0f), true));
+                new Color(0.0f, 0.0f, 0.0f, getOpacity()),
+                0.0f, buffer.getHeight(),
+                new Color(0.0f, 0.0f, 0.0f, 0.0f), true));
         g2.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
 
         g2.dispose();

@@ -48,8 +48,8 @@ public class ReflectionPanel extends JPanel {
 
     private GradientPaint alphaMask;
 
-    private float length = 0.65f;
-    private float opacity = 0.75f;
+    private final float length = 0.65f;
+    private final float opacity = 0.75f;
 
     private boolean initialized = false;
 
@@ -218,7 +218,7 @@ public class ReflectionPanel extends JPanel {
     @Override
     public Dimension getPreferredSize() {
         var size = contentPane.getPreferredSize();
-        size.height *= 1.0f + length;
+        size.height = (int) (size.height * (1.0f + length));
         return size;
     }
 

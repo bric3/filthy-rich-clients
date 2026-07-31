@@ -33,7 +33,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.image.BufferedImage;
@@ -45,31 +44,31 @@ import java.util.Locale;
 
 /**
  * Access the drag-and-drop content to show a preview of the dragged image.
- *
+ * <p>
  * Note this demo does not work on macOs X (using Ventura 13.5.1 and JDK 20).
  * AS the drag-and-drop feature does not allow accessing the content during the drag.
  *
  * @author Romain Guy
  */
-public class ApplicationFrame extends javax.swing.JFrame {
+public class ApplicationFrame extends JFrame {
     private final PictureGlassPane glassPane = new PictureGlassPane();
-    
+
     public ApplicationFrame() {
         setContentPane(new JPanel(new BorderLayout()) {
             private BufferedImage image = null;
-            
+
             @Override
             public boolean isOpaque() {
                 return imageList.getModel().getSize() > 0;
             }
-            
+
             @Override
             protected void paintComponent(Graphics g) {
-                Rectangle clip = g.getClipBounds();
-                
+                var clip = g.getClipBounds();
+
                 g.setColor(Color.WHITE);
                 g.fillRect(clip.x, clip.y, clip.width, clip.height);
-                
+
                 if (image == null) {
                     try {
                         image = ImageIO.read(getClass().getResource("images/drop-here.png"));
@@ -77,20 +76,21 @@ public class ApplicationFrame extends javax.swing.JFrame {
                         ioe.printStackTrace();
                     }
                 }
-                
+
                 g.drawImage(image, (getWidth() - image.getWidth()) / 2,
                         (getHeight() - image.getHeight()) / 2, null);
             }
         });
-        
+
         initComponents();
-        
+
         imageList.setOpaque(false);
         listScroller.setOpaque(false);
         listScroller.getViewport().setOpaque(false);
-        
+
         setGlassPane(glassPane);
-        imageList.setModel(new DefaultListModel());
+        // noinspection unchecked
+        imageList.setModel(new DefaultListModel<>());
         var fileDropHandler = new FileDropHandler();
         imageList.setTransferHandler(fileDropHandler);
         imageList.addPropertyChangeListener("dropLocation", event -> {
@@ -104,102 +104,103 @@ public class ApplicationFrame extends javax.swing.JFrame {
             }
         });
     }
-    
-    /** This method is called from within the constructor to
+
+    /**
+     * This method is called from within the constructor to
      * initialize the form.
-     *
+     * <p>
      * This code has been converted from Netbeans/Jdesktop code
      * that made it to Swing's GroupLayout code in Java 1.6.
      * It is not anymore generated.
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        javax.swing.JLabel jLabel1;
-        javax.swing.JLabel jLabel2;
-        javax.swing.JLabel jLabel3;
-        javax.swing.JPanel jPanel1;
-        javax.swing.JSeparator jSeparator1;
+        JLabel jLabel1;
+        JLabel jLabel2;
+        JLabel jLabel3;
+        JPanel jPanel1;
+        JSeparator jSeparator1;
 
-        listScroller = new javax.swing.JScrollPane();
-        imageList = new javax.swing.JList();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
+        listScroller = new JScrollPane();
+        imageList = new JList<>();
+        jPanel1 = new JPanel();
+        jLabel1 = new JLabel();
+        jLabel2 = new JLabel();
+        jLabel3 = new JLabel();
+        jSeparator1 = new JSeparator();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Glass Drag and Drop");
-        imageList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        imageList.setLayoutOrientation(javax.swing.JList.HORIZONTAL_WRAP);
+        imageList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        imageList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
         imageList.setVisibleRowCount(-1);
         listScroller.setViewportView(imageList);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/app-icon.png")));
+        jPanel1.setBackground(new Color(255, 255, 255));
+        jLabel1.setIcon(new ImageIcon(getClass().getResource("/images/app-icon.png")));
 
-        jLabel2.setFont(jLabel2.getFont().deriveFont(jLabel2.getFont().getStyle() | java.awt.Font.BOLD, jLabel2.getFont().getSize()+2));
+        jLabel2.setFont(jLabel2.getFont().deriveFont(jLabel2.getFont().getStyle() | Font.BOLD, jLabel2.getFont().getSize() + 2));
         jLabel2.setText("Glass Drag and Drop");
 
         jLabel3.setText("Drag and drop image files (PNG or JPEG) onto the application.");
 
-        GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
+        var jPanel1Layout = new GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addContainerGap(158, Short.MAX_VALUE))
+                jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jLabel3))
+                                .addContainerGap(158, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3))
-                    .addComponent(jLabel1))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel2)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel3))
+                                        .addComponent(jLabel1))
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        GroupLayout layout = new GroupLayout(getContentPane());
+        var layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jSeparator1, GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(listScroller, GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
-                .addContainerGap())
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jSeparator1, GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(listScroller, GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(listScroller, GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
-                .addContainerGap())
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(listScroller, GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
+                                .addContainerGap())
         );
         pack();
-        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        java.awt.Dimension dialogSize = getSize();
-        setLocation((screenSize.width-dialogSize.width)/2,(screenSize.height-dialogSize.height)/2);
+        var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        var dialogSize = getSize();
+        setLocation((screenSize.width - dialogSize.width) / 2, (screenSize.height - dialogSize.height) / 2);
     }// </editor-fold>//GEN-END:initComponents
 
     class FileDropHandler extends TransferHandler {
         private boolean imported = false;
         private List<File> fileList;
-        
+
         public boolean canImport(TransferSupport support) {
             if (!support.isDrop()) {
                 return false;
@@ -209,13 +210,13 @@ public class ApplicationFrame extends javax.swing.JFrame {
                 return false;
             }
 
-            boolean copySupported = (COPY & support.getSourceDropActions()) == COPY;
+            var copySupported = (COPY & support.getSourceDropActions()) == COPY;
 
             if (copySupported) {
                 support.setDropAction(COPY);
 
                 if (!imported) {
-                    Transferable t = support.getTransferable();
+                    var t = support.getTransferable();
 
                     try {
                         // Exception in thread "AWT-EventQueue-0" java.awt.dnd.InvalidDnDOperationException: No drop current
@@ -232,13 +233,14 @@ public class ApplicationFrame extends javax.swing.JFrame {
                         // as you can access the transferable during the drag, but the possibility to access it during
                         // the drag is a newer addition (Java 5). Before that, the restriction may have looked reasonable.
                         //
-                        // Also, this call can return null on macOs during drag.
-                        Object data = t.getTransferData(DataFlavor.javaFileListFlavor);
+                        // Also, this call can return null on macOS during drag.
+                        var data = t.getTransferData(DataFlavor.javaFileListFlavor);
+                        // noinspection unchecked
                         this.fileList = (List<File>) data;
-                        BufferedImage image = createImage(fileList);
-                        
+                        var image = createImage(fileList);
+
                         if (image != null) {
-                            Point p = MouseInfo.getPointerInfo().getLocation();
+                            var p = MouseInfo.getPointerInfo().getLocation();
 
                             glassPane.showIt(image, p);
                             imported = true;
@@ -255,16 +257,16 @@ public class ApplicationFrame extends javax.swing.JFrame {
 
                 return true;
             }
-            
+
             return false;
         }
-                
+
         private BufferedImage createImage(List<File> files) {
             if (files == null || files.isEmpty()) {
                 return null;
             }
             List<BufferedImage> thumbnails = new ArrayList<>(3);
-            for (File file : files) {
+            for (var file : files) {
                 if (!isSupportedImage(file)) {
                     continue;
                 }
@@ -282,26 +284,26 @@ public class ApplicationFrame extends javax.swing.JFrame {
                 return null;
             }
 
-            int width = 60 + (thumbnails.size() - 1) * 10;
-            int height = 45 + (thumbnails.size() - 1) * 10;
-            
-            BufferedImage image =
+            var width = 60 + (thumbnails.size() - 1) * 10;
+            var height = 45 + (thumbnails.size() - 1) * 10;
+
+            var image =
                     GraphicsUtilities.createCompatibleTranslucentImage(width, height);
-            Graphics2D g2 = image.createGraphics();
-            
-            for (int i = 0; i < thumbnails.size(); i++) {
+            var g2 = image.createGraphics();
+
+            for (var i = 0; i < thumbnails.size(); i++) {
                 g2.drawImage(thumbnails.get(i), i * 10, i * 10, null);
             }
-            
+
             g2.dispose();
             return image;
         }
 
         private boolean isSupportedImage(File file) {
-            String name = file.getName().toLowerCase(Locale.ROOT);
+            var name = file.getName().toLowerCase(Locale.ROOT);
             return name.endsWith(".png") ||
-                    name.endsWith(".jpg") ||
-                    name.endsWith(".jpeg");
+                   name.endsWith(".jpg") ||
+                   name.endsWith(".jpeg");
         }
 
         public boolean importData(TransferSupport support) {
@@ -311,12 +313,12 @@ public class ApplicationFrame extends javax.swing.JFrame {
                 }
 
                 if (fileList == null ||
-                        !support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    !support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                     return false;
                 }
 
-                boolean importedAny = false;
-                for (File imageFile : fileList) {
+                var importedAny = false;
+                for (var imageFile : fileList) {
                     if (!isSupportedImage(imageFile)) {
                         continue;
                     }
@@ -324,7 +326,8 @@ public class ApplicationFrame extends javax.swing.JFrame {
                     var image = GraphicsUtilities.loadCompatibleImage(imageFile)
                             .map(source -> GraphicsUtilities.createThumbnail(source, 120));
                     if (image.isPresent()) {
-                        ((DefaultListModel) imageList.getModel()).add(
+                        // noinspection unchecked
+                        ((DefaultListModel<ImageIcon>) imageList.getModel()).add(
                                 0, new ImageIcon(image.get()));
                         importedAny = true;
                     }
@@ -342,21 +345,14 @@ public class ApplicationFrame extends javax.swing.JFrame {
             fileList = null;
         }
     }
-    
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ApplicationFrame().setVisible(true);
-            }
-        });
+    static void main(String[] args) {
+        EventQueue.invokeLater(() -> new ApplicationFrame().setVisible(true));
     }
-    
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList imageList;
-    private javax.swing.JScrollPane listScroller;
-    // End of variables declaration//GEN-END:variables
-    
+
+    private JList<ImageIcon> imageList;
+    private JScrollPane listScroller;
 }

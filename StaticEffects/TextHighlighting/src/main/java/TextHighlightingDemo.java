@@ -29,63 +29,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
+import java.awt.*;
+
 /**
  *
  * @author Romain Guy <romain.guy@mac.com>
  */
 public class TextHighlightingDemo extends JFrame {
     private VistaSearchDialog dialog;
-    
+
     public TextHighlightingDemo() {
         super("Text Highlighting");
-        
+
         add(new DummyPanel());
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-        JButton button = new JButton("Show Dialog");
-        button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dialog = new VistaSearchDialog(TextHighlightingDemo.this);
-                installInLayeredPane(dialog);
-                dialog.setVisible(true);
-            }
+        var panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        var button = new JButton("Show Dialog");
+        button.addActionListener(e -> {
+            dialog = new VistaSearchDialog(TextHighlightingDemo.this);
+            installInLayeredPane(dialog);
+            dialog.setVisible(true);
         });
         panel.add(button);
         add(panel, BorderLayout.SOUTH);
-        
+
         pack();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     private void installInLayeredPane(JComponent component) {
-        JLayeredPane layeredPane = getRootPane().getLayeredPane();
+        var layeredPane = getRootPane().getLayeredPane();
         layeredPane.add(component, JLayeredPane.PALETTE_LAYER, 20);
-        Dimension size = component.getPreferredSize();
+        var size = component.getPreferredSize();
         component.setSize(size);
         component.setLocation((getWidth() - size.width) / 2,
                 (getHeight() - size.height) / 2);
         component.revalidate();
         component.setVisible(true);
     }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new TextHighlightingDemo().setVisible(true);
-            }
-        });
+
+    static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new TextHighlightingDemo().setVisible(true));
     }
 }

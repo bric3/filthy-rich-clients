@@ -29,15 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import javax.swing.JComponent;
 
 /**
  * @author Romain Guy <romain.guy@mac.com>
@@ -52,7 +48,7 @@ public class BloomViewer extends JComponent {
     public BloomViewer(String fileName) {
         try {
             image = GraphicsUtilities.loadCompatibleImage(getClass().getResource(fileName));
-        }  catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -65,30 +61,30 @@ public class BloomViewer extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         if (bloom == null) {
-            BufferedImage result = image;
+            var result = image;
 
             if (smoothness > 1.0f) {
-                result = GraphicsUtilities.createThumbnailFast(image, 
-                            (int) (image.getWidth() / smoothness));
+                result = GraphicsUtilities.createThumbnailFast(image,
+                        (int) (image.getWidth() / smoothness));
             }
 
-            BufferedImage brightPass = brightPassFilter.filter(result, null);
-            GaussianBlurFilter gaussianBlurFilter = new GaussianBlurFilter(5);
+            var brightPass = brightPassFilter.filter(result, null);
+            var gaussianBlurFilter = new GaussianBlurFilter(5);
 
             bloom = GraphicsUtilities.createCompatibleImage(image);
-            Graphics2D g2 = bloom.createGraphics();
-            
+            var g2 = bloom.createGraphics();
+
             g2.drawImage(image, 0, 0, null);
             g2.setComposite(BlendComposite.Add);
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
             g2.drawImage(gaussianBlurFilter.filter(brightPass, null),
                     0, 0, image.getWidth(), image.getHeight(), null);
-            
-            for (int i = 0; i < 3; i++) {
+
+            for (var i = 0; i < 3; i++) {
                 brightPass = GraphicsUtilities.createThumbnailFast(brightPass,
-                            brightPass.getWidth() / 2);
+                        brightPass.getWidth() / 2);
                 g2.drawImage(gaussianBlurFilter.filter(brightPass, null),
                         0, 0, image.getWidth(), image.getHeight(), null);
             }
@@ -96,8 +92,8 @@ public class BloomViewer extends JComponent {
             g2.dispose();
         }
 
-        int x = (getWidth() - bloom.getWidth()) / 2;
-        int y = (getHeight() - bloom.getHeight()) / 2;
+        var x = (getWidth() - bloom.getWidth()) / 2;
+        var y = (getHeight() - bloom.getHeight()) / 2;
         g.drawImage(bloom, x, y, null);
     }
 
@@ -118,8 +114,6 @@ public class BloomViewer extends JComponent {
             this.image = GraphicsUtilities.loadCompatibleImage(file.toURI().toURL());
             bloom = null;
             repaint();
-        }  catch (MalformedURLException ex) {
-            ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
         }

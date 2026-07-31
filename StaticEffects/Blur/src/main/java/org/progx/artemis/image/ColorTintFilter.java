@@ -34,10 +34,10 @@
 
 package org.progx.artemis.image;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-
 import org.progx.artemis.graphics.GraphicsUtilities;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * <p>A color mixer filter can be used to mix a solid color to an image. The
@@ -71,7 +71,7 @@ public class ColorTintFilter extends AbstractFilter {
      *
      * @param mixColor the solid color to mix with the source image
      * @param mixValue the strength of the mix, between 0.0 and 1.0; if the
-     *   specified value lies outside this range, it is clamped
+     *                 specified value lies outside this range, it is clamped
      * @throws IllegalArgumentException if <code>mixColor</code> is null
      */
     public ColorTintFilter(Color mixColor, float mixValue) {
@@ -98,7 +98,7 @@ public class ColorTintFilter extends AbstractFilter {
     }
 
     /**
-     * <p>Returns the solid mix color of this filter.</p> 
+     * <p>Returns the solid mix color of this filter.</p>
      *
      * @return the solid color used for mixing
      */
@@ -115,10 +115,10 @@ public class ColorTintFilter extends AbstractFilter {
             dst = createCompatibleDestImage(src, null);
         }
 
-        int width = src.getWidth();
-        int height = src.getHeight();
+        var width = src.getWidth();
+        var height = src.getHeight();
 
-        int[] pixels = new int[width * height];
+        var pixels = new int[width * height];
         GraphicsUtilities.getPixels(src, 0, 0, width, height, pixels);
         mixColor(pixels);
         GraphicsUtilities.setPixels(dst, 0, 0, width, height, pixels);
@@ -127,18 +127,18 @@ public class ColorTintFilter extends AbstractFilter {
     }
 
     private void mixColor(int[] pixels) {
-        int mix_a = mixColor.getAlpha();
-        int mix_r = mixColor.getRed();
-        int mix_g = mixColor.getBlue();
-        int mix_b = mixColor.getGreen();
+        var mix_a = mixColor.getAlpha();
+        var mix_r = mixColor.getRed();
+        var mix_g = mixColor.getBlue();
+        var mix_b = mixColor.getGreen();
 
-        for (int i = 0; i < pixels.length; i++) {
-            int argb = pixels[i];
+        for (var i = 0; i < pixels.length; i++) {
+            var argb = pixels[i];
 
-            int a = (argb >> 24) & 0xFF;
-            int r = (argb >> 16) & 0xFF;
-            int g = (argb >>  8) & 0xFF;
-            int b = (argb      ) & 0xFF;
+            var a = (argb >> 24) & 0xFF;
+            var r = (argb >> 16) & 0xFF;
+            var g = (argb >> 8) & 0xFF;
+            var b = (argb) & 0xFF;
 
             a = (int) (a * (1.0f - mixValue) + mix_a * mixValue);
             r = (int) (r * (1.0f - mixValue) + mix_r * mixValue);

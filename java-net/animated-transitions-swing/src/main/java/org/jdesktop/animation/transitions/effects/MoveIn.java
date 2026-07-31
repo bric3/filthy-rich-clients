@@ -33,19 +33,19 @@
 
 package org.jdesktop.animation.transitions.effects;
 
-import java.awt.Point;
-
 import org.jdesktop.animation.transitions.Effect;
 import org.jdesktop.core.animation.timing.Animator;
 import org.jdesktop.core.animation.timing.PropertySetter;
 import org.jdesktop.core.animation.timing.TimingTargetAdapter;
+
+import java.awt.*;
 
 /**
  * Effect that moves a component to its end location from a specified starting point
  */
 public class MoveIn extends Effect {
 
-    private Point startLocation = new Point();
+    private final Point startLocation = new Point();
     private TimingTargetAdapter ps;
 
     public MoveIn(int x, int y) {
@@ -58,9 +58,9 @@ public class MoveIn extends Effect {
      */
     @Override
     public void init(Animator animator, Effect parentEffect) {
-        Effect targetEffect = (parentEffect == null) ? this : parentEffect;
+        var targetEffect = (parentEffect == null) ? this : parentEffect;
         ps = PropertySetter.getTarget(targetEffect, "location", startLocation, new Point(getEnd().getX(),
-                                                                                         getEnd().getY()));
+                getEnd().getY()));
         animator.addTarget(ps);
         super.init(animator, parentEffect);
     }

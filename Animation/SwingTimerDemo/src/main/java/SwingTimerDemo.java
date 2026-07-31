@@ -1,6 +1,6 @@
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Timer;
 /*
  * SwingTimerDemo.java
  *
@@ -41,7 +41,7 @@ import javax.swing.Timer;
  * @author Chet
  */
 public class SwingTimerDemo implements ActionListener {
-    
+
     private static long prevTime = 0;
     private static long startTime = 0;
     private static final int DELAY = 100;
@@ -50,8 +50,8 @@ public class SwingTimerDemo implements ActionListener {
     private static final long INITIAL_PROCESSING_TIME = 2 * DELAY;
     private static Timer timer = null;
     private boolean firstTime = true;
-    
-    /** 
+
+    /**
      * This method will be called during every tick of the Timers.
      * We insert an artificial delay each time, to simulate some processing.
      * The first time through, this delay is greater than the delay between
@@ -59,9 +59,9 @@ public class SwingTimerDemo implements ActionListener {
      * fixed-rate and fixed-delay timers.
      */
     public void actionPerformed(ActionEvent ae) {
-        long nowTime = System.currentTimeMillis();
-        long elapsedTime = nowTime - prevTime;
-        long totalTime = nowTime - startTime;
+        var nowTime = System.currentTimeMillis();
+        var elapsedTime = nowTime - prevTime;
+        var totalTime = nowTime - startTime;
         System.out.println("Elapsed time = " + elapsedTime);
         if (totalTime > DURATION) {
             timer.stop();
@@ -74,12 +74,14 @@ public class SwingTimerDemo implements ActionListener {
             } else {
                 Thread.sleep(PROCESSING_TIME);
             }
-        } catch (Exception _) {}
+        } catch (Exception _) {
+        }
     }
 
-    public SwingTimerDemo() {}
-    
-    public static void main(String... args) {
+    public SwingTimerDemo() {
+    }
+
+    static void main(String... args) {
         // Run a default fixed-delay timer
         timer = new Timer(DELAY, new SwingTimerDemo());
         startTime = prevTime = System.currentTimeMillis();
@@ -88,9 +90,10 @@ public class SwingTimerDemo implements ActionListener {
 
         // Sleep for long enough that the first timer ends
         try {
-            Thread.sleep(DURATION*2);
-        } catch (Exception _) {}
-        
+            Thread.sleep(DURATION * 2);
+        } catch (Exception _) {
+        }
+
         // Run a timer with no coalescing to get fixed-rate behavior
         timer = new Timer(DELAY, new SwingTimerDemo());
         startTime = prevTime = System.currentTimeMillis();

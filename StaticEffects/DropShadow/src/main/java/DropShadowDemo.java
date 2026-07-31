@@ -29,37 +29,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.io.IOException;
-import javax.swing.Box;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  * @author Romain Guy <romain.guy@mac.com>
  */
 public class DropShadowDemo extends JFrame {
-    private BlurTestPanel blurTestPanel;
-    private JSlider shadowSizeSlider;
-    private JSlider shadowOpacitySlider;
-    private JCheckBox fastRenderingCheck;
+    private final BlurTestPanel blurTestPanel;
+    private final JSlider shadowSizeSlider;
+    private final JSlider shadowOpacitySlider;
+    private final JCheckBox fastRenderingCheck;
 
     public DropShadowDemo() {
         super("Drop Shadow");
@@ -68,40 +52,28 @@ public class DropShadowDemo extends JFrame {
         add(blurTestPanel);
 
         shadowSizeSlider = new JSlider(1, 20, 5);
-        shadowSizeSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                blurTestPanel.setShadowSize(shadowSizeSlider.getValue());
-            }
-        });
-        
-        shadowOpacitySlider = new JSlider(0, 100, 50);
-        shadowOpacitySlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                blurTestPanel.setShadowOpacity((float) shadowOpacitySlider.getValue() / 100.0f);
-            }
-        });
-        
-        fastRenderingCheck = new JCheckBox("Fast rendering");
-        fastRenderingCheck.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                blurTestPanel.setFastRendering(fastRenderingCheck.isSelected());
-            }
-        });
-        
-        JPanel metaControls = new JPanel(new GridLayout(3, 1));
+        shadowSizeSlider.addChangeListener(e -> blurTestPanel.setShadowSize(shadowSizeSlider.getValue()));
 
-        JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        shadowOpacitySlider = new JSlider(0, 100, 50);
+        shadowOpacitySlider.addChangeListener(e -> blurTestPanel.setShadowOpacity((float) shadowOpacitySlider.getValue() / 100.0f));
+
+        fastRenderingCheck = new JCheckBox("Fast rendering");
+        fastRenderingCheck.addChangeListener(e -> blurTestPanel.setFastRendering(fastRenderingCheck.isSelected()));
+
+        var metaControls = new JPanel(new GridLayout(3, 1));
+
+        var controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controls.add(new JLabel("Size: 1px"));
         controls.add(shadowSizeSlider);
         controls.add(new JLabel("20px"));
         metaControls.add(controls);
-        
+
         controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controls.add(new JLabel("Opacity: 0%"));
         controls.add(shadowOpacitySlider);
         controls.add(new JLabel("100%"));
         metaControls.add(controls);
-        
+
         controls = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controls.add(fastRenderingCheck);
         metaControls.add(controls);
@@ -137,34 +109,34 @@ public class DropShadowDemo extends JFrame {
         @Override
         protected void paintComponent(Graphics g) {
             if (image == null) {
-                long start = System.nanoTime();
+                var start = System.nanoTime();
 
                 if (!fastRendering) {
                     image = createDropShadow(imageA, shadowSize);
                 } else {
-                    ShadowRenderer renderer = new ShadowRenderer(shadowSize / 2, 1.0f, Color.BLACK);
+                    var renderer = new ShadowRenderer(shadowSize / 2, 1.0f, Color.BLACK);
                     image = renderer.createShadow(imageA);
                 }
-                
-                long delay = System.nanoTime() - start;
+
+                var delay = System.nanoTime() - start;
                 System.out.println("time = " + (delay / 1000.0f / 1000.0f) + "ms");
             }
 
-            int x = (getWidth() - imageA.getWidth()) / 2;
-            int y = (getHeight() - imageA.getHeight()) / 2;
-            
-            Graphics2D g2 = (Graphics2D) g;
-            Composite c = g2.getComposite();
+            var x = (getWidth() - imageA.getWidth()) / 2;
+            var y = (getHeight() - imageA.getHeight()) / 2;
+
+            var g2 = (Graphics2D) g;
+            var c = g2.getComposite();
             g2.setComposite(AlphaComposite.SrcOver.derive(shadowOpacity));
-            
+
             if (!fastRendering) {
                 g.drawImage(image, x - shadowSize * 2 + 5, y - shadowSize * 2 + 5, null);
             } else {
                 g.drawImage(image, x - shadowSize / 2 + 5, y - shadowSize / 2 + 5, null);
             }
-            
+
             g2.setComposite(c);
-            
+
             g.drawImage(imageA, x, y, null);
         }
 
@@ -186,54 +158,54 @@ public class DropShadowDemo extends JFrame {
             repaint();
         }
     }
-    
+
     public static BufferedImage createDropShadow(BufferedImage image,
-            int size) {
-        BufferedImage shadow = new BufferedImage(
-            image.getWidth() + 4 * size,
-            image.getHeight() + 4 * size,
-            BufferedImage.TYPE_INT_ARGB);
-        
-        Graphics2D g2 = shadow.createGraphics();
+                                                 int size) {
+        var shadow = new BufferedImage(
+                image.getWidth() + 4 * size,
+                image.getHeight() + 4 * size,
+                BufferedImage.TYPE_INT_ARGB);
+
+        var g2 = shadow.createGraphics();
         g2.drawImage(image, size * 2, size * 2, null);
-        
+
         g2.setComposite(AlphaComposite.SrcIn);
         g2.setColor(Color.BLACK);
-        g2.fillRect(0, 0, shadow.getWidth(), shadow.getHeight());       
-        
+        g2.fillRect(0, 0, shadow.getWidth(), shadow.getHeight());
+
         g2.dispose();
-        
+
         shadow = getGaussianBlurFilter(size, true).filter(shadow, null);
         shadow = getGaussianBlurFilter(size, false).filter(shadow, null);
-        
+
         return shadow;
     }
-    
+
     public static ConvolveOp getGaussianBlurFilter(int radius,
-            boolean horizontal) {
+                                                   boolean horizontal) {
         if (radius < 1) {
             throw new IllegalArgumentException("Radius must be >= 1");
         }
-        
-        int size = radius * 2 + 1;
-        float[] data = new float[size];
-        
-        float sigma = radius / 3.0f;
-        float twoSigmaSquare = 2.0f * sigma * sigma;
-        float sigmaRoot = (float) Math.sqrt(twoSigmaSquare * Math.PI);
-        float total = 0.0f;
-        
-        for (int i = -radius; i <= radius; i++) {
+
+        var size = radius * 2 + 1;
+        var data = new float[size];
+
+        var sigma = radius / 3.0f;
+        var twoSigmaSquare = 2.0f * sigma * sigma;
+        var sigmaRoot = (float) Math.sqrt(twoSigmaSquare * Math.PI);
+        var total = 0.0f;
+
+        for (var i = -radius; i <= radius; i++) {
             float distance = i * i;
-            int index = i + radius;
+            var index = i + radius;
             data[index] = (float) Math.exp(-distance / twoSigmaSquare) / sigmaRoot;
             total += data[index];
         }
-        
-        for (int i = 0; i < data.length; i++) {
+
+        for (var i = 0; i < data.length; i++) {
             data[i] /= total;
-        }        
-        
+        }
+
         Kernel kernel = null;
         if (horizontal) {
             kernel = new Kernel(size, 1, data);
@@ -242,12 +214,8 @@ public class DropShadowDemo extends JFrame {
         }
         return new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
     }
-    
-    public static void main(String... args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new DropShadowDemo().setVisible(true);
-            }
-        });
+
+    static void main(String... args) {
+        SwingUtilities.invokeLater(() -> new DropShadowDemo().setVisible(true));
     }
 }

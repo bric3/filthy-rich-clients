@@ -31,11 +31,6 @@
 
 package org.progx.artemis.ui;
 
-import java.awt.BorderLayout;
-import java.awt.image.BufferedImage;
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-
 import org.jdesktop.animation.timing.Cycle;
 import org.jdesktop.animation.timing.Envelope;
 import org.jdesktop.animation.timing.TimingController;
@@ -43,10 +38,14 @@ import org.jdesktop.animation.timing.interpolation.ObjectModifier;
 import org.jdesktop.animation.timing.interpolation.PropertyRange;
 import org.progx.artemis.Application;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 public class MainFrame extends JFrame {
     private StepLabel stepLabel;
     private BufferedImage image;
-    private ProgressGlassPane waitPanel;
+    private final ProgressGlassPane waitPanel;
     private TimingController timer;
     private SizeStepPanel sizeStep;
     private DragAndDropStepPanel dragAndDropStep;
@@ -122,13 +121,13 @@ public class MainFrame extends JFrame {
     }
 
     public void showWaitGlassPane() {
-        Cycle cycle = new Cycle(2500, 33);
-        Envelope envelope = new Envelope(TimingController.INFINITE, 0,
-                                         Envelope.RepeatBehavior.REVERSE,
-                                         Envelope.EndBehavior.HOLD);
-        PropertyRange fadeRange = PropertyRange.createPropertyRangeInt("progress", 0, 100); // NON-NLS
+        var cycle = new Cycle(2500, 33);
+        var envelope = new Envelope(TimingController.INFINITE, 0,
+                Envelope.RepeatBehavior.REVERSE,
+                Envelope.EndBehavior.HOLD);
+        var fadeRange = PropertyRange.createPropertyRangeInt("progress", 0, 100); // NON-NLS
         timer = new TimingController(cycle, envelope,
-                                     new ObjectModifier(waitPanel, fadeRange));
+                new ObjectModifier(waitPanel, fadeRange));
 
         waitPanel.setProgress(0);
         waitPanel.setVisible(true);

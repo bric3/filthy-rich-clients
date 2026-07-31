@@ -29,34 +29,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.AlphaComposite;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Transparency;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.JComponent;
-import javax.swing.JLayeredPane;
 
 /**
  *
@@ -64,8 +47,8 @@ import javax.swing.JLayeredPane;
  */
 public class Loupe extends JComponent {
     private BufferedImage loupeImage;
-    private Point loupeLocation = new Point(0, 0);
-    private JLayeredPane layeredPane;
+    private final Point loupeLocation = new Point(0, 0);
+    private final JLayeredPane layeredPane;
     private BufferedImage buffer;
     private int zoomLevel = 2;
 
@@ -73,10 +56,10 @@ public class Loupe extends JComponent {
         this.layeredPane = layeredPane;
 
         loadImages();
-        
+
         layeredPane.addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseMoved(MouseEvent mouseEvent) {
-                Point location = mouseEvent.getPoint();
+                var location = mouseEvent.getPoint();
                 location.translate(-getWidth() / 2, -getHeight() / 2);
                 setLocation(location);
             }
@@ -85,14 +68,14 @@ public class Loupe extends JComponent {
             public void componentHidden(ComponentEvent componentEvent) {
                 resetBuffer();
             }
-            
+
             public void componentMoved(ComponentEvent componentEvent) {
             }
-            
+
             public void componentResized(ComponentEvent componentEvent) {
                 resetBuffer();
             }
-           
+
             public void componentShown(ComponentEvent componentEvent) {
             }
         });
@@ -101,29 +84,29 @@ public class Loupe extends JComponent {
     public int getZoomLevel() {
         return this.zoomLevel;
     }
-    
+
     public void setZoomLevel(int zoom) {
         if (zoom < 1) {
             zoom = 1;
         }
-        
-        int oldZoom = this.zoomLevel;
+
+        var oldZoom = this.zoomLevel;
         this.zoomLevel = zoom;
         firePropertyChange("zoomLevel", oldZoom, this.zoomLevel);
-        
+
         repaint();
     }
-    
+
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(loupeImage.getWidth(),
                 loupeImage.getHeight());
     }
-    
+
     public void resetBuffer() {
         buffer = null;
     }
-    
+
     private void loadImages() {
         try {
             loupeImage = ImageIO.read(getClass().getResource("images/loupe.png"));
@@ -131,25 +114,25 @@ public class Loupe extends JComponent {
             ex.printStackTrace();
         }
     }
-    
+
     @Override
     protected void paintComponent(Graphics g) {
         if (buffer == null) {
             buffer = createBuffer();
         }
-        
-        Graphics2D g2 = buffer.createGraphics();
+
+        var g2 = buffer.createGraphics();
         g2.setComposite(AlphaComposite.Clear);
         g2.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
         g2.setComposite(AlphaComposite.Src);
 
-        Point location = getLocation();
+        var location = getLocation();
         location.translate(getWidth() / 2, getHeight() / 2);
-        
-        int myLayer = layeredPane.getLayer(this);
-        for (int i = myLayer - 1; i >= 2; i -= 2) {
-            Component[] components = layeredPane.getComponentsInLayer(i);
-            for (Component c : components) {
+
+        var myLayer = JLayeredPane.getLayer(this);
+        for (var i = myLayer - 1; i >= 2; i -= 2) {
+            var components = layeredPane.getComponentsInLayer(i);
+            for (var c : components) {
                 if (c.getBounds().contains(location)) {
                     g2.translate(c.getX(), c.getY());
                     c.paint(g2);
@@ -157,16 +140,16 @@ public class Loupe extends JComponent {
                 }
             }
         }
-        
+
         g2.dispose();
-        
+
         if (zoomLevel > 1) {
             ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                     RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
-            Shape clip = g.getClip();
-            Area newClip = new Area(clip);
-            newClip.intersect(new Area(new Ellipse2D.Double(6.0, 6.0, 138.0, 138.0)));     
+            var clip = g.getClip();
+            var newClip = new Area(clip);
+            newClip.intersect(new Area(new Ellipse2D.Double(6.0, 6.0, 138.0, 138.0)));
 
             g.setClip(newClip);
             g.drawImage(buffer,
@@ -176,16 +159,16 @@ public class Loupe extends JComponent {
                     buffer.getHeight() * zoomLevel, null);
             g.setClip(clip);
         }
-        
+
         g.drawImage(loupeImage, 0, 0, null);
     }
 
     private BufferedImage createBuffer() {
-        GraphicsEnvironment local = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice device = local.getDefaultScreenDevice();
-        GraphicsConfiguration config = device.getDefaultConfiguration();
-        
-        Container parent = getParent();
+        var local = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        var device = local.getDefaultScreenDevice();
+        var config = device.getDefaultConfiguration();
+
+        var parent = getParent();
         return config.createCompatibleImage(parent.getWidth(), parent.getHeight(),
                 Transparency.TRANSLUCENT);
     }

@@ -33,18 +33,15 @@
 
 package org.jdesktop.animation.transitions;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import org.jdesktop.core.animation.timing.Animator;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.JComponent;
-
-import org.jdesktop.core.animation.timing.Animator;
 
 /**
  * This class manages the animated rendering of the various components during the transitions. For each component in the
@@ -66,10 +63,10 @@ class AnimationManager {
     private final JComponent container;
 
     // The set of start/end states for each component in the transition
-    private Map<JComponent, AnimationState> componentAnimationStates = new HashMap<>();
+    private final Map<JComponent, AnimationState> componentAnimationStates = new HashMap<>();
 
     // The set of components that change between their start and end states
-    private ArrayList<JComponent> changingComponents = new ArrayList<>();
+    private final ArrayList<JComponent> changingComponents = new ArrayList<>();
 
     /**
      * Background that will be copied into the transitionImage on every frame. This represents the default (empty) state
@@ -89,8 +86,8 @@ class AnimationManager {
      * null or of a different size than the current container
      */
     void recreateImage() {
-        int cw = container.getWidth();
-        int ch = container.getHeight();
+        var cw = container.getWidth();
+        var ch = container.getHeight();
         if ((cw > 0 && ch > 0)
             && (transitionImageBG == null || cw != transitionImageBG.getWidth() || ch != transitionImageBG.getHeight())) {
             transitionImageBG = (BufferedImage) container.createImage(cw, ch);
@@ -108,7 +105,7 @@ class AnimationManager {
      * Reset the AnimationStates; this clears out the old structure of states after we are done with a transition
      */
     void reset(Animator animator) {
-        for (AnimationState state : componentAnimationStates.values()) {
+        for (var state : componentAnimationStates.values()) {
             state.cleanup(animator);
         }
         componentAnimationStates.clear();
@@ -128,52 +125,52 @@ class AnimationManager {
         // First, make sure that we don't run animations for components
         // that aren't even visible
         List<JComponent> componentsToRemove = new ArrayList<>();
-        for (AnimationState state : componentAnimationStates.values()) {
+        for (var state : componentAnimationStates.values()) {
             Rectangle bounds = null;
             if (state.hasStart()) {
-                ComponentState start = state.getStart();
+                var start = state.getStart();
                 bounds = new Rectangle(start.getX(), start.getY(), start.getWidth(), start.getHeight());
             }
             if (state.hasEnd()) {
-                ComponentState end = state.getEnd();
-                Rectangle boundsEnd = new Rectangle(end.getX(), end.getY(), end.getWidth(), end.getHeight());
+                var end = state.getEnd();
+                var boundsEnd = new Rectangle(end.getX(), end.getY(), end.getWidth(), end.getHeight());
                 if (bounds == null) {
                     bounds = boundsEnd;
                 } else {
                     bounds = bounds.union(boundsEnd);
                 }
             }
-            Rectangle visibleComponentBounds = container.getVisibleRect();
+            var visibleComponentBounds = container.getVisibleRect();
             if (bounds != null && !bounds.intersects(visibleComponentBounds)) {
                 componentsToRemove.add(state.getComponent());
             }
         }
-        for (JComponent component : componentsToRemove) {
+        for (var component : componentsToRemove) {
             componentAnimationStates.remove(component);
             changingComponents.remove(component);
         }
 
         // Don't paint the changing components into the bg image
-        for (JComponent child : changingComponents) {
+        for (var child : changingComponents) {
             child.setVisible(false);
         }
 
         // Paint the background image for the transition. This will include
         // the background of the container itself, but also any components
         // that do not change between the screens.
-        Graphics gImg = transitionImageBG.getGraphics();
+        var gImg = transitionImageBG.getGraphics();
         gImg.clearRect(0, 0, transitionImageBG.getWidth(), transitionImageBG.getHeight());
         ComponentState.paintHierarchySingleBuffered(container, gImg);
         gImg.dispose();
 
         // Reset visibility of changing components, now that we're done
         // painting the background
-        for (JComponent child : changingComponents) {
+        for (var child : changingComponents) {
             child.setVisible(true);
         }
 
         // Init the animation states that we're going to use
-        for (AnimationState state : componentAnimationStates.values()) {
+        for (var state : componentAnimationStates.values()) {
             state.init(animator);
         }
     }
@@ -182,7 +179,7 @@ class AnimationManager {
      * Save the start state for all components in this container
      */
     void setupStart() {
-        for (Component child : container.getComponents()) {
+        for (var child : container.getComponents()) {
             if (child.isVisible() && (child instanceof JComponent)) {
                 addStart((JComponent) child);
             }
@@ -195,13 +192,12 @@ class AnimationManager {
      * rendered to the bg image.
      */
     void setupEnd() {
-        for (Component childComponent : container.getComponents()) {
-            if (childComponent.isVisible() && (childComponent instanceof JComponent)) {
-                JComponent child = (JComponent) childComponent;
-                ComponentState end = new ComponentState(child);
-                AnimationState animState = getExistingAnimationState(child);
+        for (var childComponent : container.getComponents()) {
+            if (childComponent.isVisible() && (childComponent instanceof JComponent child)) {
+                var end = new ComponentState(child);
+                var animState = getExistingAnimationState(child);
                 if (animState != null) {
-                    ComponentState start = animState.getStart();
+                    var start = animState.getStart();
                     if (start != null && start.equals(end)) {
                         componentAnimationStates.remove(childComponent);
                     } else {
@@ -220,17 +216,16 @@ class AnimationManager {
     /**
      * Add a start state for the given component
      *
-     * @param component
-     *            The individual component to be animated
+     * @param component The individual component to be animated
      */
     void addStart(JComponent component) {
-        AnimationState existingAnimState = getExistingAnimationState(component);
+        var existingAnimState = getExistingAnimationState(component);
         if (existingAnimState != null) {
             // Already have an end state, add this start state to existing
             // structure
             existingAnimState.setStart(new ComponentState(component));
         } else {
-            AnimationState animState = new AnimationState(effectsManager, component, true);
+            var animState = new AnimationState(effectsManager, component, true);
             componentAnimationStates.put(component, animState);
         }
     }
@@ -238,17 +233,16 @@ class AnimationManager {
     /**
      * Add an end state for the given component
      *
-     * @param component
-     *            The individual component to be animated
+     * @param component The individual component to be animated
      */
     void addEnd(JComponent component) {
-        AnimationState existingAnimState = getExistingAnimationState(component);
+        var existingAnimState = getExistingAnimationState(component);
         if (existingAnimState != null) {
             // Already have a start state, add this end state to existing
             // structure
             existingAnimState.setEnd(new ComponentState(component));
         } else {
-            AnimationState animState = new AnimationState(effectsManager, component, false);
+            var animState = new AnimationState(effectsManager, component, false);
             componentAnimationStates.put(component, animState);
         }
     }
@@ -257,12 +251,11 @@ class AnimationManager {
      * This method is called during the transition animation. Iterate through the various <code>AnimationState</code>
      * objects asking each one to paint itself into the <code>Graphics</code>.
      *
-     * @param g
-     *            The <code>Graphics</code> object that the animating objects need to render themselves into.
+     * @param g The <code>Graphics</code> object that the animating objects need to render themselves into.
      */
     void paint(Graphics g) {
         g.drawImage(transitionImageBG, 0, 0, null);
-        for (AnimationState state : componentAnimationStates.values()) {
+        for (var state : componentAnimationStates.values()) {
             state.paint(g);
         }
     }

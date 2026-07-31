@@ -1,9 +1,10 @@
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 /*
  * BasicRace.java
  *
@@ -42,33 +43,34 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
 /**
  * The simplest version of the animation; set up a Animator to
  * move the car from one position to another over a given time period.
- * 
- * 
+ *
  * @author Chet
  */
 public class BasicRace extends TimingTargetAdapter implements ActionListener {
-    
-    public static final int RACE_TIME = 2000;    
-    Point start = TrackView.START_POS;
-    Point end = TrackView.FIRST_TURN_START;
-    Point current = new Point();
-    protected Animator animator;
-    TrackView track;
-    RaceControlPanel controlPanel;
-    
-    /** Creates a new instance of BasicRace */
+
+    public static final int RACE_TIME = 2000;
+    final Point start = TrackView.START_POS;
+    final Point end = TrackView.FIRST_TURN_START;
+    final Point current = new Point();
+    protected final Animator animator;
+    final TrackView track;
+    final RaceControlPanel controlPanel;
+
+    /**
+     * Creates a new instance of BasicRace
+     */
     public BasicRace(String appName) {
-        RaceGUI basicGUI = new RaceGUI(appName);
+        var basicGUI = new RaceGUI(appName);
         controlPanel = basicGUI.getControlPanel();
         controlPanel.addListener(this);
         track = basicGUI.getTrack();
         animator = new Animator(RACE_TIME, this);
     }
-    
+
     //
     // Events
     //
-    
+
     /**
      * This receives the Go/Stop events that start/stop the animation
      */
@@ -80,28 +82,26 @@ public class BasicRace extends TimingTargetAdapter implements ActionListener {
             animator.stop();
         }
     }
-    
+
     /**
      * TimingTarget implementation: calculate and set the current
      * car position based on the animation fraction
      */
     public void timingEvent(float fraction) {
         // Simple linear interpolation to find current position
-        current.x = (int)(start.x + (end.x - start.x) * fraction);
-        current.y = (int)(start.y + (end.y - start.y) * fraction);
-        
+        current.x = (int) (start.x + (end.x - start.x) * fraction);
+        current.y = (int) (start.y + (end.y - start.y) * fraction);
+
         // set the new position; this will force a repaint in TrackView
         // and will display the car in the new position
         track.setCarPosition(current);
     }
 
-    public static void main(String args[]) {
-        Runnable doCreateAndShowGUI = new Runnable() {
-            public void run() {
-                BasicRace race = new BasicRace("BasicRace");
-            }
+    static void main(String[] args) {
+        Runnable doCreateAndShowGUI = () -> {
+            var race = new BasicRace("BasicRace");
         };
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
-    
+
 }
