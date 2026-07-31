@@ -4,8 +4,23 @@ This repository hosts all the code examples from the
 book called Filthy Rich Clients, written by Chet Haase
 and Romain Guy.
 
-All the examples are licensed under a 3-clause BSD
-license.
+The example source code in this repository is licensed under a 3-clause BSD
+license. This repository is maintained for running and studying the demos; it
+is not intended to produce or redistribute a bundled application.
+
+Third-party dependencies are not covered by the repository's BSD license and
+remain subject to their own terms:
+
+* [JOGL](https://github.com/sgothel/jogl/blob/master/LICENSE.txt) and
+  [GlueGen](https://github.com/sgothel/gluegen/blob/master/LICENSE.txt) 2.6.0
+  are mostly licensed under the Simplified BSD 2-clause license, but include
+  material under other licenses documented in their respective license files.
+  JOGL's artifact metadata lists BSD-2-Clause, BSD-3-Clause, SGI Free Software
+  License B, Apache License 1.1 and 2.0, and Ubuntu Font Licence 1.0. GlueGen's
+  artifact metadata lists BSD-2-Clause, BSD-3-Clause, and BSD-4-Clause.
+
+Anyone choosing to create a distribution is responsible for reviewing and
+complying with all applicable third-party license terms, including vlcj's GPL.
 
 You can find more information about the book here: [filthyrichclients.org (Archive)](
 https://web.archive.org/web/20220118193103/http://filthyrichclients.org/)
@@ -216,5 +231,4 @@ To discover the available projects, use
     * [ ] DynamicEffects/PulseField/lib/TimingFramework-0.54.jar
     * [ ] DynamicEffects/Spring/lib/TimingFramework-0.54.jar
     * [ ] StaticEffects/Blur/lib/TimingFramework.jar
-* [ ] `RepaintManager/RepaintManager` has a dependency on some quicktime code
  
