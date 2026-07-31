@@ -29,81 +29,83 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Paint;
-import java.awt.Rectangle;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import quicktime.QTSession;
-import quicktime.app.view.MoviePlayer;
-import quicktime.app.view.QTFactory;
-import quicktime.std.StdQTConstants;
-import quicktime.std.movies.Movie;
-import quicktime.std.movies.media.DataRef;
+import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent;
+
+import javax.swing.*;
+import java.awt.*;
+
 /**
  *
  * @author Romain Guy <romain.guy@mac.com>
  */
 public class RepaintManagerDemo extends JFrame {
     private ReflectionPanel reflectionPanel;
-    
-    public RepaintManagerDemo() {
+    private CallbackMediaPlayerComponent mediaPlayerComponent;
+    private final String media;
+
+    public RepaintManagerDemo(String media) {
         super("Repaint Manager Demo");
-        
+        this.media = media;
+
         setContentPane(new GradientPanel());
         getContentPane().setLayout(new GridBagLayout());
-        
-        add(buildReflectionPanel(), new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
+
+        add(buildReflectionPanel(), new GridBagConstraints(
+                0, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                new Insets(96, 96, 96, 96), 0, 0));
+                new Insets(96, 96, 96, 96),
+                0, 0
+        ));
 
         pack();
         setLocationRelativeTo(null);
         setResizable(false);
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     @Override
     public void dispose() {
-        super.dispose();
-        QTSession.close();
+        var component = mediaPlayerComponent;
+        mediaPlayerComponent = null;
+        try {
+            if (component != null) {
+                component.release();
+            }
+        } finally {
+            super.dispose();
+        }
     }
-    
+
     private JComponent buildReflectedComponent() {
-        try {
-            Class.forName("quicktime.QTSession");
-        } catch (ClassNotFoundException ex) {
+        if (media == null || media.trim().isEmpty()) {
+            System.err.println("No media specified; showing the Swing fallback. "
+                               + "Pass a media file or URL as the first argument to play video.");
             return new DummyPanel();
         }
-        
+
+        CallbackMediaPlayerComponent component = null;
         try {
-            QTSession.open();
-            String url = "http://images.apple.com/movies/sony_pictures/spider-man_3/spider-man_3-tlr1_h.480.mov";
-            DataRef dRef = new DataRef(url);
-            Movie mov = Movie.fromDataRef (dRef, StdQTConstants.newMovieActive);
-            MoviePlayer player = new MoviePlayer(mov);
-            mov.start();
-            JComponent qtPlayer = QTFactory.makeQTJComponent(player).asJComponent();
-            
-            return qtPlayer;
-        } catch (Exception e) {
+            component = new CallbackMediaPlayerComponent();
+            if (!component.mediaPlayer().media().play(media)) {
+                component.release();
+                System.err.println("VLC could not start media '" + media
+                                   + "'; showing the Swing fallback.");
+                return new DummyPanel();
+            }
+
+            mediaPlayerComponent = component;
+            return component;
+        } catch (RuntimeException | LinkageError e) {
+            if (component != null) {
+                component.release();
+            }
+            System.err.println("VLC is unavailable or could not open '" + media
+                               + "'; showing the Swing fallback: " + e);
             return new DummyPanel();
         }
     }
-    
+
     private JComponent buildReflectionPanel() {
         reflectionPanel = new ReflectionPanel();
         reflectionPanel.add(buildReflectedComponent());
@@ -118,34 +120,28 @@ public class RepaintManagerDemo extends JFrame {
 
         @Override
         protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
+            var g2 = (Graphics2D) g.create();
             g2.setPaint(new GradientPaint(0.0f, getHeight() * 0.22f,
-                                          new Color(0x202737),
-                                          0.0f, getHeight() * 0.7f,
-                                          Color.BLACK, true));
+                    new Color(0x202737),
+                    0.0f, getHeight() * 0.7f,
+                    Color.BLACK, true));
             Rectangle clip = g.getClipBounds();
             g2.fillRect(clip.x, clip.y, clip.width, clip.height);
             g2.dispose();
         }
     }
-    
+
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
+        } catch (IllegalAccessException
+                 | InstantiationException
+                 | UnsupportedLookAndFeelException
+                 | ClassNotFoundException ex) {
             ex.printStackTrace();
         }
-        
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new RepaintManagerDemo().setVisible(true);
-            }
-        });
+
+        final String media = args.length > 0 ? args[0] : null;
+        SwingUtilities.invokeLater(() -> new RepaintManagerDemo(media).setVisible(true));
     }
 }

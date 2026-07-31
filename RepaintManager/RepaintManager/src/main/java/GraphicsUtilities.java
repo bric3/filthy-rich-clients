@@ -32,19 +32,12 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.awt.GraphicsConfiguration;
-import java.awt.Transparency;
-import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.io.IOException;
 import java.net.URL;
-import javax.imageio.ImageIO;
 
 /**
  * <p><code>GraphicsUtilities</code> contains a set of tools to perform
@@ -94,7 +87,7 @@ public class GraphicsUtilities {
      *   of <code>image</code>
      */
     public static BufferedImage createColorModelCompatibleImage(BufferedImage image) {
-        ColorModel cm = image.getColorModel();
+        var cm = image.getColorModel();
         return new BufferedImage(cm,
             cm.createCompatibleWritableRaster(image.getWidth(),
                                               image.getHeight()),
@@ -198,7 +191,7 @@ public class GraphicsUtilities {
      */
     public static BufferedImage loadCompatibleImage(URL resource)
             throws IOException {
-        BufferedImage image = ImageIO.read(resource);
+        var image = ImageIO.read(resource);
         return toCompatibleImage(image);
     }
 
@@ -222,11 +215,11 @@ public class GraphicsUtilities {
             return image;
         }
 
-        BufferedImage compatibleImage =
+        var compatibleImage =
                 getGraphicsConfiguration().createCompatibleImage(
                     image.getWidth(), image.getHeight(),
                     image.getTransparency());
-        Graphics g = compatibleImage.getGraphics();
+        var g = compatibleImage.getGraphics();
         g.drawImage(image, 0, 0, null);
         g.dispose();
 
@@ -258,8 +251,8 @@ public class GraphicsUtilities {
     public static BufferedImage createThumbnailFast(BufferedImage image,
                                                     int newSize) {
         float ratio;
-        int width = image.getWidth();
-        int height = image.getHeight();
+        var width = image.getWidth();
+        var height = image.getHeight();
 
         if (width > height) {
             if (newSize >= width) {
@@ -287,8 +280,8 @@ public class GraphicsUtilities {
             width = (int) (newSize / ratio);
         }
 
-        BufferedImage temp = createCompatibleImage(image, width, height);
-        Graphics2D g2 = temp.createGraphics();
+        var temp = createCompatibleImage(image, width, height);
+        var g2 = temp.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                             RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.drawImage(image, 0, 0, temp.getWidth(), temp.getHeight(), null);
@@ -331,8 +324,8 @@ public class GraphicsUtilities {
                                                " be greater than 0");
         }
 
-        BufferedImage temp = createCompatibleImage(image, newWidth, newHeight);
-        Graphics2D g2 = temp.createGraphics();
+        var temp = createCompatibleImage(image, newWidth, newHeight);
+        var g2 = temp.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                             RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2.drawImage(image, 0, 0, temp.getWidth(), temp.getHeight(), null);
@@ -364,10 +357,10 @@ public class GraphicsUtilities {
      */
     public static BufferedImage createThumbnail(BufferedImage image,
                                                 int newSize) {
-        int width = image.getWidth();
-        int height = image.getHeight();
+        var width = image.getWidth();
+        var height = image.getHeight();
 
-        boolean isWidthGreater = width > height;
+        var isWidthGreater = width > height;
 
         if (isWidthGreater) {
             if (newSize >= width) {
@@ -384,10 +377,10 @@ public class GraphicsUtilities {
                                                " be greater than 0");
         }
 
-        float ratioWH = (float) width / (float) height;
-        float ratioHW = (float) height / (float) width;
+        var ratioWH = (float) width / (float) height;
+        var ratioHW = (float) height / (float) width;
 
-        BufferedImage thumb = image;
+        var thumb = image;
 
         do {
             if (isWidthGreater) {
@@ -405,8 +398,8 @@ public class GraphicsUtilities {
             }
 
 
-            BufferedImage temp = createCompatibleImage(image, width, height);
-            Graphics2D g2 = temp.createGraphics();
+            var temp = createCompatibleImage(image, width, height);
+            var g2 = temp.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                                 RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g2.drawImage(thumb, 0, 0, temp.getWidth(), temp.getHeight(), null);
@@ -440,8 +433,8 @@ public class GraphicsUtilities {
      */
     public static BufferedImage createThumbnail(BufferedImage image,
                                                 int newWidth, int newHeight) {
-        int width = image.getWidth();
-        int height = image.getHeight();
+        var width = image.getWidth();
+        var height = image.getHeight();
 
         if (newWidth >= width || newHeight >= height) {
             throw new IllegalArgumentException("newWidth and newHeight cannot" +
@@ -452,7 +445,7 @@ public class GraphicsUtilities {
                                                " be greater than 0");
         }
 
-        BufferedImage thumb = image;
+        var thumb = image;
 
         do {
             if (width > newWidth) {
@@ -469,8 +462,8 @@ public class GraphicsUtilities {
                 }
             }
 
-            BufferedImage temp = createCompatibleImage(image, width, height);
-            Graphics2D g2 = temp.createGraphics();
+            var temp = createCompatibleImage(image, width, height);
+            var g2 = temp.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                                 RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g2.drawImage(thumb, 0, 0, temp.getWidth(), temp.getHeight(), null);
@@ -513,7 +506,7 @@ public class GraphicsUtilities {
                                                " >= w*h");
         }
 
-        int imageType = img.getType();
+        var imageType = img.getType();
         if (imageType == BufferedImage.TYPE_INT_ARGB ||
             imageType == BufferedImage.TYPE_INT_RGB) {
             Raster raster = img.getRaster();
@@ -548,10 +541,10 @@ public class GraphicsUtilities {
                                                " >= w*h");
         }
 
-        int imageType = img.getType();
+        var imageType = img.getType();
         if (imageType == BufferedImage.TYPE_INT_ARGB ||
             imageType == BufferedImage.TYPE_INT_RGB) {
-            WritableRaster raster = img.getRaster();
+            var raster = img.getRaster();
             raster.setDataElements(x, y, w, h, pixels);
         } else {
             // Unmanages the image

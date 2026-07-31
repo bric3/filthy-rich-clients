@@ -18,6 +18,9 @@ remain subject to their own terms:
   JOGL's artifact metadata lists BSD-2-Clause, BSD-3-Clause, SGI Free Software
   License B, Apache License 1.1 and 2.0, and Ubuntu Font Licence 1.0. GlueGen's
   artifact metadata lists BSD-2-Clause, BSD-3-Clause, and BSD-4-Clause.
+* [vlcj 4.12.1](https://github.com/caprica/vlcj/blob/master/LICENSE)
+  is licensed under GPL v3. The Repaint Manager demo also requires a separately
+  installed VLC/LibVLC runtime.
 
 Anyone choosing to create a distribution is responsible for reviewing and
 complying with all applicable third-party license terms, including vlcj's GPL.
