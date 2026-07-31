@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions
  * are met:
  * <p>
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials provided
- *     with the distribution.
- *   * Neither the name of the TimingFramework project nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided
+ * with the distribution.
+ * * Neither the name of the TimingFramework project nor the names of its
+ * contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -29,11 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.applet.Applet;
-import java.applet.AudioClip;
-
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.KeyFrames;
+
+import javax.sound.SoundClip;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Simple utility class used to load and play sound effects for
@@ -42,24 +43,25 @@ import org.jdesktop.animation.timing.interpolation.KeyFrames;
  * @author Chet
  */
 public class SoundEffects implements TimingTarget {
-    
-    AudioClip drivingClip;
-    AudioClip turningClip;
+
+    SoundClip drivingClip;
+    SoundClip turningClip;
     final KeyFrames keyFrames;
-    
-    /** Creates a new instance of SoundEffects */
+
+    /**
+     * Creates a new instance of SoundEffects
+     */
     public SoundEffects(KeyFrames keyFrames) {
         this.keyFrames = keyFrames;
         try {
-            var url  = SoundEffects.class.getResource("sounds/vroom.wav");
-            drivingClip = Applet.newAudioClip(url);
-            url  = SoundEffects.class.getResource("sounds/drift.wav");
-            turningClip = Applet.newAudioClip(url);
-        } catch (Exception e) {
-            System.out.println("Problem loading track/car images: " + e);
+            var soundsDirectory = new File("src/main/resources/sounds");
+            drivingClip = SoundClip.createSoundClip(new File(soundsDirectory, "vroom.wav"));
+            turningClip = SoundClip.createSoundClip(new File(soundsDirectory, "drift.wav"));
+        } catch (IOException e) {
+            System.out.println("Problem loading sounds: " + e);
         }
     }
-    
+
     /**
      * Plays the driving clip
      */
@@ -68,7 +70,7 @@ public class SoundEffects implements TimingTarget {
             drivingClip.loop();
         }
     }
-    
+
     /**
      * Stops current clips
      */
@@ -80,7 +82,7 @@ public class SoundEffects implements TimingTarget {
             turningClip.stop();
         }
     }
-    
+
     /**
      * Plays the turning clip
      */
@@ -89,14 +91,14 @@ public class SoundEffects implements TimingTarget {
             turningClip.play();
         }
     }
-    
+
     // TimingTarget implementation
-    
+
     boolean pastFirstTurn = false;
     boolean pastSecondTurn = false;
     boolean pastThirdTurn = false;
     boolean pastFourthTurn = false;
-    
+
     public void begin() {
         drive();
         pastFirstTurn = false;
@@ -104,37 +106,37 @@ public class SoundEffects implements TimingTarget {
         pastThirdTurn = false;
         pastFourthTurn = false;
     }
-    
+
     public void end() {
         stop();
     }
-    
+
     /**
      * This method figures out when the car hits one of the turns
      * and plays the turn clip appropriately
      */
     public void timingEvent(float fraction) {
-       if (!pastFirstTurn) {
-           if (keyFrames.getInterval(fraction) == 1) {
-               turn();
-               pastFirstTurn = true;
-           }
-       } else if (!pastSecondTurn) {
-           if (keyFrames.getInterval(fraction) == 3) {
-               turn();
-               pastSecondTurn = true;
-           }
-       } else if (!pastThirdTurn) {
-           if (keyFrames.getInterval(fraction) == 5) {
-               turn();
-               pastThirdTurn = true;
-           }
-       } else if (!pastFourthTurn) {
-           if (keyFrames.getInterval(fraction) == 7) {
-               turn();
-               pastFourthTurn = true;
-           }
-       }
+        if (!pastFirstTurn) {
+            if (keyFrames.getInterval(fraction) == 1) {
+                turn();
+                pastFirstTurn = true;
+            }
+        } else if (!pastSecondTurn) {
+            if (keyFrames.getInterval(fraction) == 3) {
+                turn();
+                pastSecondTurn = true;
+            }
+        } else if (!pastThirdTurn) {
+            if (keyFrames.getInterval(fraction) == 5) {
+                turn();
+                pastThirdTurn = true;
+            }
+        } else if (!pastFourthTurn) {
+            if (keyFrames.getInterval(fraction) == 7) {
+                turn();
+                pastFourthTurn = true;
+            }
+        }
     }
 
     public void repeat() {
@@ -142,5 +144,5 @@ public class SoundEffects implements TimingTarget {
         pastSecondTurn = false;
         pastThirdTurn = false;
         pastFourthTurn = false;
-    }    
+    }
 }

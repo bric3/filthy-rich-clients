@@ -6,15 +6,15 @@
  * modification, are permitted provided that the following conditions
  * are met:
  * <p>
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials provided
- *     with the distribution.
- *   * Neither the name of the TimingFramework project nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
+ * * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided
+ * with the distribution.
+ * * Neither the name of the TimingFramework project nor the names of its
+ * contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  * <p>
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -29,13 +29,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.awt.Point;
-import javax.swing.JComponent;
 import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * This class does the work of rendering the current view of the
@@ -48,7 +45,7 @@ import javax.imageio.ImageIO;
  * @author Chet
  */
 public class TrackView extends JComponent {
-    
+
     BufferedImage car;
     BufferedImage track;
     final Point carPosition;
@@ -69,7 +66,7 @@ public class TrackView extends JComponent {
     static final Point THIRD_TURN_START = new Point(450, 461);
     static final Point THIRD_TURN_END = new Point(504, 404);
     static final Point FOURTH_TURN_START = new Point(504, 127);
-    
+
     /** Creates a new instance of TrackView */
     public TrackView() {
         try {
@@ -86,30 +83,30 @@ public class TrackView extends JComponent {
         trackW = track.getWidth();
         trackH = track.getHeight();
     }
-    
+
     public Dimension getPreferredSize() {
         return new Dimension(trackW, trackH);
     }
-    
+
     /**
      * Render the track and car
      */
     public void paintComponent(Graphics g) {
         // First draw the race track
         g.drawImage(track, 0, 0, null);
-        
+
         // Now draw the car.  The translate/rotate/translate settings account
         // for any nonzero carRotation values
-        var g2d = (Graphics2D)g.create();
+        var g2d = (Graphics2D) g.create();
         g2d.translate(carPosition.x, carPosition.y);
         g2d.rotate(Math.toRadians(carRotation));
         g2d.translate(-(carPosition.x), -(carPosition.y));
-        
+
         // Now the graphics has been set up appropriately; draw the
         // car in position
         g2d.drawImage(car, carPosition.x - carWHalf, carPosition.y - carHHalf, null);
     }
-    
+
     /**
      * Set the new position and schedule a repaint
      */
@@ -121,7 +118,7 @@ public class TrackView extends JComponent {
         repaint(0, carPosition.x - carWHalf, carPosition.y - carHHalf,
                 carW, carH);
     }
-    
+
     /**
      * Set the new rotation and schedule a repaint
      */
@@ -132,5 +129,5 @@ public class TrackView extends JComponent {
         repaint(0, carPosition.x - carW, carPosition.y - carH,
                 2 * carW, 2 * carH);
     }
-        
+
 }

@@ -44,7 +44,7 @@ import java.awt.event.ActionListener;
 
 /**
  * The full-blown demo with all of the bells and whistles.  This one uses
- * the facilities shown in all of the other variations, but adds 
+ * the facilities shown in all of the other variations, but adds
  * both multi-step and non-linear interpolation.  It does this by
  * creating a KeyFrames object to hold the times/values/splines
  * used for each segment of the race.  It also adds an animation for
@@ -54,26 +54,28 @@ import java.awt.event.ActionListener;
  * @author Chet
  */
 public class MultiStepRace {
-    
+
     protected final Animator animator;
     private final SoundEffects soundEffects;
     public static final int RACE_TIME = 10000;
-    
-    
-    /** Creates a new instance of BasicRace */
+
+
+    /**
+     * Creates a new instance of BasicRace
+     */
     public MultiStepRace(String appName) {
         var basicGUI = new RaceGUI(appName);
-        
+
         // We're going to need a more involved PropertyRange object
         // that has all curves of the track in it, as well as 
         // non-linear movement around the curves
         Point[] values = {
-            TrackView.START_POS,
-            TrackView.FIRST_TURN_START, TrackView.FIRST_TURN_END,
-            TrackView.SECOND_TURN_START, TrackView.SECOND_TURN_END,
-            TrackView.THIRD_TURN_START, TrackView.THIRD_TURN_END,
-            TrackView.FOURTH_TURN_START, 
-            TrackView.START_POS};
+                TrackView.START_POS,
+                TrackView.FIRST_TURN_START, TrackView.FIRST_TURN_END,
+                TrackView.SECOND_TURN_START, TrackView.SECOND_TURN_END,
+                TrackView.THIRD_TURN_START, TrackView.THIRD_TURN_END,
+                TrackView.FOURTH_TURN_START,
+                TrackView.START_POS};
         var trackViewPoints = KeyValues.create(values);
         // Calculate the keyTimes based on the distances that must be
         // traveled on each leg of the journey
@@ -83,15 +85,15 @@ public class MultiStepRace {
             segmentDistance[i] = values[i].distance(values[i + 1]);
             totalDistance += segmentDistance[i];
         }
-        segmentDistance[(values.length-1)] = 
+        segmentDistance[(values.length - 1)] =
                 values[(values.length - 1)].distance(values[0]);
-        totalDistance += segmentDistance[(values.length-1)];
+        totalDistance += segmentDistance[(values.length - 1)];
         var times = new float[values.length];
         var elapsedTime = 0.0f;
         times[0] = 0.0f;
         times[values.length - 1] = 1.0f;
         for (var i = 0; i < (values.length - 2); ++i) {
-            times[i + 1] = elapsedTime + (float)(segmentDistance[i] / totalDistance);
+            times[i + 1] = elapsedTime + (float) (segmentDistance[i] / totalDistance);
             elapsedTime = times[i + 1];
         }
         var keyTimes = new KeyTimes(times);
@@ -112,24 +114,24 @@ public class MultiStepRace {
                 "carPosition", keyFrames);
         animator = new Animator(RACE_TIME, Animator.INFINITE,
                 RepeatBehavior.LOOP, modifier);
-        
+
         // Now create similar keyframes for rotation of car
         var carKeyFrames = KeyValues.create(360, 315, 270, 225, 180, 135, 90, 45, 0);
         Interpolator straightawayTurnSpline = new SplineInterpolator(1.0f, 0.0f, 1.0f, 0.0f);
         Interpolator curveTurnSpline = new SplineInterpolator(0.0f, 0.5f, 0.5f, 1.0f);
         keyFrames = new KeyFrames(carKeyFrames, keyTimes,
-                straightawayTurnSpline, curveTurnSpline, 
-                straightawayTurnSpline, curveTurnSpline, 
-                straightawayTurnSpline, curveTurnSpline, 
+                straightawayTurnSpline, curveTurnSpline,
+                straightawayTurnSpline, curveTurnSpline,
+                straightawayTurnSpline, curveTurnSpline,
                 straightawayTurnSpline, curveTurnSpline);
-        modifier = new PropertySetter(basicGUI.getTrack(), "carRotation", 
+        modifier = new PropertySetter(basicGUI.getTrack(), "carRotation",
                 keyFrames);
         animator.addTarget(modifier);
-        
+
         // Finally, add sound effects, triggered by the same animator
         soundEffects = new SoundEffects(keyFrames);
         animator.addTarget(soundEffects);
-        
+
         // Instead of manually tracking the events, have the framework do
         // the work by setting up a trigger
         var goButton = basicGUI.getControlPanel().getGoButton();
@@ -143,9 +145,11 @@ public class MultiStepRace {
      */
     private static class Stopper implements ActionListener {
         final Animator timer;
+
         Stopper(Animator timer) {
             this.timer = timer;
         }
+
         public void actionPerformed(ActionEvent ae) {
             timer.stop();
         }
@@ -157,5 +161,5 @@ public class MultiStepRace {
         };
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
-    
+
 }
