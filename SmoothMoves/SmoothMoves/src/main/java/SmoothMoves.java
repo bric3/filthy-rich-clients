@@ -1,11 +1,3 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
 /*
  * SmoothMoves.java
  *
@@ -41,83 +33,69 @@ import java.awt.image.BufferedImage;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+
+/// @author Chet
 public class SmoothMoves extends JComponent implements ActionListener, KeyListener {
 
-    /**
-     * image holds the graphics we render for each animating object
-     */
+    /// image holds the graphics we render for each animating object
     BufferedImage image = null;
     static final int imageW = 100;
     static final int imageH = 150;
 
-    /**
-     * Location of fading animation
-     */
+    /// Location of fading animation
     final int fadeX = 50;
     final int fadeY = 50;
 
-    /**
-     * X values that moving animation will move between
-     */
+    /// X values that moving animation will move between
     static final int moveMinX = 150;
     static final int moveMaxX = 350;
 
-    /**
-     * Current x/y location of moving animation
-     */
+    /// Current x/y location of moving animation
     int moveX = moveMinX;
     final int moveY = 50;
 
-    /**
-     * Current opacity of fading animation
-     */
+    /// Current opacity of fading animation
     float opacity = 0.0f;
 
-    /**
-     * Toggles for various demo options (key to toggle in parentheses)
-     */
+    /// Toggles for various demo options (key to toggle in parentheses)
     boolean useImage = false;   // (i) image instead of rectangle
     boolean useAA = false;      // (a) anti-aliased edges (rectangle only)
     boolean motionBlur = false; // (b) ghost images behind moving animation
     boolean alterColor = false; // (c) light-gray instead of black rectangle
     boolean linear = true;      // (l) linear vs. non-linear motion
 
-    /**
-     * Used for motion blur rendering; holds information for ghost trail
-     */
+    /// Used for motion blur rendering; holds information for ghost trail
     int blurSize = 5;
     int[] prevMoveX;
     int[] prevMoveY;
     float[] trailOpacity;
 
-    /**
-     * Basic Timer animation info
-     */
+    /// Basic Timer animation info
     final static int CYCLE_TIME = 2000;     // One cycle takes 2 seconds
     int currentResolution = 50;             // current Timer resolution
     Timer timer = null;                     // animation Timer
     long cycleStart;                        // track start time for each cycle
 
-    /**
-     * Creates a new instance of SmoothAnimation
-     */
+    /// Creates a new instance of SmoothAnimation
     public SmoothMoves() {
         // createAnimationImage();
         cycleStart = System.nanoTime() / 1000000;
         startTimer(currentResolution);
     }
 
-    /**
-     * Create the image that will be animated. This image may be an actual
-     * image (duke.gif), or some graphics (a variation on a black filled
-     * rectangle) that are rendered into an image. The contents
-     * of this image are dependent upon the runtime toggles that have been
-     * set when this method is called.
-     */
+    /// Create the image that will be animated. This image may be an actual
+    /// image (duke.gif), or some graphics (a variation on a black filled
+    /// rectangle) that are rendered into an image. The contents
+    /// of this image are dependent upon the runtime toggles that have been
+    /// set when this method is called.
     void createAnimationImage() {
         var gc = getGraphicsConfiguration();
         image = gc.createCompatibleImage(imageW, imageH, Transparency.TRANSLUCENT);
@@ -223,9 +201,7 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
         }
     }
 
-    /**
-     * This method handles the events from the Swing Timer
-     */
+    /// This method handles the events from the Swing Timer
     public void actionPerformed(ActionEvent ae) {
         // calculate the fraction elapsed of the animation and call animate()
         // to alter the values accordingly
@@ -240,10 +216,8 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
         animate(fraction);
     }
 
-    /**
-     * Animate the opacity and location factors, according to the current
-     * fraction.
-     */
+    /// Animate the opacity and location factors, according to the current
+    /// fraction.
     public void animate(float fraction) {
         float animationFactor;
         if (linear) {
@@ -267,9 +241,7 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
         repaint();
     }
 
-    /**
-     * Moves the frame rate up or down by changing the Timer resolution
-     */
+    /// Moves the frame rate up or down by changing the Timer resolution
     private void changeResolution(boolean faster) {
         if (faster) {
             currentResolution -= 5;
@@ -281,9 +253,7 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
         startTimer(currentResolution);
     }
 
-    /**
-     * Starts the animation
-     */
+    /// Starts the animation
     private void startTimer(int resolution) {
         if (timer != null) {
             timer.stop();
@@ -294,9 +264,7 @@ public class SmoothMoves extends JComponent implements ActionListener, KeyListen
         timer.start();
     }
 
-    /**
-     * Toggles various rendering flags
-     */
+    /// Toggles various rendering flags
     public void keyPressed(KeyEvent ke) {
         var keyCode = ke.getKeyCode();
         if (keyCode == KeyEvent.VK_B) {

@@ -33,10 +33,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class PictureGlassPane extends JComponent {
     private BufferedImage image;
     private Point location;

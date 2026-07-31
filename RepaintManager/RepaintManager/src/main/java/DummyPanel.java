@@ -32,10 +32,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class DummyPanel extends JPanel {
     public DummyPanel() {
         initComponents();

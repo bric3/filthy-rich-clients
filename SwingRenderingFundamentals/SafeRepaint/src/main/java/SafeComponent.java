@@ -32,9 +32,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class SafeComponent extends JLabel {
     public SafeComponent() {
         super("Safe Repaint");

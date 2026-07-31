@@ -1,5 +1,3 @@
-import java.util.Timer;
-import java.util.TimerTask;
 /*
  * UtilTimerDemo.java
  *
@@ -35,10 +33,10 @@ import java.util.TimerTask;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import java.util.Timer;
+import java.util.TimerTask;
+
+/// @author Chet
 public class UtilTimerDemo extends TimerTask {
 
     private static long prevTime = 0;
@@ -51,13 +49,11 @@ public class UtilTimerDemo extends TimerTask {
     private boolean firstTime = true;
     private static final boolean runningFixedRate = false;
 
-    /**
-     * This method will be called during every tick of the Timers.
-     * We insert an artificial delay each time, to simulate some processing.
-     * The first time through, this delay is greater than the delay between
-     * timing events, so that we can see how this hiccup is handled by
-     * fixed-rate and fixed-delay timers.
-     */
+    /// This method will be called during every tick of the Timers.
+    /// We insert an artificial delay each time, to simulate some processing.
+    /// The first time through, this delay is greater than the delay between
+    /// timing events, so that we can see how this hiccup is handled by
+    /// fixed-rate and fixed-delay timers.
     public void run() {
         var nowTime = System.currentTimeMillis();
         var elapsedTime = nowTime - prevTime;

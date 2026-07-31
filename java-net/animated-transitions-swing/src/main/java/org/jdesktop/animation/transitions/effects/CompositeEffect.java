@@ -41,40 +41,30 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This Effect combines one or more sub-effects to create a more complex and interesting effect. For example, you could
- * create an effect that both moves and scales by creating a CompositeEffect with the Move and Scale effects.
- * <p>
- * Composite effects are created by simply adding effects in the order that you want them combined.
- *
- * @author Chet Haase
- */
+/// This Effect combines one or more sub-effects to create a more complex and interesting effect. For example, you could
+/// create an effect that both moves and scales by creating a CompositeEffect with the Move and Scale effects.
+///
+/// Composite effects are created by simply adding effects in the order that you want them combined.
+///
+/// @author Chet Haase
 public class CompositeEffect extends Effect {
 
-    /**
-     * The list of effects in the CompositeEffect.
-     */
+    /// The list of effects in the CompositeEffect.
     private final List<Effect> effects = new ArrayList<>();
 
-    /**
-     * Creates a CompositeEffect with no sub-effects. Additional sub-effects should be added via the
-     * <code>addEffect</code> method.
-     */
+    /// Creates a CompositeEffect with no sub-effects. Additional sub-effects should be added via the
+    /// `addEffect` method.
     public CompositeEffect() {
     }
 
-    /**
-     * Creates a CompositeEffect with the given effect as the first sub-effect. Additional sub-effects should be added
-     * via the <code>addEffect</code> method.
-     */
+    /// Creates a CompositeEffect with the given effect as the first sub-effect. Additional sub-effects should be added
+    /// via the `addEffect` method.
     public CompositeEffect(Effect effect) {
         addEffect(effect);
     }
 
-    /**
-     * Adds an additional effect to this CompositeEffect. This effect is added to the end of the existing list of
-     * effects, and will be processed after the other effects have been processed.
-     */
+    /// Adds an additional effect to this CompositeEffect. This effect is added to the end of the existing list of
+    /// effects, and will be processed after the other effects have been processed.
     public void addEffect(Effect effect) {
         effects.add(effect);
         if (effect.getRenderComponent()) {
@@ -88,10 +78,8 @@ public class CompositeEffect extends Effect {
         }
     }
 
-    /**
-     * This method is called during the initialization process of a transition and allows the effects to set up the
-     * start state for each effect.
-     */
+    /// This method is called during the initialization process of a transition and allows the effects to set up the
+    /// start state for each effect.
     public void setStart(ComponentState start) {
         for (var effect : effects) {
             effect.setStart(start);
@@ -99,9 +87,7 @@ public class CompositeEffect extends Effect {
         super.setStart(start);
     }
 
-    /**
-     * Initializes all child effects at the start of a transition.
-     */
+    /// Initializes all child effects at the start of a transition.
     @Override
     public void init(Animator animator, Effect parentEffect) {
         for (var effect : effects) {
@@ -110,9 +96,7 @@ public class CompositeEffect extends Effect {
         super.init(animator, null);
     }
 
-    /**
-     * Calls <code>cleanup()</code> on all child effects.
-     */
+    /// Calls `cleanup()` on all child effects.
     @Override
     public void cleanup(Animator animator) {
         for (var effect : effects) {
@@ -120,10 +104,8 @@ public class CompositeEffect extends Effect {
         }
     }
 
-    /**
-     * This method is called during the initialization process of a transition and allows the effects to set up the end
-     * state for each effect.
-     */
+    /// This method is called during the initialization process of a transition and allows the effects to set up the end
+    /// state for each effect.
     public void setEnd(ComponentState end) {
         for (var effect : effects) {
             effect.setEnd(end);
@@ -131,10 +113,8 @@ public class CompositeEffect extends Effect {
         super.setEnd(end);
     }
 
-    /**
-     * This method is called during each frame of the transition animation and allows the effect to set up the Graphics
-     * state according to the various sub-effects in this CompositeEffect.
-     */
+    /// This method is called during each frame of the transition animation and allows the effect to set up the Graphics
+    /// state according to the various sub-effects in this CompositeEffect.
     @Override
     public void setup(Graphics2D g2d) {
         for (var effect : effects) {

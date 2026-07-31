@@ -36,10 +36,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class SourceInDemo extends JFrame {
     private final JCheckBox shadow;
 

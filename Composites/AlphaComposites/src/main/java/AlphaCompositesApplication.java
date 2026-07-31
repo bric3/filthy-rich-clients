@@ -34,10 +34,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class AlphaCompositesApplication extends JFrame {
     private final CompositePainter painter;
     private JSlider opacity;

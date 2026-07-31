@@ -1,5 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
 /*
  * OvalComponent.java
  *
@@ -35,10 +33,10 @@ import java.awt.*;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+
+/// @author Chet
 public class OvalComponent extends JComponent {
 
     public void paintComponent(Graphics g) {

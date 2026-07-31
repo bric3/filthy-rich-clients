@@ -1,16 +1,3 @@
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.jdesktop.animation.transitions.Effect;
-import org.jdesktop.animation.transitions.EffectsManager;
-import org.jdesktop.animation.transitions.ScreenTransition;
-import org.jdesktop.animation.transitions.TransitionTarget;
-import org.jdesktop.animation.transitions.effects.CompositeEffect;
-import org.jdesktop.animation.transitions.effects.FadeIn;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 /*
  * SearchTransition.java
  *
@@ -46,9 +33,21 @@ import java.awt.event.ActionListener;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @author Chet
- */
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.animation.transitions.Effect;
+import org.jdesktop.animation.transitions.EffectsManager;
+import org.jdesktop.animation.transitions.ScreenTransition;
+import org.jdesktop.animation.transitions.TransitionTarget;
+import org.jdesktop.animation.transitions.effects.CompositeEffect;
+import org.jdesktop.animation.transitions.effects.FadeIn;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/// @author Chet
 public class SearchTransition extends JComponent implements TransitionTarget, ActionListener {
     //
     // GUI components used in the application screens
@@ -99,9 +98,7 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
     private int prevW, prevH;
 
 
-    /**
-     * Creates a new instance of SearchTransition
-     */
+    /// Creates a new instance of SearchTransition
     public SearchTransition() {
         results.setEditable(false);
 
@@ -127,9 +124,7 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
         }
     }
 
-    /**
-     * Arrange the GUI for the initial search screen.
-     */
+    /// Arrange the GUI for the initial search screen.
     private void setupSearchScreen() {
         var instructionsX = (getWidth() - INSTRUCTIONS_W) / 2;
         var instructionsY = getHeight() / 4;
@@ -147,9 +142,7 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
         searchField.setBounds(fieldX, fieldY, FIELD_W, FIELD_H);
     }
 
-    /**
-     * Arrange the GUI for the results screen
-     */
+    /// Arrange the GUI for the results screen
     public void setupResultsScreen() {
         var searchX = getWidth() - LABEL_W - FIELD_W - RESULTS_X - 10;
         var searchY = 10;
@@ -167,9 +160,7 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
                 getWidth() - (2 * resultsX), getHeight() - resultsY - 20);
     }
 
-    /**
-     * Change the gradient and effect according to the new window size
-     */
+    /// Change the gradient and effect according to the new window size
     private void setupBackgroundAndEffect() {
         // init the background gradient according to current height
         bgGradient = new GradientPaint(0, 0, Color.LIGHT_GRAY.brighter(),
@@ -184,9 +175,7 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
         prevHeight = getHeight();
     }
 
-    /**
-     * Override of paintComponent() to draw the gradient background
-     */
+    /// Override of paintComponent() to draw the gradient background
     @Override
     protected void paintComponent(Graphics g) {
         if (bgGradient == null || getHeight() != prevHeight) {
@@ -196,10 +185,8 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
         g.fillRect(0, 0, getWidth(), getHeight());
     }
 
-    /**
-     * TransitionTarget callback; clear current state and set up
-     * state for next screen
-     */
+    /// TransitionTarget callback; clear current state and set up
+    /// state for next screen
     public void setupNextScreen() {
         // Clear out current GUI state
         removeAll();
@@ -234,9 +221,7 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
         f.setVisible(true);
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -250,10 +235,8 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
     }
 }
 
-/**
- * Custom effect: moves a component in to its end location
- * from a specified starting point
- */
+/// Custom effect: moves a component in to its end location
+/// from a specified starting point
 class MoveIn extends Effect {
 
     private final Point startLocation = new Point();
@@ -263,10 +246,8 @@ class MoveIn extends Effect {
         startLocation.y = y;
     }
 
-    /**
-     * Handles setup of animation that will vary the location during the
-     * transition
-     */
+    /// Handles setup of animation that will vary the location during the
+    /// transition
     @Override
     public void init(Animator animator, Effect parentEffect) {
         var targetEffect = (parentEffect == null) ?

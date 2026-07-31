@@ -43,18 +43,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * This class manages the animated rendering of the various components during the transitions. For each component in the
- * start and end screens of the transitioning component, there is a call to <code>addStart</code> or <code>addEnd</code>
- * . Information for the start and end states are stored in individual <code>AnimationState</code> objects on a
- * per-component basis.
- * <p/>
- * During the transition, animation timing events trigger calls to {@link #paint(Graphics g)}, which asks each of the
- * <code>
- * AnimationState</code> structures to render themselves in their current, animating state.
- *
- * @author Chet Haase
- */
+/// This class manages the animated rendering of the various components during the transitions. For each component in the
+/// start and end screens of the transitioning component, there is a call to `addStart` or `addEnd`
+/// . Information for the start and end states are stored in individual `AnimationState` objects on a
+/// per-component basis.
+///
+/// During the transition, animation timing events trigger calls to [#paint(Graphics g)], which asks each of the
+/// `
+/// AnimationState` structures to render themselves in their current, animating state.
+///
+/// @author Chet Haase
 class AnimationManager {
 
     private final EffectsManager effectsManager;
@@ -68,11 +66,9 @@ class AnimationManager {
     // The set of components that change between their start and end states
     private final ArrayList<JComponent> changingComponents = new ArrayList<>();
 
-    /**
-     * Background that will be copied into the transitionImage on every frame. This represents the default (empty) state
-     * of the containerLayer; copying this into the transitionImage is like erasing to the background of the real
-     * container in the application.
-     */
+    /// Background that will be copied into the transitionImage on every frame. This represents the default (empty) state
+    /// of the containerLayer; copying this into the transitionImage is like erasing to the background of the real
+    /// container in the application.
     private BufferedImage transitionImageBG = null;
 
     AnimationManager(EffectsManager effectsManager, JComponent container) {
@@ -81,10 +77,8 @@ class AnimationManager {
         recreateImage();
     }
 
-    /**
-     * Causes background image to be recreated if the container is not of size (0,0) and if the current image is either
-     * null or of a different size than the current container
-     */
+    /// Causes background image to be recreated if the container is not of size (0,0) and if the current image is either
+    /// null or of a different size than the current container
     void recreateImage() {
         var cw = container.getWidth();
         var ch = container.getHeight();
@@ -94,16 +88,12 @@ class AnimationManager {
         }
     }
 
-    /**
-     * Utility method, used to check whether the given component has a state set already.
-     */
+    /// Utility method, used to check whether the given component has a state set already.
     private AnimationState getExistingAnimationState(JComponent component) {
         return componentAnimationStates.get(component);
     }
 
-    /**
-     * Reset the AnimationStates; this clears out the old structure of states after we are done with a transition
-     */
+    /// Reset the AnimationStates; this clears out the old structure of states after we are done with a transition
     void reset(Animator animator) {
         for (var state : componentAnimationStates.values()) {
             state.cleanup(animator);
@@ -112,12 +102,10 @@ class AnimationManager {
         changingComponents.clear();
     }
 
-    /**
-     * Initialize the animation. This sets up all of the individual animations based on default or custom effects for
-     * each component. This method also creates the background image for the transition, which includes the background
-     * of the transition container, but also any components that do not change between their start and end states (we
-     * render them once into the background image and skip rendering them each per-frame).
-     */
+    /// Initialize the animation. This sets up all of the individual animations based on default or custom effects for
+    /// each component. This method also creates the background image for the transition, which includes the background
+    /// of the transition container, but also any components that do not change between their start and end states (we
+    /// render them once into the background image and skip rendering them each per-frame).
     void init(Animator animator) {
         // Create the background image for the transition if necessary
         recreateImage();
@@ -175,9 +163,7 @@ class AnimationManager {
         }
     }
 
-    /**
-     * Save the start state for all components in this container
-     */
+    /// Save the start state for all components in this container
     void setupStart() {
         for (var child : container.getComponents()) {
             if (child.isVisible() && (child instanceof JComponent)) {
@@ -186,11 +172,9 @@ class AnimationManager {
         }
     }
 
-    /**
-     * Save the end state for all components in this container. Any components in the container that are in the same
-     * state at start and end will be removed from the list of components that need to be animated and will, instead, be
-     * rendered to the bg image.
-     */
+    /// Save the end state for all components in this container. Any components in the container that are in the same
+    /// state at start and end will be removed from the list of components that need to be animated and will, instead, be
+    /// rendered to the bg image.
     void setupEnd() {
         for (var childComponent : container.getComponents()) {
             if (childComponent.isVisible() && (childComponent instanceof JComponent child)) {
@@ -213,11 +197,9 @@ class AnimationManager {
         }
     }
 
-    /**
-     * Add a start state for the given component
-     *
-     * @param component The individual component to be animated
-     */
+    /// Add a start state for the given component
+    ///
+    /// @param component The individual component to be animated
     void addStart(JComponent component) {
         var existingAnimState = getExistingAnimationState(component);
         if (existingAnimState != null) {
@@ -230,11 +212,9 @@ class AnimationManager {
         }
     }
 
-    /**
-     * Add an end state for the given component
-     *
-     * @param component The individual component to be animated
-     */
+    /// Add an end state for the given component
+    ///
+    /// @param component The individual component to be animated
     void addEnd(JComponent component) {
         var existingAnimState = getExistingAnimationState(component);
         if (existingAnimState != null) {
@@ -247,12 +227,10 @@ class AnimationManager {
         }
     }
 
-    /**
-     * This method is called during the transition animation. Iterate through the various <code>AnimationState</code>
-     * objects asking each one to paint itself into the <code>Graphics</code>.
-     *
-     * @param g The <code>Graphics</code> object that the animating objects need to render themselves into.
-     */
+    /// This method is called during the transition animation. Iterate through the various `AnimationState`
+    /// objects asking each one to paint itself into the `Graphics`.
+    ///
+    /// @param g The `Graphics` object that the animating objects need to render themselves into.
     void paint(Graphics g) {
         g.drawImage(transitionImageBG, 0, 0, null);
         for (var state : componentAnimationStates.values()) {

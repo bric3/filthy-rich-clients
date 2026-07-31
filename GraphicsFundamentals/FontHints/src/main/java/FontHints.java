@@ -1,6 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.util.Map;
 /*
  * FontHints.java
  *
@@ -36,17 +33,16 @@ import java.util.Map;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.util.Map;
+
+/// @author Chet
 public class FontHints extends JComponent {
 
     final Map desktopHints;
 
-    /**
-     * Creates a new instance of FontHints
-     */
+    /// Creates a new instance of FontHints
     public FontHints() {
         var tk = Toolkit.getDefaultToolkit();
         desktopHints = (Map) (tk.getDesktopProperty("awt.font.desktophints"));

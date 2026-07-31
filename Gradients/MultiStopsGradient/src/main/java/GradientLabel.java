@@ -32,15 +32,10 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class GradientLabel extends JLabel {
 
-    /**
-     * Creates a new instance of GradientButton
-     */
+    /// Creates a new instance of GradientButton
     public GradientLabel(String text) {
         super(text);
         setForeground(Color.WHITE);

@@ -30,14 +30,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Implements a DropShadow for components. In general, the DropShadowBorder will
- * work with any rectangular components that do not have a default border installed
- * as part of the look and feel, or otherwise. For example, DropShadowBorder works
- * wonderfully with JPanel, but horribly with JComboBox.
- *
- * @author rbair
- */
+/// Implements a DropShadow for components. In general, the DropShadowBorder will
+/// work with any rectangular components that do not have a default border installed
+/// as part of the look and feel, or otherwise. For example, DropShadowBorder works
+/// wonderfully with JPanel, but horribly with JComboBox.
+///
+/// @author rbair
 public record DropShadowBorder(Color lineColor, int lineWidth, int shadowSize, float shadowOpacity, int cornerSize,
                                boolean showTopShadow, boolean showLeftShadow, boolean showBottomShadow,
                                boolean showRightShadow) implements Border {
@@ -61,9 +59,7 @@ public record DropShadowBorder(Color lineColor, int lineWidth, int shadowSize, f
         this(lineColor, lineWidth, 5, .5f, 12, false, showLeftShadow, true, true);
     }
 
-    /**
-     * @inheritDoc
-     */
+    /// @inheritDoc
     public void paintBorder(Component c, Graphics graphics, int x, int y, int width, int height) {
         /*
          * 1) Get images for this border
@@ -289,12 +285,10 @@ public record DropShadowBorder(Color lineColor, int lineWidth, int shadowSize, f
         return images;
     }
 
-    /**
-     * Returns a new BufferedImage that represents a subregion of the given
-     * BufferedImage.  (Note that this method does not use
-     * BufferedImage.getSubimage(), which will defeat image acceleration
-     * strategies on later JDKs.)
-     */
+    /// Returns a new BufferedImage that represents a subregion of the given
+    /// BufferedImage.  (Note that this method does not use
+    /// BufferedImage.getSubimage(), which will defeat image acceleration
+    /// strategies on later JDKs.)
     private BufferedImage getSubImage(BufferedImage img,
                                       int x, int y, int w, int h) {
         var ret = GraphicsUtilities.createCompatibleTranslucentImage(w, h);
@@ -307,9 +301,7 @@ public record DropShadowBorder(Color lineColor, int lineWidth, int shadowSize, f
         return ret;
     }
 
-    /**
-     * @inheritDoc
-     */
+    /// @inheritDoc
     public Insets getBorderInsets(Component c) {
         var top = showTopShadow ? lineWidth + shadowSize : lineWidth;
         var left = showLeftShadow ? lineWidth + shadowSize : lineWidth;
@@ -318,9 +310,7 @@ public record DropShadowBorder(Color lineColor, int lineWidth, int shadowSize, f
         return new Insets(top, left, bottom, right);
     }
 
-    /**
-     * @inheritDoc
-     */
+    /// @inheritDoc
     public boolean isBorderOpaque() {
         return false;
     }

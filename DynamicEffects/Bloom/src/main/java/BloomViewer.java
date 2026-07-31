@@ -35,9 +35,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class BloomViewer extends JComponent {
     private BrightPassFilter brightPassFilter = new BrightPassFilter();
     private BufferedImage image = null;

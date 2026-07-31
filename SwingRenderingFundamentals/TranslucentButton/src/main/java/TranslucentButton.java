@@ -1,6 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 /*
  * TranslucentButton.java
  *
@@ -36,17 +33,16 @@ import java.awt.image.BufferedImage;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+/// @author Chet
 public class TranslucentButton extends JButton {
 
     BufferedImage buttonImage = null;
 
-    /**
-     * Creates a new instance of TranslucentButton
-     */
+    /// Creates a new instance of TranslucentButton
     public TranslucentButton(String label) {
         super(label);
         setOpaque(false);

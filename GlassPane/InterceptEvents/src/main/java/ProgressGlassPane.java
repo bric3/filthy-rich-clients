@@ -33,10 +33,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class ProgressGlassPane extends JComponent {
     private static final int BAR_WIDTH = 200;
     private static final int BAR_HEIGHT = 10;
@@ -56,9 +53,7 @@ public class ProgressGlassPane extends JComponent {
     private final String message = "Downloading file...";
     private int progress = 0;
 
-    /**
-     * Creates a new instance of ProgressGlassPane
-     */
+    /// Creates a new instance of ProgressGlassPane
     public ProgressGlassPane() {
         // blocks all user input
         addMouseListener(new MouseAdapter() {

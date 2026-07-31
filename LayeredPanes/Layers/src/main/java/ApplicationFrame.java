@@ -35,15 +35,10 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class ApplicationFrame extends JFrame {
 
-    /**
-     * Creates new form ApplicationFrame
-     */
+    /// Creates new form ApplicationFrame
     public ApplicationFrame() {
         initComponents();
 
@@ -51,14 +46,12 @@ public class ApplicationFrame extends JFrame {
         addValidations();
     }
 
-    /**
-     * This method is called from within the constructor to
-     * initialize the form.
-     * <p>
-     * This code has been converted from Netbeans/Jdesktop code
-     * that made it to Swing's GroupLayout code in Java 1.6.
-     * It is not anymore generated.
-     */
+    /// This method is called from within the constructor to
+    /// initialize the form.
+    ///
+    /// This code has been converted from Netbeans/Jdesktop code
+    /// that made it to Swing's GroupLayout code in Java 1.6.
+    /// It is not anymore generated.
     private void initComponents() {
         JLabel jLabel1;
         JLabel jLabel2;
@@ -169,9 +162,7 @@ public class ApplicationFrame extends JFrame {
         setBounds((screenSize.width - 489) / 2, (screenSize.height - 266) / 2, 489, 266);
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     static void main(String[] args) {
         EventQueue.invokeLater(() -> new ApplicationFrame().setVisible(true));
     }

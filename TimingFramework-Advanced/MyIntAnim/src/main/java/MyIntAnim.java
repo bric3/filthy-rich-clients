@@ -1,6 +1,3 @@
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTarget;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
 /*
  * MyIntAnim.java
  *
@@ -36,10 +33,11 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTarget;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
+
+/// @author Chet
 public class MyIntAnim {
 
     private int myInt;

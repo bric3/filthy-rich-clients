@@ -32,10 +32,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class ApplicationFrame extends JFrame {
     public ApplicationFrame() {
         initComponents();
@@ -43,14 +40,12 @@ public class ApplicationFrame extends JFrame {
         getGlassPane().setVisible(true);
     }
 
-    /**
-     * This method is called from within the constructor to
-     * initialize the form.
-     * <p>
-     * This code has been converted from Netbeans/Jdesktop code
-     * that made it to Swing's GroupLayout code in Java 1.6.
-     * It is not anymore generated.
-     */
+    /// This method is called from within the constructor to
+    /// initialize the form.
+    ///
+    /// This code has been converted from Netbeans/Jdesktop code
+    /// that made it to Swing's GroupLayout code in Java 1.6.
+    /// It is not anymore generated.
     private void initComponents() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Glass Pane and Mouse Cursor");
@@ -162,9 +157,7 @@ public class ApplicationFrame extends JFrame {
         setBounds((screenSize.width - 489) / 2, (screenSize.height - 266) / 2, 489, 266);
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     static void main(String... args) {
         EventQueue.invokeLater(() -> new ApplicationFrame().setVisible(true));
     }

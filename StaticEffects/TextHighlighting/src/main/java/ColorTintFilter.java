@@ -35,27 +35,26 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-/**
- * <p>A color tint filter can be used to mix a solid color to an image. The
- * result is an image tinted by the specified color. The force of the effect
- * can be controlled with the <code>mixValue</code>, a number between  0.0 and
- * 1.0 that can be seen as the percentage of the mix (0.0 does not affect the
- * source image and 1.0 replaces all the pixels by the solid color).</p>
- * <p>The color of the pixels in the resulting image is computed as follows:</p>
- * <pre>
- * cR = cS * (1 - mixValue) + cM * mixValue
- * </pre>
- * <p>Definition of the parameters:</p>
- * <ul>
- *   <li><code>cR</code>: color of the resulting pixel</li>
- *   <li><code>cS</code>: color of the source pixel</li>
- *   <li><code>cM</code>: the solid color to mix with the source image</li>
- *   <li><code>mixValue</code>: strength of the mix, a value between 0.0 and 1.0</li>
- * </ul>
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
-
+/// A color tint filter can be used to mix a solid color to an image. The
+/// result is an image tinted by the specified color. The force of the effect
+/// can be controlled with the `mixValue`, a number between  0.0 and
+/// 1.0 that can be seen as the percentage of the mix (0.0 does not affect the
+/// source image and 1.0 replaces all the pixels by the solid color).
+///
+/// The color of the pixels in the resulting image is computed as follows:
+///
+/// <pre>
+/// cR = cS * (1 - mixValue) + cM * mixValue
+/// </pre>
+///
+/// Definition of the parameters:
+///
+///   - `cR`: color of the resulting pixel
+///   - `cS`: color of the source pixel
+///   - `cM`: the solid color to mix with the source image
+///   - `mixValue`: strength of the mix, a value between 0.0 and 1.0
+///
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class ColorTintFilter extends AbstractFilter {
     private final Color mixColor;
     private final float mixValue;
@@ -64,16 +63,14 @@ public class ColorTintFilter extends AbstractFilter {
     private final int[] preMultipliedGreen;
     private final int[] preMultipliedBlue;
 
-    /**
-     * <p>Creates a new color mixer filter. The specified color will be used
-     * to tint the source image, with a mixing strength defined by
-     * <code>mixValue</code>.</p>
-     *
-     * @param mixColor the solid color to mix with the source image
-     * @param mixValue the strength of the mix, between 0.0 and 1.0; if the
-     *                 specified value lies outside this range, it is clamped
-     * @throws IllegalArgumentException if <code>mixColor</code> is null
-     */
+    /// Creates a new color mixer filter. The specified color will be used
+    /// to tint the source image, with a mixing strength defined by
+    /// `mixValue`.
+    ///
+    /// @param mixColor the solid color to mix with the source image
+    /// @param mixValue the strength of the mix, between 0.0 and 1.0; if the
+    ///                 specified value lies outside this range, it is clamped
+    /// @throws IllegalArgumentException if `mixColor` is null
     public ColorTintFilter(Color mixColor, float mixValue) {
         if (mixColor == null) {
             throw new IllegalArgumentException("mixColor cannot be null");
@@ -106,27 +103,21 @@ public class ColorTintFilter extends AbstractFilter {
         }
     }
 
-    /**
-     * <p>Returns the mix value of this filter.</p>
-     *
-     * @return the mix value, between 0.0 and 1.0
-     */
+    /// Returns the mix value of this filter.
+    ///
+    /// @return the mix value, between 0.0 and 1.0
     public float getMixValue() {
         return mixValue;
     }
 
-    /**
-     * <p>Returns the solid mix color of this filter.</p>
-     *
-     * @return the solid color used for mixing
-     */
+    /// Returns the solid mix color of this filter.
+    ///
+    /// @return the solid color used for mixing
     public Color getMixColor() {
         return mixColor;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /// {@inheritDoc}
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         if (dst == null) {

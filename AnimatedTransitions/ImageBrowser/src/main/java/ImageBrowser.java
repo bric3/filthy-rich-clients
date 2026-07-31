@@ -1,25 +1,3 @@
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
-import org.jdesktop.animation.transitions.EffectsManager;
-import org.jdesktop.animation.transitions.EffectsManager.TransitionType;
-import org.jdesktop.animation.transitions.ScreenTransition;
-import org.jdesktop.animation.transitions.TransitionTarget;
-import org.jdesktop.animation.transitions.effects.CompositeEffect;
-import org.jdesktop.animation.transitions.effects.Move;
-import org.jdesktop.animation.transitions.effects.Scale;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 /*
  * ImageBrowser.java
  *
@@ -55,18 +33,39 @@ import java.util.List;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This demo of the AnimatedTransitions library uses a layout manager
- * to assist in setting up the next screen that the application
- * transitions to.
- * <p>
- * The slider in the window controls the picture thumbnail size. The
- * standard FlowLayout manager organizes the pictures according to
- * the thumbnail sizes. The transition animates the change from
- * one thumbnail size to the next.
- *
- * @author Chet
- */
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
+import org.jdesktop.animation.transitions.EffectsManager;
+import org.jdesktop.animation.transitions.EffectsManager.TransitionType;
+import org.jdesktop.animation.transitions.ScreenTransition;
+import org.jdesktop.animation.transitions.TransitionTarget;
+import org.jdesktop.animation.transitions.effects.CompositeEffect;
+import org.jdesktop.animation.transitions.effects.Move;
+import org.jdesktop.animation.transitions.effects.Scale;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+/// This demo of the AnimatedTransitions library uses a layout manager
+/// to assist in setting up the next screen that the application
+/// transitions to.
+///
+/// The slider in the window controls the picture thumbnail size. The
+/// standard FlowLayout manager organizes the pictures according to
+/// the thumbnail sizes. The transition animates the change from
+/// one thumbnail size to the next.
+///
+/// @author Chet
 public class ImageBrowser extends JComponent
         implements TransitionTarget, ChangeListener {
 
@@ -84,9 +83,7 @@ public class ImageBrowser extends JComponent
             1 + currentSize / SLIDER_INCREMENT);
     static int numImages = 0;
 
-    /**
-     * Creates a new instance of ImageBrowser
-     */
+    /// Creates a new instance of ImageBrowser
     public ImageBrowser() {
         setOpaque(true);
         animator.setAcceleration(.1f);
@@ -121,9 +118,7 @@ public class ImageBrowser extends JComponent
         }
     }
 
-    /**
-     * Paints a gradient in the background of this component
-     */
+    /// Paints a gradient in the background of this component
     @Override
     protected void paintComponent(Graphics g) {
         if (getHeight() != prevHeight) {
@@ -135,10 +130,8 @@ public class ImageBrowser extends JComponent
         g.fillRect(0, 0, getWidth(), prevHeight);
     }
 
-    /**
-     * Loads all images found in the directory "images" (which therefore must
-     * be found in the folder in which this app runs).
-     */
+    /// Loads all images found in the directory "images" (which therefore must
+    /// be found in the folder in which this app runs).
     private void loadImages() {
         try {
             findImages(Path.of("images")).forEach(this::loadImage);
@@ -172,11 +165,9 @@ public class ImageBrowser extends JComponent
         }
     }
 
-    /**
-     * TransitionTarget implementation: The setup for the next screen entails
-     * merely assigning a new icon to each JLabel with the new thumbnail
-     * size
-     */
+    /// TransitionTarget implementation: The setup for the next screen entails
+    /// merely assigning a new icon to each JLabel with the new thumbnail
+    /// size
     public void setupNextScreen() {
         for (var i = 0; i < images.size(); ++i) {
             label[i].setIcon(new ImageIcon(images.get(i).getImage(currentSize)));
@@ -185,13 +176,11 @@ public class ImageBrowser extends JComponent
         revalidate();
     }
 
-    /**
-     * This method handles changes in slider state, which can come from either
-     * mouse manipulation of the slider or right/left keyboard events. This
-     * event changes the current thumbnail size and requests a transition.
-     * Changes received during an animation are coalesced into one follow-up
-     * transition to the latest size.
-     */
+    /// This method handles changes in slider state, which can come from either
+    /// mouse manipulation of the slider or right/left keyboard events. This
+    /// event changes the current thumbnail size and requests a transition.
+    /// Changes received during an animation are coalesced into one follow-up
+    /// transition to the latest size.
     public void stateChanged(ChangeEvent ce) {
         currentSize = slider.getValue() * 25;
         transitionPending = true;
@@ -218,9 +207,7 @@ public class ImageBrowser extends JComponent
         f.setVisible(true);
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -234,21 +221,17 @@ public class ImageBrowser extends JComponent
     }
 }
 
-/**
- * This is a utility class that holds our images at various scaled
- * sizes. The images are pre-scaled down by halves, using the progressive
- * bilinear technique. Thumbnails from these images are requested
- * from this class, which are created by down-scaling from the next-largest
- * pre-scaled size available.
- */
+/// This is a utility class that holds our images at various scaled
+/// sizes. The images are pre-scaled down by halves, using the progressive
+/// bilinear technique. Thumbnails from these images are requested
+/// from this class, which are created by down-scaling from the next-largest
+/// pre-scaled size available.
 class ImageHolder {
     private final List<BufferedImage> scaledImages = new ArrayList<>();
     private static final int MIN_SIZE = 50;
 
-    /**
-     * Given any image, this constructor creates and stores down-scaled
-     * versions of this image down to some MIN_SIZE
-     */
+    /// Given any image, this constructor creates and stores down-scaled
+    /// versions of this image down to some MIN\_SIZE
     ImageHolder(BufferedImage originalImage) {
         var imageW = originalImage.getWidth();
         var imageH = originalImage.getHeight();
@@ -267,12 +250,10 @@ class ImageHolder {
         }
     }
 
-    /**
-     * This method returns an image with the specified width. It finds
-     * the pre-scaled size with the closest/larger width and scales
-     * down from it, to provide a fast and high-quality scaed version
-     * at the requested size.
-     */
+    /// This method returns an image with the specified width. It finds
+    /// the pre-scaled size with the closest/larger width and scales
+    /// down from it, to provide a fast and high-quality scaed version
+    /// at the requested size.
     BufferedImage getImage(int width) {
         for (var scaledImage : scaledImages) {
             var scaledW = scaledImage.getWidth();

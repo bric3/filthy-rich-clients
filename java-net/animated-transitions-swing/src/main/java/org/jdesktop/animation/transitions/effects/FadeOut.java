@@ -39,20 +39,16 @@ import org.jdesktop.core.animation.timing.Animator;
 import org.jdesktop.core.animation.timing.PropertySetter;
 import org.jdesktop.core.animation.timing.TimingTarget;
 
-/**
- * Simple subclass of Fade effect that will fade a component from opaque to transparent.
- *
- * @author Chet Haase
- */
+/// Simple subclass of Fade effect that will fade a component from opaque to transparent.
+///
+/// @author Chet Haase
 public class FadeOut extends Fade {
 
     // animation target used to fade our during the transition
     private TimingTarget ps;
 
-    /**
-     * Initializes the effect, adding an animation target that will fade the component of the effect our from opaque to
-     * transparent during the course of the transition.
-     */
+    /// Initializes the effect, adding an animation target that will fade the component of the effect our from opaque to
+    /// transparent during the course of the transition.
     @Override
     public void init(Animator animator, Effect parentEffect) {
         ps = PropertySetter.getTarget(this, "opacity", 1f, 0f);
@@ -61,9 +57,7 @@ public class FadeOut extends Fade {
         super.init(animator, null);
     }
 
-    /**
-     * Removes the fading target from the animation to avoid leaking resources
-     */
+    /// Removes the fading target from the animation to avoid leaking resources
     @Override
     public void cleanup(Animator animator) {
         animator.removeTarget(ps);
@@ -72,11 +66,9 @@ public class FadeOut extends Fade {
     public FadeOut() {
     }
 
-    /**
-     * Creates a new instance of FadeOut with the given start state.
-     *
-     * @param start The <code>ComponentState</code> at the beginning of the transition; this is what we are fading from.
-     */
+    /// Creates a new instance of FadeOut with the given start state.
+    ///
+    /// @param start The `ComponentState` at the beginning of the transition; this is what we are fading from.
     public FadeOut(ComponentState start) {
         setStart(start);
     }

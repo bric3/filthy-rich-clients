@@ -1,6 +1,3 @@
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
-import org.jdesktop.animation.timing.interpolation.SplineInterpolator;
 /*
  * SplineInterpolatorTest.java
  *
@@ -36,10 +33,11 @@ import org.jdesktop.animation.timing.interpolation.SplineInterpolator;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
+import org.jdesktop.animation.timing.interpolation.SplineInterpolator;
+
+/// @author Chet
 public class SplineInterpolatorTest extends TimingTargetAdapter {
 
     private long startTime;
@@ -51,11 +49,9 @@ public class SplineInterpolatorTest extends TimingTargetAdapter {
         System.out.println("----\t------------");
     }
 
-    /**
-     * TimingTarget implementation: Calculate the real fraction elapsed and
-     * output that along with the fraction parameter, which has been
-     * non-linearly interpolated.
-     */
+    /// TimingTarget implementation: Calculate the real fraction elapsed and
+    /// output that along with the fraction parameter, which has been
+    /// non-linearly interpolated.
     public void timingEvent(float fraction) {
         var currentTime = System.nanoTime() / 1000000;
         var elapsedTime = currentTime - startTime;

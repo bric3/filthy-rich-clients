@@ -171,12 +171,10 @@ public class LightButton extends JButton {
         layout.draw(g2, x, y);
     }
 
-    /**
-     * Draws an image on top of a component by doing a 3x3 grid stretch of the image
-     * using the specified insets.
-     * <p>
-     * From SwingLabs, licensed under LGPL
-     */
+    /// Draws an image on top of a component by doing a 3x3 grid stretch of the image
+    /// using the specified insets.
+    ///
+    /// From SwingLabs, licensed under LGPL
     public static void tileStretchPaint(Graphics g,
                                         JComponent comp,
                                         BufferedImage img,

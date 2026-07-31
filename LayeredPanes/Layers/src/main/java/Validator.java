@@ -37,17 +37,12 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class Validator extends JComponent {
     private final Set<JComponent> invalidFields = new HashSet<>();
     private BufferedImage warningIcon;
 
-    /**
-     * Creates a new instance of Validator
-     */
+    /// Creates a new instance of Validator
     public Validator() {
         loadImages();
     }

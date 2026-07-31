@@ -31,10 +31,7 @@
 
 import java.awt.image.BufferedImage;
 
-/**
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class UnsharpMaskFilter extends AbstractFilter {
     private final float amount;
     private final int radius;
@@ -62,9 +59,7 @@ public class UnsharpMaskFilter extends AbstractFilter {
         return threshold;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /// {@inheritDoc}
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         var width = src.getWidth();

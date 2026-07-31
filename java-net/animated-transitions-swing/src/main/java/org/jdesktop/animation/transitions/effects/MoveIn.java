@@ -40,9 +40,7 @@ import org.jdesktop.core.animation.timing.TimingTargetAdapter;
 
 import java.awt.*;
 
-/**
- * Effect that moves a component to its end location from a specified starting point
- */
+/// Effect that moves a component to its end location from a specified starting point
 public class MoveIn extends Effect {
 
     private final Point startLocation = new Point();
@@ -53,9 +51,7 @@ public class MoveIn extends Effect {
         startLocation.y = y;
     }
 
-    /**
-     * Handles setup of animation that will vary the location during the transition
-     */
+    /// Handles setup of animation that will vary the location during the transition
     @Override
     public void init(Animator animator, Effect parentEffect) {
         var targetEffect = (parentEffect == null) ? this : parentEffect;
@@ -65,9 +61,7 @@ public class MoveIn extends Effect {
         super.init(animator, parentEffect);
     }
 
-    /**
-     * Removes the moving target from the animation to avoid leaking resources
-     */
+    /// Removes the moving target from the animation to avoid leaking resources
     @Override
     public void cleanup(Animator animator) {
         animator.removeTarget(ps);

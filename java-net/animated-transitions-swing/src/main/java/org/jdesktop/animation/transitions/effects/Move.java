@@ -41,12 +41,10 @@ import org.jdesktop.core.animation.timing.TimingTarget;
 
 import java.awt.*;
 
-/**
- * Effect that moves a component from its position in the start state to its position in the end state, based on linear
- * interpolation between the two endpoints over the duration of the transition.
- *
- * @author Chet Haase
- */
+/// Effect that moves a component from its position in the start state to its position in the end state, based on linear
+/// interpolation between the two endpoints over the duration of the transition.
+///
+/// @author Chet Haase
 public class Move extends Effect {
 
     private TimingTarget ps;
@@ -54,17 +52,13 @@ public class Move extends Effect {
     public Move() {
     }
 
-    /**
-     * Constructor that takes both start and end states, from which the endpoints of the Move effect will be derived.
-     */
+    /// Constructor that takes both start and end states, from which the endpoints of the Move effect will be derived.
     public Move(ComponentState start, ComponentState end) {
         setComponentStates(start, end);
     }
 
-    /**
-     * Initializes the effect, adding an animation target that will move the component of the effect from the start to
-     * the end point during the course of the transition.
-     */
+    /// Initializes the effect, adding an animation target that will move the component of the effect from the start to
+    /// the end point during the course of the transition.
     @Override
     public void init(Animator animator, Effect parentEffect) {
         var targetEffect = (parentEffect == null) ? this : parentEffect;
@@ -76,9 +70,7 @@ public class Move extends Effect {
         super.init(animator, null);
     }
 
-    /**
-     * Removes the moving target from the animation to avoid leaking resources
-     */
+    /// Removes the moving target from the animation to avoid leaking resources
     @Override
     public void cleanup(Animator animator) {
         animator.removeTarget(ps);

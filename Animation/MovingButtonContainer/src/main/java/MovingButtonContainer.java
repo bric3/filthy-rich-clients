@@ -1,7 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 /*
  * MovingButtonContainer.java
  *
@@ -37,10 +33,12 @@ import java.awt.event.ActionListener;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/// @author Chet
 public class MovingButtonContainer extends JComponent implements ActionListener {
 
     final Timer timer;                        // for later start/stop actions
@@ -52,9 +50,7 @@ public class MovingButtonContainer extends JComponent implements ActionListener 
     private static final int DIVISIONS = 10;
     static final int CHECKER_SIZE = 60;
 
-    /**
-     * Creates a new instance of TranslucentButton
-     */
+    /// Creates a new instance of TranslucentButton
     public MovingButtonContainer() {
         setLayout(new FlowLayout());
         timer = new Timer(30, this);
@@ -65,10 +61,8 @@ public class MovingButtonContainer extends JComponent implements ActionListener 
         add(button);
     }
 
-    /**
-     * This method handles both button clicks, which start/stop the animation,
-     * and Swing Timer events, which animate translateY.
-     */
+    /// This method handles both button clicks, which start/stop the animation,
+    /// and Swing Timer events, which animate translateY.
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource().equals(button)) {
             // button click
@@ -106,12 +100,10 @@ public class MovingButtonContainer extends JComponent implements ActionListener 
         }
     }
 
-    /**
-     * Paint our container with a checkerboard background. Then set a
-     * translation factor on the Graphics object and call the superclass,
-     * which will paint the children (e.g, our button) with this
-     * translation.
-     */
+    /// Paint our container with a checkerboard background. Then set a
+    /// translation factor on the Graphics object and call the superclass,
+    /// which will paint the children (e.g, our button) with this
+    /// translation.
     public void paint(Graphics g) {
         g.setColor(Color.white);
         g.fillRect(0, 0, getWidth(), getHeight());

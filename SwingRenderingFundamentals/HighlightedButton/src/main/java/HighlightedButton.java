@@ -1,7 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 /*
  * HighlightedButton.java
  *
@@ -37,19 +33,19 @@ import java.awt.image.BufferedImage;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+
+/// @author Chet
 public class HighlightedButton extends JButton {
 
     static final int HIGHLIGHT_SIZE = 18;
     final BufferedImage highlight = new BufferedImage(
             HIGHLIGHT_SIZE, HIGHLIGHT_SIZE, BufferedImage.TYPE_INT_ARGB);
 
-    /**
-     * Creates a new instance of HighlightedButton
-     */
+    /// Creates a new instance of HighlightedButton
     public HighlightedButton(String label) {
         super(label);
 

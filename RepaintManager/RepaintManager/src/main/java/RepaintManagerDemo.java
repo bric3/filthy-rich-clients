@@ -34,10 +34,7 @@ import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class RepaintManagerDemo extends JFrame {
     private ReflectionPanel reflectionPanel;
     private CallbackMediaPlayerComponent mediaPlayerComponent;

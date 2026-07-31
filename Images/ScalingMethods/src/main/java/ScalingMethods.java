@@ -1,8 +1,3 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 /*
  * ScalingMethods.java
  *
@@ -38,10 +33,13 @@ import java.awt.image.BufferedImage;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+
+/// @author Chet
 public class ScalingMethods extends JComponent {
 
     private static BufferedImage picture = null;
@@ -49,9 +47,7 @@ public class ScalingMethods extends JComponent {
     private static final double SCALE_FACTOR = .05;
     private int scaleW, scaleH;
 
-    /**
-     * Creates a new instance of ScalingMethods
-     */
+    /// Creates a new instance of ScalingMethods
     public ScalingMethods() {
         try {
             var url = getClass().getResource("images/BB.jpg");
@@ -66,12 +62,10 @@ public class ScalingMethods extends JComponent {
         }
     }
 
-    /**
-     * Draws the picture five times, using the five different scaling
-     * approaches described in the book. All five look the same, since
-     * all are using default (nearest neighbor) filtering during the
-     * scale operation.
-     */
+    /// Draws the picture five times, using the five different scaling
+    /// approaches described in the book. All five look the same, since
+    /// all are using default (nearest neighbor) filtering during the
+    /// scale operation.
     public void paintComponent(Graphics g) {
         var x = PADDING;
         var y = PADDING;

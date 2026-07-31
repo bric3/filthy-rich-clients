@@ -1,4 +1,3 @@
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
 /*
  * MyIntAnimPS.java
  *
@@ -34,12 +33,12 @@ import org.jdesktop.animation.timing.interpolation.PropertySetter;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Compare this version to MyIntAnim; PropertySetter simplifies setting up
- * and running animations.
- *
- * @author Chet
- */
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
+
+/// Compare this version to MyIntAnim; PropertySetter simplifies setting up
+/// and running animations.
+///
+/// @author Chet
 public class MyIntAnimPS {
 
     private int myInt;

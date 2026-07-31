@@ -42,20 +42,18 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-/**
- * Demonstrate the use of the Jogamp library (OpenGL bindings).
- * <p>
- * This library was previously known as JOGL.
- * <p>
- * <p>
- * /!\ The rendering happens in FBOs so that you can get the result back into
- * a Java 2D image without displaying it on screen through a GLJPanel. This
- * implementation does not offer the conversion from FBO to a BufferedImage
- * but you can do it by reading the texture data from frameBufferTexture2.
- *
- * @author Romain Guy <romain.guy@mac.com>
- * @see <a href="https://jogamp.org/">jogamp</a>
- */
+/// Demonstrate the use of the Jogamp library (OpenGL bindings).
+///
+/// This library was previously known as JOGL.
+///
+/// /!\ The rendering happens in FBOs so that you can get the result back into
+/// a Java 2D image without displaying it on screen through a GLJPanel. This
+/// implementation does not offer the conversion from FBO to a BufferedImage
+/// but you can do it by reading the texture data from frameBufferTexture2.
+///
+/// @author Romain Guy <romain.guy@mac.com>
+/// </romain.guy@mac.com>
+/// @see <a href="https://jogamp.org/">jogamp</a>
 public class BloomOpenGL extends GLJPanel implements GLEventListener {
     private int frameBufferObject1 = -1;
     private int frameBufferTexture1 = -1;
@@ -445,70 +443,66 @@ public class BloomOpenGL extends GLJPanel implements GLEventListener {
         gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
     }
 
-    /**
-     * Binds a source-image-sized offscreen framebuffer and sets the viewport to
-     * the dimensions of its attached color texture.
-     *
-     * <p>This keeps the downsampled bloom passes inside that texture. Binding an
-     * FBO does not update the OpenGL viewport automatically, so a viewport
-     * previously configured for the larger Retina surface cannot be reused.
-     *
-     * <p>The offscreen framebuffer textures use the dimensions of the source
-     * {@link BufferedImage} ({@link #image}) loaded from {@code /images/screen.png}.
-     * The Swing panel has the same logical preferred size, but its OpenGL surface is
-     * measured in physical pixels and <strong>can be larger on a HiDPI
-     * display</strong>. In this example, the source image and FBO textures are
-     * 512 x 256 pixels, while a 2x Retina surface has a 1024 x 512 viewport.
-     *
-     * <p>The bloom pipeline increases the effective blur radius through the
-     * {@link #render11x11(GL2, int, int)  &frac12;}, {@link #render21x21(GL2, int, int) &frac14;},
-     * and {@link #render41x41(GL2, int, int) &#x215B;} blur passes. They call
-     * {@link #renderBlur(GL2, float, float)} with quads at one half, one quarter,
-     * and one eighth of the source-image size, respectively. With the 2x viewport
-     * still active, the half-size pass's vertical coordinates map to pixel rows
-     * 256 through 512, while the attached texture only has rows 0 through 255.
-     *
-     * <p>After each offscreen pass, {@link #bindDefaultFramebuffer(GL2)} restores
-     * the 1024 x 512 drawable viewport for on-screen composition. Before the next
-     * blur pass, this method switches it back to the 512 x 256 FBO viewport.
-     * Without that switch, clearing the FBO succeeds, but the blur quad is
-     * rasterized outside it and the target remains empty.
-     *
-     * @param gl          current OpenGL interface
-     * @param framebuffer source-image-sized framebuffer to render into
-     * @see #bindDefaultFramebuffer(GL2)
-     */
+    /// Binds a source-image-sized offscreen framebuffer and sets the viewport to
+    /// the dimensions of its attached color texture.
+    ///
+    /// This keeps the downsampled bloom passes inside that texture. Binding an
+    /// FBO does not update the OpenGL viewport automatically, so a viewport
+    /// previously configured for the larger Retina surface cannot be reused.
+    ///
+    /// The offscreen framebuffer textures use the dimensions of the source
+    /// [BufferedImage] ([#image]) loaded from `/images/screen.png`.
+    /// The Swing panel has the same logical preferred size, but its OpenGL surface is
+    /// measured in physical pixels and **can be larger on a HiDPI
+    /// display**. In this example, the source image and FBO textures are
+    /// 512 x 256 pixels, while a 2x Retina surface has a 1024 x 512 viewport.
+    ///
+    /// The bloom pipeline increases the effective blur radius through the
+    /// [`&frac12;`][#render11x11(GL2, int, int)], [`&frac14;`][#render21x21(GL2, int, int)],
+    /// and [`&#x215B;`][#render41x41(GL2, int, int)] blur passes. They call
+    /// [#renderBlur(GL2, float, float)] with quads at one half, one quarter,
+    /// and one eighth of the source-image size, respectively. With the 2x viewport
+    /// still active, the half-size pass's vertical coordinates map to pixel rows
+    /// 256 through 512, while the attached texture only has rows 0 through 255.
+    ///
+    /// After each offscreen pass, [#bindDefaultFramebuffer(GL2)] restores
+    /// the 1024 x 512 drawable viewport for on-screen composition. Before the next
+    /// blur pass, this method switches it back to the 512 x 256 FBO viewport.
+    /// Without that switch, clearing the FBO succeeds, but the blur quad is
+    /// rasterized outside it and the target remains empty.
+    ///
+    /// @param gl          current OpenGL interface
+    /// @param framebuffer source-image-sized framebuffer to render into
+    /// @see #bindDefaultFramebuffer(GL2)
     private void bindImageFramebuffer(GL2 gl, int framebuffer) {
         gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, framebuffer);
         gl.glViewport(0, 0, image.getWidth(), image.getHeight());
     }
 
-    /**
-     * Restores the draw framebuffer and viewport used by the {@link GLJPanel}
-     * after an offscreen pass.
-     *
-     * <p>Framebuffer binding is persistent OpenGL state. After
-     * {@link #bindImageFramebuffer(GL2, int)} selects an offscreen FBO, later
-     * draw calls continue writing there until another framebuffer is bound.
-     * Rebinding the panel's framebuffer ensures that
-     * {@link #renderTextureOnScreen(GL2, float, float)} and the additive bloom
-     * passes are composed into the panel rather than another offscreen texture.
-     *
-     * <p>Framebuffer {@code 0} is OpenGL's window-system default, but it is not
-     * necessarily the panel's render target. JOGL can compose a {@code GLJPanel} through
-     * an internal FBO, in which case {@link GL#getDefaultDrawFramebuffer()}
-     * returns that <em>non default</em> framebuffer. Its viewport must use the drawable's
-     * physical pixel dimensions accounting for Retina/HiDPI scaling.
-     *
-     * <p>As a side effect, this changes the current viewport from the offscreen
-     * image dimensions to the drawable's physical pixel dimensions. It does not
-     * resize either framebuffer; it changes how subsequent geometry is mapped to
-     * framebuffer pixels. The new viewport remains in effect until another one
-     * is set.
-     *
-     * @param gl current OpenGL interface
-     * @see #bindImageFramebuffer(GL2, int)
-     */
+    /// Restores the draw framebuffer and viewport used by the [GLJPanel]
+    /// after an offscreen pass.
+    ///
+    /// Framebuffer binding is persistent OpenGL state. After
+    /// [#bindImageFramebuffer(GL2, int)] selects an offscreen FBO, later
+    /// draw calls continue writing there until another framebuffer is bound.
+    /// Rebinding the panel's framebuffer ensures that
+    /// [#renderTextureOnScreen(GL2, float, float)] and the additive bloom
+    /// passes are composed into the panel rather than another offscreen texture.
+    ///
+    /// Framebuffer `0` is OpenGL's window-system default, but it is not
+    /// necessarily the panel's render target. JOGL can compose a `GLJPanel` through
+    /// an internal FBO, in which case [GL#getDefaultDrawFramebuffer()]
+    /// returns that _non default_ framebuffer. Its viewport must use the drawable's
+    /// physical pixel dimensions accounting for Retina/HiDPI scaling.
+    ///
+    /// As a side effect, this changes the current viewport from the offscreen
+    /// image dimensions to the drawable's physical pixel dimensions. It does not
+    /// resize either framebuffer; it changes how subsequent geometry is mapped to
+    /// framebuffer pixels. The new viewport remains in effect until another one
+    /// is set.
+    ///
+    /// @param gl current OpenGL interface
+    /// @see #bindImageFramebuffer(GL2, int)
     private static void bindDefaultFramebuffer(GL2 gl) {
         gl.glBindFramebuffer(GL2.GL_FRAMEBUFFER, gl.getDefaultDrawFramebuffer());
         var drawable = gl.getContext().getGLDrawable();

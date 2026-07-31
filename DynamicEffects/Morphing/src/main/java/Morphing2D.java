@@ -10,33 +10,31 @@
 import java.awt.*;
 import java.awt.geom.*;
 
-/**
- * <p>A morphing shape is a shape which geometry is constructed from two
- * other shapes: a start shape and an end shape.</p>
- * <p>The morphing property of a morphing shape defines the amount of
- * transformation applied to the start shape to turn it into the end shape.</p>
- * <p>Both shapes must have the same winding rule.</p>
- *
- * @author Jim Graham
- * @author Romain Guy <romain.guy@mac.com> (Maintainer)
- */
+/// A morphing shape is a shape which geometry is constructed from two
+/// other shapes: a start shape and an end shape.
+///
+/// The morphing property of a morphing shape defines the amount of
+/// transformation applied to the start shape to turn it into the end shape.
+///
+/// Both shapes must have the same winding rule.
+///
+/// @author Jim Graham
+/// @author Romain Guy <romain.guy@mac.com> (Maintainer)</romain.guy@mac.com>
 public class Morphing2D implements Shape {
     private double morph;
     private final Geometry startGeometry;
     private final Geometry endGeometry;
 
-    /**
-     * <p>Creates a new morphing shape. A morphing shape can be used to turn
-     * one shape into another one. The transformation can be controlled by the
-     * morph property.</p>
-     *
-     * @param startShape the shape to morph from
-     * @param endShape   the shape to morph to
-     * @throws IllegalPathStateException if the shapes do not have the same
-     *                                   winding rule
-     * @see #getMorphing()
-     * @see #setMorphing(double)
-     */
+    /// Creates a new morphing shape. A morphing shape can be used to turn
+    /// one shape into another one. The transformation can be controlled by the
+    /// morph property.
+    ///
+    /// @param startShape the shape to morph from
+    /// @param endShape   the shape to morph to
+    /// @throws IllegalPathStateException if the shapes do not have the same
+    ///                                   winding rule
+    /// @see #getMorphing()
+    /// @see #setMorphing(double)
     public Morphing2D(Shape startShape, Shape endShape) {
         startGeometry = new Geometry(startShape);
         endGeometry = new Geometry(endShape);
@@ -50,27 +48,24 @@ public class Morphing2D implements Shape {
         endGeometry.setTvals(masterTvals);
     }
 
-    /**
-     * <p>Returns the morphing value between the two shapes.</p>
-     *
-     * @return the morphing value between the two shapes
-     * @see #setMorphing(double)
-     */
+    /// Returns the morphing value between the two shapes.
+    ///
+    /// @return the morphing value between the two shapes
+    /// @see #setMorphing(double)
     public double getMorphing() {
         return morph;
     }
 
-    /**
-     * <p>Sets the morphing value between the two shapes. This value controls
-     * the transformation from the start shape to the end shape. A value of 0.0
-     * is the start shap. A value of 1.0 is the end shape. A value of 0.5 is a
-     * new shape, morphed half way from the start shape to the end shape.</p>
-     * <p>The specified value should be between 0.0 and 1.0. If not, the value
-     * is clamped in the appropriate range.</p>
-     *
-     * @param morph the morphing value between the two shapes
-     * @see #getMorphing()
-     */
+    /// Sets the morphing value between the two shapes. This value controls
+    /// the transformation from the start shape to the end shape. A value of 0.0
+    /// is the start shap. A value of 1.0 is the end shape. A value of 0.5 is a
+    /// new shape, morphed half way from the start shape to the end shape.
+    ///
+    /// The specified value should be between 0.0 and 1.0. If not, the value
+    /// is clamped in the appropriate range.
+    ///
+    /// @param morph the morphing value between the two shapes
+    /// @see #getMorphing()
     public void setMorphing(double morph) {
         if (morph > 1) {
             morph = 1;

@@ -1,49 +1,44 @@
-/**
- * Copyright (c) 2007, Sun Microsystems, Inc
- * All rights reserved.
- * <p>
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * <p>
- * * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following
- * disclaimer in the documentation and/or other materials provided
- * with the distribution.
- * * Neither the name of the TimingFramework project nor the names of its
- * contributors may be used to endorse or promote products derived
- * from this software without specific prior written permission.
- * <p>
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
+/// Copyright (c) 2007, Sun Microsystems, Inc
+/// All rights reserved.
+///
+/// Redistribution and use in source and binary forms, with or without
+/// modification, are permitted provided that the following conditions
+/// are met:
+///
+/// \* Redistributions of source code must retain the above copyright
+/// notice, this list of conditions and the following disclaimer.
+/// \* Redistributions in binary form must reproduce the above
+/// copyright notice, this list of conditions and the following
+/// disclaimer in the documentation and/or other materials provided
+/// with the distribution.
+/// \* Neither the name of the TimingFramework project nor the names of its
+/// contributors may be used to endorse or promote products derived
+/// from this software without specific prior written permission.
+///
+/// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+/// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+/// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+/// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+/// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+/// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+/// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+/// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+/// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+/// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+/// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-/**
- * This class does the work of rendering the current view of the
- * racetrack.  It holds the car position and rotation and displays
- * the car accordingly.  The track itself is merely a background image
- * that is copied the same on every repaint.
- * Note that carPosition and carRotation are both JavaBean properties, which
- * is exploited in the SetterRace and MultiStepRace variations.
- *
- * @author Chet
- */
+/// This class does the work of rendering the current view of the
+/// racetrack.  It holds the car position and rotation and displays
+/// the car accordingly.  The track itself is merely a background image
+/// that is copied the same on every repaint.
+/// Note that carPosition and carRotation are both JavaBean properties, which
+/// is exploited in the SetterRace and MultiStepRace variations.
+///
+/// @author Chet
 public class TrackView extends JComponent {
 
     BufferedImage car;
@@ -57,7 +52,7 @@ public class TrackView extends JComponent {
     final int carWHalf;
     final int carHHalf;
 
-    /** Hard-coded positions of interest on the track */
+    /// Hard-coded positions of interest on the track
     static final Point START_POS = new Point(450, 70);
     static final Point FIRST_TURN_START = new Point(130, 70);
     static final Point FIRST_TURN_END = new Point(76, 127);
@@ -67,7 +62,7 @@ public class TrackView extends JComponent {
     static final Point THIRD_TURN_END = new Point(504, 404);
     static final Point FOURTH_TURN_START = new Point(504, 127);
 
-    /** Creates a new instance of TrackView */
+    /// Creates a new instance of TrackView
     public TrackView() {
         try {
             car = ImageIO.read(TrackView.class.getResource("images/beetle_red.gif"));
@@ -88,9 +83,7 @@ public class TrackView extends JComponent {
         return new Dimension(trackW, trackH);
     }
 
-    /**
-     * Render the track and car
-     */
+    /// Render the track and car
     public void paintComponent(Graphics g) {
         // First draw the race track
         g.drawImage(track, 0, 0, null);
@@ -107,9 +100,7 @@ public class TrackView extends JComponent {
         g2d.drawImage(car, carPosition.x - carWHalf, carPosition.y - carHHalf, null);
     }
 
-    /**
-     * Set the new position and schedule a repaint
-     */
+    /// Set the new position and schedule a repaint
     public void setCarPosition(Point newPosition) {
         repaint(0, carPosition.x - carWHalf, carPosition.y - carHHalf,
                 carW, carH);
@@ -119,9 +110,7 @@ public class TrackView extends JComponent {
                 carW, carH);
     }
 
-    /**
-     * Set the new rotation and schedule a repaint
-     */
+    /// Set the new rotation and schedule a repaint
     public void setCarRotation(double newDegrees) {
         carRotation = newDegrees;
         // repaint area accounts for larger rectangular are because rotate

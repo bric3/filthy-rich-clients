@@ -1,7 +1,3 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 /*
  * IntermediateImages.java
  *
@@ -37,10 +33,12 @@ import java.awt.image.BufferedImage;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+/// @author Chet
 public class IntermediateImages extends JComponent {
 
     private static final int SCALE_X = 20;
@@ -54,9 +52,7 @@ public class IntermediateImages extends JComponent {
     private static final double SCALE_FACTOR = .1;
     private int scaleW, scaleH;
 
-    /**
-     * Creates a new instance of IntermediateImages
-     */
+    /// Creates a new instance of IntermediateImages
     public IntermediateImages() {
         try {
             var url = getClass().getResource("images/BB.jpg");
@@ -69,10 +65,8 @@ public class IntermediateImages extends JComponent {
         }
     }
 
-    /**
-     * Draws both the direct and intermediate-image versions of a
-     * scaled-image, timing both variations.
-     */
+    /// Draws both the direct and intermediate-image versions of a
+    /// scaled-image, timing both variations.
     private void drawScaled(Graphics g) {
         long startTime, endTime, totalTime;
 
@@ -136,10 +130,8 @@ public class IntermediateImages extends JComponent {
         g2d.dispose();
     }
 
-    /**
-     * Draws both the direct and intermediate-image versions of a
-     * smiley face, timing both variations.
-     */
+    /// Draws both the direct and intermediate-image versions of a
+    /// smiley face, timing both variations.
     private void drawSmiley(Graphics g) {
         long startTime, endTime, totalTime;
 

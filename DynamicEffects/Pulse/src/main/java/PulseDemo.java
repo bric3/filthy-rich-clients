@@ -40,10 +40,7 @@ import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.io.IOException;
 
-/**
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class PulseDemo extends JFrame {
 
     public PulseDemo() {

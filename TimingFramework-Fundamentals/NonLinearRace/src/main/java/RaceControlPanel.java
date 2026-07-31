@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2007, Sun Microsystems, Inc
  * All rights reserved.
  * <p>
@@ -32,21 +32,17 @@
 import javax.swing.*;
 import java.awt.event.ActionListener;
 
-/**
- * Go/Stop buttons to control the animation
- *
- * @author Chet
- */
+/// Go/Stop buttons to control the animation
+///
+/// @author Chet
 public class RaceControlPanel extends JPanel {
 
-    /** Make these static so that outside classes can easily
-     *  add themselves as listeners */
+    /// Make these static so that outside classes can easily
+    ///  add themselves as listeners
     final JButton goButton = new JButton("Go");
     final JButton stopButton = new JButton("Stop");
 
-    /**
-     * Creates a new instance of RaceControlPanel
-     */
+    /// Creates a new instance of RaceControlPanel
     public RaceControlPanel() {
         add(goButton);
         add(stopButton);

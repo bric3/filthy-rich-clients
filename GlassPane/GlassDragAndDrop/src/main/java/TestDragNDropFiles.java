@@ -9,9 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.TooManyListenersException;
 
-/**
- * https://stackoverflow.com/questions/13597233/how-to-drag-and-drop-files-from-a-directory-in-java/13597635#13597635
- */
+/// https://stackoverflow.com/questions/13597233/how-to-drag-and-drop-files-from-a-directory-in-java/13597635#13597635
 public class TestDragNDropFiles {
 
     static void main(String[] args) {

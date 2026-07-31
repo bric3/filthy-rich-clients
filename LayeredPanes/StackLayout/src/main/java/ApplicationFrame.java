@@ -33,9 +33,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-/**
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class ApplicationFrame extends JFrame {
 
     private AvatarChooser chooser;

@@ -36,15 +36,13 @@ package org.jdesktop.animation.transitions;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * This is the component where the transition animation is displayed. During a transition, this layer becomes visible as
- * the GlassPane of the application window that contains the transition container. Repaints of this component happen
- * during the transition, which become paintComponent() events here. The paintComponent method simply copies the current
- * transition image (into which the current frame of the transition animation was rendered) to its component Graphics
- * and Swing copies it onto window.
- *
- * @author Chet Haase
- */
+/// This is the component where the transition animation is displayed. During a transition, this layer becomes visible as
+/// the GlassPane of the application window that contains the transition container. Repaints of this component happen
+/// during the transition, which become paintComponent() events here. The paintComponent method simply copies the current
+/// transition image (into which the current frame of the transition animation was rendered) to its component Graphics
+/// and Swing copies it onto window.
+///
+/// @author Chet Haase
 class AnimationLayer extends JComponent {
 
     // We call into ScreenTransition to get the current transition image
@@ -54,18 +52,14 @@ class AnimationLayer extends JComponent {
     private Point componentLocationInLayeredPane;
     private Rectangle visibleRectInLayeredPane;
 
-    /**
-     * Construct the AnimationLayer with a reference to the ScreenTransition object, which will be used later at
-     * paintComponent() time
-     */
+    /// Construct the AnimationLayer with a reference to the ScreenTransition object, which will be used later at
+    /// paintComponent() time
     public AnimationLayer(ScreenTransition screenTransition) {
         this.screenTransition = screenTransition;
         setOpaque(false);
     }
 
-    /**
-     * Called from ScreenTransition to set up the correct location to copy the animation to in the layered pane
-     */
+    /// Called from ScreenTransition to set up the correct location to copy the animation to in the layered pane
     public void setupBackground(JComponent targetComponent) {
         var layeredPane = targetComponent.getRootPane().getLayeredPane();
         setBounds(layeredPane.getBounds());
@@ -90,10 +84,8 @@ class AnimationLayer extends JComponent {
         return new Point(x, y);
     }
 
-    /**
-     * Called during the Swing repaint process for this component. This simply copies the transitionImage from
-     * ScreenTransition into the appropriate location in the layered pane.
-     */
+    /// Called during the Swing repaint process for this component. This simply copies the transitionImage from
+    /// ScreenTransition into the appropriate location in the layered pane.
     @Override
     public void paintComponent(Graphics g) {
         g.clipRect(visibleRectInLayeredPane.x,

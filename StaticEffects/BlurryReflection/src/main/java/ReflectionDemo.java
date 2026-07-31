@@ -34,9 +34,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-/**
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class ReflectionDemo extends JFrame {
     private final ReflectionPanel reflectionPanel;
     private final JSlider opacitySlider;

@@ -1,7 +1,3 @@
-import org.jdesktop.animation.timing.interpolation.DiscreteInterpolator;
-import org.jdesktop.animation.timing.interpolation.KeyFrames;
-import org.jdesktop.animation.timing.interpolation.KeyValues;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
 /*
  * DiscreteInterpolation.java
  *
@@ -37,17 +33,17 @@ import org.jdesktop.animation.timing.interpolation.PropertySetter;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import org.jdesktop.animation.timing.interpolation.DiscreteInterpolator;
+import org.jdesktop.animation.timing.interpolation.KeyFrames;
+import org.jdesktop.animation.timing.interpolation.KeyValues;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
+
+/// @author Chet
 public class DiscreteInterpolation {
 
     private int intValue;
 
-    /**
-     * Creates a new instance of DiscreteInterpolation
-     */
+    /// Creates a new instance of DiscreteInterpolation
     public DiscreteInterpolation() {
     }
 

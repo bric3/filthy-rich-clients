@@ -15,13 +15,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-/**
- * This class encapsulates both the rendering of a sphere, at a location
- * that may be animating, and the animation that drives the sphere
- * movement.
- *
- * @author Chet
- */
+/// This class encapsulates both the rendering of a sphere, at a location
+/// that may be animating, and the animation that drives the sphere
+/// movement.
+///
+/// @author Chet
 public class SpherePanel extends JPanel {
 
     BufferedImage sphereImage = null;
@@ -31,20 +29,16 @@ public class SpherePanel extends JPanel {
     private int sphereY = 0;
     Animator bouncer;
 
-    /**
-     * The animation changes the location of the sphere over time through
-     * this property setter. We force a repaint to display the sphere in
-     * its new location.
-     */
+    /// The animation changes the location of the sphere over time through
+    /// this property setter. We force a repaint to display the sphere in
+    /// its new location.
     public void setSphereY(int sphereY) {
         this.sphereY = sphereY;
         repaint();
     }
 
-    /**
-     * Load the named image and create the animator that will bounce the
-     * image down and back up in this panel.
-     */
+    /// Load the named image and create the animator that will bounce the
+    /// image down and back up in this panel.
     SpherePanel(String filename) {
         try {
             var url = getClass().getResource("images/" + filename);

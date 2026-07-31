@@ -1,7 +1,3 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 /*
  * PictureScaler.java
  *
@@ -37,10 +33,12 @@ import java.awt.image.BufferedImage;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+/// @author Chet
 public class PictureScaler extends JComponent {
 
     private static BufferedImage picture = null;
@@ -48,9 +46,7 @@ public class PictureScaler extends JComponent {
     private static final double SCALE_FACTOR = .05;
     private int scaleW, scaleH;
 
-    /**
-     * Creates a new instance of PictureScaler
-     */
+    /// Creates a new instance of PictureScaler
     public PictureScaler() {
         try {
             var url = getClass().getResource("images/BB.jpg");
@@ -66,27 +62,25 @@ public class PictureScaler extends JComponent {
         }
     }
 
-    /**
-     * Convenience method that returns a scaled instance of the
-     * provided BufferedImage.
-     *
-     * @param img                 the original image to be scaled
-     * @param targetWidth         the desired width of the scaled instance,
-     *                            in pixels
-     * @param targetHeight        the desired height of the scaled instance,
-     *                            in pixels
-     * @param hint                one of the rendering hints that corresponds to
-     *                            RenderingHints.KEY_INTERPOLATION (e.g.
-     *                            RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR,
-     *                            RenderingHints.VALUE_INTERPOLATION_BILINEAR,
-     *                            RenderingHints.VALUE_INTERPOLATION_BICUBIC)
-     * @param progressiveBilinear if true, this method will use a multi-step
-     *                            scaling technique that provides higher quality than the usual
-     *                            one-step technique (only useful in down-scaling cases, where
-     *                            targetWidth or targetHeight is
-     *                            smaller than the original dimensions)
-     * @return a scaled version of the original BufferedImage
-     */
+    /// Convenience method that returns a scaled instance of the
+    /// provided BufferedImage.
+    ///
+    /// @param img                 the original image to be scaled
+    /// @param targetWidth         the desired width of the scaled instance,
+    ///                            in pixels
+    /// @param targetHeight        the desired height of the scaled instance,
+    ///                            in pixels
+    /// @param hint                one of the rendering hints that corresponds to
+    ///                            RenderingHints.KEY\_INTERPOLATION (e.g.
+    ///                            RenderingHints.VALUE\_INTERPOLATION\_NEAREST\_NEIGHBOR,
+    ///                            RenderingHints.VALUE\_INTERPOLATION\_BILINEAR,
+    ///                            RenderingHints.VALUE\_INTERPOLATION\_BICUBIC)
+    /// @param progressiveBilinear if true, this method will use a multi-step
+    ///                            scaling technique that provides higher quality than the usual
+    ///                            one-step technique (only useful in down-scaling cases, where
+    ///                            targetWidth or targetHeight is
+    ///                            smaller than the original dimensions)
+    /// @return a scaled version of the original BufferedImage
     public BufferedImage getFasterScaledInstance(BufferedImage img,
                                                  int targetWidth, int targetHeight, Object hint,
                                                  boolean progressiveBilinear) {
@@ -160,10 +154,8 @@ public class PictureScaler extends JComponent {
         return ret;
     }
 
-    /**
-     * Render all scaled versions 10 times, timing each version and
-     * reporting the results below the appropriate scaled image.
-     */
+    /// Render all scaled versions 10 times, timing each version and
+    /// reporting the results below the appropriate scaled image.
     protected void paintComponent(Graphics g) {
         // Scale with NEAREST_NEIGHBOR
         int xLoc = PADDING, yLoc = PADDING;

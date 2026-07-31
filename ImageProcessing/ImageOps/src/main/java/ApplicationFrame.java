@@ -35,11 +35,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.*;
 import java.io.IOException;
 
-/**
- * <p>Demos of buffered image operations.</p>
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// Demos of buffered image operations.
+///
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class ApplicationFrame extends JFrame {
     private BufferedImage sourceImage;
 

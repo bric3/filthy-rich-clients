@@ -34,15 +34,10 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class SphereComponent extends JComponent {
 
-    /**
-     * Creates a new instance of SphereComponent
-     */
+    /// Creates a new instance of SphereComponent
     public SphereComponent() {
     }
 

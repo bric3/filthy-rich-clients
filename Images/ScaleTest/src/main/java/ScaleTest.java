@@ -1,7 +1,3 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 /*
  * ScaleTest.java
  *
@@ -37,10 +33,12 @@ import java.awt.image.BufferedImage;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+/// @author Chet
 public class ScaleTest extends JComponent {
 
     private static final int FULL_SIZE = 190;
@@ -51,12 +49,10 @@ public class ScaleTest extends JComponent {
             new BufferedImage(FULL_SIZE, FULL_SIZE, BufferedImage.TYPE_INT_RGB);
     boolean originalImagePainted = false;
 
-    /**
-     * Paints the test image that will be downscaled and timed by the various
-     * scaling methods. A different image is rendered into each of the four
-     * quadrants of this image: RGB stripes, a picture, vector art, and
-     * a black and white grid.
-     */
+    /// Paints the test image that will be downscaled and timed by the various
+    /// scaling methods. A different image is rendered into each of the four
+    /// quadrants of this image: RGB stripes, a picture, vector art, and
+    /// a black and white grid.
     private void paintOriginalImage() {
         var g = originalImage.getGraphics();
         // Erase to black
@@ -115,11 +111,9 @@ public class ScaleTest extends JComponent {
     }
 
 
-    /**
-     * Progressive bilinear scaling: for any downscale size, scale
-     * iteratively by halves using BILINEAR filtering until the proper
-     * size is reached.
-     */
+    /// Progressive bilinear scaling: for any downscale size, scale
+    /// iteratively by halves using BILINEAR filtering until the proper
+    /// size is reached.
     private BufferedImage getOptimalScalingImage(BufferedImage inputImage,
                                                  int startSize, int endSize) {
         var currentSize = startSize;
@@ -156,10 +150,8 @@ public class ScaleTest extends JComponent {
         return currentImage;
     }
 
-    /**
-     * Progressive Bilinear approach: this method gets each scaled version from
-     * the getOptimalScalingImage method and copies it into place.
-     */
+    /// Progressive Bilinear approach: this method gets each scaled version from
+    /// the getOptimalScalingImage method and copies it into place.
     private void drawBetterImage(Graphics g, int yLoc) {
         var xLoc = 100;
         var delta = (int) (SCALE_FACTOR * FULL_SIZE);
@@ -171,10 +163,8 @@ public class ScaleTest extends JComponent {
         }
     }
 
-    /**
-     * This approach uses either the getScaledInstance() approach to get
-     * each new size or it scales on the fly using drawImage().
-     */
+    /// This approach uses either the getScaledInstance() approach to get
+    /// each new size or it scales on the fly using drawImage().
     private void drawImage(Graphics g, int yLoc, boolean getScaled) {
         var xLoc = 100;
         var delta = (int) (SCALE_FACTOR * FULL_SIZE);
@@ -195,11 +185,9 @@ public class ScaleTest extends JComponent {
         }
     }
 
-    /**
-     * Scale the image to several smaller sizes using each of the approaches
-     * and time each series of operations. The times are output into the
-     * application window for each row that they represent.
-     */
+    /// Scale the image to several smaller sizes using each of the approaches
+    /// and time each series of operations. The times are output into the
+    /// application window for each row that they represent.
     protected void paintComponent(Graphics g) {
         if (!originalImagePainted) {
             paintOriginalImage();

@@ -31,15 +31,10 @@
 
 import javax.swing.*;
 
-/**
- *
- * @author Romain GUy
- */
+/// @author Romain GUy
 public class RadialGradientApp extends JFrame {
 
-    /**
-     * Creates a new instance of RadialGradientApp
-     */
+    /// Creates a new instance of RadialGradientApp
     public RadialGradientApp() {
         super("Radial Gradient");
 

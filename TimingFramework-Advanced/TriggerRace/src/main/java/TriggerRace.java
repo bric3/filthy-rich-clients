@@ -1,7 +1,3 @@
-import org.jdesktop.animation.timing.triggers.ActionTrigger;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
 /*
  * TriggerRace.java
  *
@@ -37,18 +33,19 @@ import java.awt.event.ActionEvent;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Exactly like SetterRace, only this version uses Triggers to
- * start/stop the animation automatically based on the user
- * clicking the Go/Stop buttons (no need for an ActionListener here)
- *
- * @author Chet
- */
+import org.jdesktop.animation.timing.triggers.ActionTrigger;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+
+/// Exactly like SetterRace, only this version uses Triggers to
+/// start/stop the animation automatically based on the user
+/// clicking the Go/Stop buttons (no need for an ActionListener here)
+///
+/// @author Chet
 public class TriggerRace extends NonLinearRace {
 
-    /**
-     * Creates a new instance of TriggerRace
-     */
+    /// Creates a new instance of TriggerRace
     public TriggerRace(String appName) {
         super(appName);
         // Clicks on the Go button will atuomatically start the animator
@@ -56,10 +53,8 @@ public class TriggerRace extends NonLinearRace {
         var trigger = ActionTrigger.addTrigger(goButton, animator);
     }
 
-    /**
-     * Handle clicks on the Stop button. Clicks on Go are handled through
-     * the ActionTrigger above.
-     */
+    /// Handle clicks on the Stop button. Clicks on Go are handled through
+    /// the ActionTrigger above.
     public void actionPerformed(ActionEvent ae) {
         if (ae.getActionCommand().equals("Stop")) {
             animator.stop();

@@ -37,59 +37,67 @@ package composite;
 import java.awt.*;
 import java.awt.image.*;
 
-/**
- * <p>A blend composite defines the rule according to which a drawing primitive
- * (known as the source) is mixed with existing graphics (know as the
- * destination.)</p>
- * <p><code>BlendComposite</code> is an implementation of the
- * {@link Composite} interface and must therefore be set as a state on
- * a {@link Graphics2D} surface.</p>
- * <p>Please refer to {@link Graphics2D#setComposite(Composite)}
- * for more information on how to use this class with a graphics surface.</p>
- * <h2>Blending Modes</h2>
- * <p>This class offers a certain number of blending modes, or compositing
- * rules. These rules are inspired from graphics editing software packages,
- * like <em>Adobe Photoshop</em> or <em>The GIMP</em>.</p>
- * <p>Given the wide variety of implemented blending modes and the difficulty
- * to describe them with words, please refer to those tools to visually see
- * the result of these blending modes.</p>
- * <h2>Opacity</h2>
- * <p>Each blending mode has an associated opacity, defined as a float value
- * between 0.0 and 1.0. Changing the opacity controls the force with which the
- * compositing operation is applied. For instance, a composite with an opacity
- * of 0.0 will not draw the source onto the destination. With an opacity of
- * 1.0, the source will be fully drawn onto the destination, according to the
- * selected blending mode rule.</p>
- * <p>The opacity, or alpha value, is used by the composite instance to mutiply
- * the alpha value of each pixel of the source when being composited over the
- * destination.</p>
- * <h2>Creating a Blend Composite</h2>
- * <p>Blend composites can be created in various manners:</p>
- * <ul>
- *   <li>Use one of the pre-defined instance. Example:
- *     <code>BlendComposite.Average</code>.</li>
- *   <li>Derive one of the pre-defined instances by calling
- *     {@link #derive(float)} or {@link #derive(BlendingMode)}. Deriving allows
- *     you to change either the opacity or the blending mode. Example:
- *     <code>BlendComposite.Average.derive(0.5f)</code>.</li>
- *   <li>Use a factory method: {@link #getInstance(BlendingMode)} or
- *     {@link #getInstance(BlendingMode, float)}.</li>
- * </ul>
- * <h2>Implementation Caveat</h2>
- * <p>TThe blending mode <em>SoftLight</em> has not been implemented yet.</p>
- *
- * @author Romain Guy <romain.guy@mac.com>
- * @see Graphics2D
- * @see Composite
- * @see AlphaComposite
- */
+/// A blend composite defines the rule according to which a drawing primitive
+/// (known as the source) is mixed with existing graphics (know as the
+/// destination.)
+///
+/// `BlendComposite` is an implementation of the
+/// [Composite] interface and must therefore be set as a state on
+/// a [Graphics2D] surface.
+///
+/// Please refer to [Graphics2D#setComposite(Composite)]
+/// for more information on how to use this class with a graphics surface.
+///
+/// ## Blending Modes
+///
+/// This class offers a certain number of blending modes, or compositing
+/// rules. These rules are inspired from graphics editing software packages,
+/// like _Adobe Photoshop_ or _The GIMP_.
+///
+/// Given the wide variety of implemented blending modes and the difficulty
+/// to describe them with words, please refer to those tools to visually see
+/// the result of these blending modes.
+///
+/// ## Opacity
+///
+/// Each blending mode has an associated opacity, defined as a float value
+/// between 0.0 and 1.0. Changing the opacity controls the force with which the
+/// compositing operation is applied. For instance, a composite with an opacity
+/// of 0.0 will not draw the source onto the destination. With an opacity of
+/// 1.0, the source will be fully drawn onto the destination, according to the
+/// selected blending mode rule.
+///
+/// The opacity, or alpha value, is used by the composite instance to mutiply
+/// the alpha value of each pixel of the source when being composited over the
+/// destination.
+///
+/// ## Creating a Blend Composite
+///
+/// Blend composites can be created in various manners:
+///
+///   - Use one of the pre-defined instance. Example:
+///     `BlendComposite.Average`.
+///   - Derive one of the pre-defined instances by calling
+///     [#derive(float)] or [#derive(BlendingMode)]. Deriving allows
+///     you to change either the opacity or the blending mode. Example:
+///     `BlendComposite.Average.derive(0.5f)`.
+///   - Use a factory method: [#getInstance(BlendingMode)] or
+///     [#getInstance(BlendingMode, float)].
+///
+/// ## Implementation Caveat
+///
+/// TThe blending mode _SoftLight_ has not been implemented yet.
+///
+/// @author Romain Guy <romain.guy@mac.com>
+/// </romain.guy@mac.com>
+/// @see Graphics2D
+/// @see Composite
+/// @see AlphaComposite
 public final class BlendComposite implements Composite {
-    /**
-     * <p>A blending mode defines the compositing rule of a
-     * {@link BlendComposite}.</p>
-     *
-     * @author Romain Guy <romain.guy@mac.com>
-     */
+    /// A blending mode defines the compositing rule of a
+    /// [BlendComposite].
+    ///
+    /// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
     public enum BlendingMode {
         AVERAGE,
         MULTIPLY,
@@ -173,78 +181,66 @@ public final class BlendComposite implements Composite {
         this.alpha = alpha;
     }
 
-    /**
-     * <p>Creates a new composite based on the blending mode passed
-     * as a parameter. A default opacity of 1.0 is applied.</p>
-     *
-     * @param mode the blending mode defining the compositing rule
-     * @return a new <code>BlendComposite</code> based on the selected blending
-     * mode, with an opacity of 1.0
-     */
+    /// Creates a new composite based on the blending mode passed
+    /// as a parameter. A default opacity of 1.0 is applied.
+    ///
+    /// @param mode the blending mode defining the compositing rule
+    /// @return a new `BlendComposite` based on the selected blending
+    /// mode, with an opacity of 1.0
     public static BlendComposite getInstance(BlendingMode mode) {
         return new BlendComposite(mode);
     }
 
-    /**
-     * <p>Creates a new composite based on the blending mode and opacity passed
-     * as parameters. The opacity must be a value between 0.0 and 1.0.</p>
-     *
-     * @param mode  the blending mode defining the compositing rule
-     * @param alpha the constant alpha to be multiplied with the alpha of the
-     *              source. <code>alpha</code> must be a floating point between 0.0 and 1.0.
-     * @return a new <code>BlendComposite</code> based on the selected blending
-     * mode and opacity
-     * @throws IllegalArgumentException if the opacity is less than 0.0 or
-     *                                  greater than 1.0
-     */
+    /// Creates a new composite based on the blending mode and opacity passed
+    /// as parameters. The opacity must be a value between 0.0 and 1.0.
+    ///
+    /// @param mode  the blending mode defining the compositing rule
+    /// @param alpha the constant alpha to be multiplied with the alpha of the
+    ///              source. `alpha` must be a floating point between 0.0 and 1.0.
+    /// @return a new `BlendComposite` based on the selected blending
+    /// mode and opacity
+    /// @throws IllegalArgumentException if the opacity is less than 0.0 or
+    ///                                  greater than 1.0
     public static BlendComposite getInstance(BlendingMode mode, float alpha) {
         return new BlendComposite(mode, alpha);
     }
 
-    /**
-     * <p>Returns a <code>BlendComposite</code> object that uses the specified
-     * blending mode and this object's alpha value. If the newly specified
-     * blending mode is the same as this object's, this object is returned.</p>
-     *
-     * @param mode the blending mode defining the compositing rule
-     * @return a <code>BlendComposite</code> object derived from this object,
-     * that uses the specified blending mode
-     */
+    /// Returns a `BlendComposite` object that uses the specified
+    /// blending mode and this object's alpha value. If the newly specified
+    /// blending mode is the same as this object's, this object is returned.
+    ///
+    /// @param mode the blending mode defining the compositing rule
+    /// @return a `BlendComposite` object derived from this object,
+    /// that uses the specified blending mode
     public BlendComposite derive(BlendingMode mode) {
         return this.mode == mode ? this : new BlendComposite(mode, getAlpha());
     }
 
-    /**
-     * <p>Returns a <code>BlendComposite</code> object that uses the specified
-     * opacity, or alpha, and this object's blending mode. If the newly specified
-     * opacity is the same as this object's, this object is returned.</p>
-     *
-     * @param alpha the constant alpha to be multiplied with the alpha of the
-     *              source. <code>alpha</code> must be a floating point between 0.0 and 1.0.
-     * @return a <code>BlendComposite</code> object derived from this object,
-     * that uses the specified blending mode
-     * @throws IllegalArgumentException if the opacity is less than 0.0 or
-     *                                  greater than 1.0
-     */
+    /// Returns a `BlendComposite` object that uses the specified
+    /// opacity, or alpha, and this object's blending mode. If the newly specified
+    /// opacity is the same as this object's, this object is returned.
+    ///
+    /// @param alpha the constant alpha to be multiplied with the alpha of the
+    ///              source. `alpha` must be a floating point between 0.0 and 1.0.
+    /// @return a `BlendComposite` object derived from this object,
+    /// that uses the specified blending mode
+    /// @throws IllegalArgumentException if the opacity is less than 0.0 or
+    ///                                  greater than 1.0
     public BlendComposite derive(float alpha) {
         return this.alpha == alpha ? this : new BlendComposite(getMode(), alpha);
     }
 
-    /**
-     * <p>Returns the opacity of this composite. If no opacity has been defined,
-     * 1.0 is returned.</p>
-     *
-     * @return the alpha value, or opacity, of this object
-     */
+    /// Returns the opacity of this composite. If no opacity has been defined,
+    /// 1.0 is returned.
+    ///
+    /// @return the alpha value, or opacity, of this object
     public float getAlpha() {
         return alpha;
     }
 
-    /**
-     * <p>Returns the blending mode of this composite.</p>
-     *
-     * @return the blending mode used by this object
-     */
+    /// Returns the blending mode of this composite.
+    ///
+    /// @return the blending mode used by this object
     public BlendingMode getMode() {
         return mode;
     }
@@ -277,9 +273,7 @@ public final class BlendComposite implements Composite {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /// {@inheritDoc}
     public CompositeContext createContext(ColorModel srcColorModel,
                                           ColorModel dstColorModel,
                                           RenderingHints hints) {

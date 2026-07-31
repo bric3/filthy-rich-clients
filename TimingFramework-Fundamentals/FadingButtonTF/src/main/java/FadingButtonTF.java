@@ -1,13 +1,3 @@
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.Animator.Direction;
-import org.jdesktop.animation.timing.Animator.RepeatBehavior;
-import org.jdesktop.animation.timing.TimingTarget;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 /*
  * FadingButtonTF.java
  *
@@ -43,10 +33,18 @@ import java.awt.image.BufferedImage;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.Animator.Direction;
+import org.jdesktop.animation.timing.Animator.RepeatBehavior;
+import org.jdesktop.animation.timing.TimingTarget;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+
+/// @author Chet
 public class FadingButtonTF extends JButton
         implements ActionListener, TimingTarget {
 
@@ -55,9 +53,7 @@ public class FadingButtonTF extends JButton
     final int animationDuration = 2000;    // each cycle will take 2 seconds
     BufferedImage buttonImage = null;
 
-    /**
-     * Creates a new instance of FadingButtonTF
-     */
+    /// Creates a new instance of FadingButtonTF
     public FadingButtonTF(String label) {
         super(label);
         setOpaque(false);
@@ -91,9 +87,7 @@ public class FadingButtonTF extends JButton
         g2d.drawImage(buttonImage, 0, 0, null);
     }
 
-    /**
-     * This method receives click events, which start and stop the animation
-     */
+    /// This method receives click events, which start and stop the animation
     public void actionPerformed(ActionEvent ae) {
         if (!animator.isRunning()) {
             this.setText("Stop Animation");
@@ -116,10 +110,8 @@ public class FadingButtonTF extends JButton
     public void repeat() {
     }
 
-    /**
-     * TimingTarget implementation: this method sets the alpha of our button
-     * to be equal to the current elapsed fraction of the animation
-     */
+    /// TimingTarget implementation: this method sets the alpha of our button
+    /// to be equal to the current elapsed fraction of the animation
     public void timingEvent(float fraction) {
         alpha = fraction;
         // redisplay our cbutton

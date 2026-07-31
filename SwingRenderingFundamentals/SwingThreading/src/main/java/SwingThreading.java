@@ -34,9 +34,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class SwingThreading extends JFrame implements ActionListener {
     private final JLabel counter;
     private int tickCounter = 0;

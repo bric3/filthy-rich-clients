@@ -37,19 +37,15 @@ import java.awt.image.BufferedImage;
 public class GaussianBlurFilter extends AbstractFilter {
     private final int radius;
 
-    /**
-     * <p>Creates a new blur filter with a default radius of 3.</p>
-     */
+    /// Creates a new blur filter with a default radius of 3.
     public GaussianBlurFilter() {
         this(3);
     }
 
-    /**
-     * <p>Creates a new blur filter with the specified radius. If the radius
-     * is lower than 0, a radius of 0.1 will be used automatically.</p>
-     *
-     * @param radius the radius, in pixels, of the blur
-     */
+    /// Creates a new blur filter with the specified radius. If the radius
+    /// is lower than 0, a radius of 0.1 will be used automatically.
+    ///
+    /// @param radius the radius, in pixels, of the blur
     public GaussianBlurFilter(int radius) {
         if (radius < 1) {
             radius = 1;
@@ -58,18 +54,14 @@ public class GaussianBlurFilter extends AbstractFilter {
         this.radius = radius;
     }
 
-    /**
-     * <p>Returns the radius used by this filter, in pixels.</p>
-     *
-     * @return the radius of the blur
-     */
+    /// Returns the radius used by this filter, in pixels.
+    ///
+    /// @return the radius of the blur
     public float getRadius() {
         return radius;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /// {@inheritDoc}
     @Override
     public BufferedImage filter(BufferedImage src, BufferedImage dst) {
         var width = src.getWidth();
@@ -96,21 +88,21 @@ public class GaussianBlurFilter extends AbstractFilter {
         return dst;
     }
 
-    /**
-     * <p>Blurs the source pixels into the destination pixels. The force of
-     * the blur is specified by the radius which must be greater than 0.</p>
-     * <p>The source and destination pixels arrays are expected to be in the
-     * INT_ARGB format.</p>
-     * <p>After this method is executed, dstPixels contains a transposed and
-     * filtered copy of srcPixels.</p>
-     *
-     * @param srcPixels the source pixels
-     * @param dstPixels the destination pixels
-     * @param width     the width of the source picture
-     * @param height    the height of the source picture
-     * @param kernel    the kernel of the blur effect
-     * @param radius    the radius of the blur effect
-     */
+    /// Blurs the source pixels into the destination pixels. The force of
+    /// the blur is specified by the radius which must be greater than 0.
+    ///
+    /// The source and destination pixels arrays are expected to be in the
+    /// INT\_ARGB format.
+    ///
+    /// After this method is executed, dstPixels contains a transposed and
+    /// filtered copy of srcPixels.
+    ///
+    /// @param srcPixels the source pixels
+    /// @param dstPixels the destination pixels
+    /// @param width     the width of the source picture
+    /// @param height    the height of the source picture
+    /// @param kernel    the kernel of the blur effect
+    /// @param radius    the radius of the blur effect
     static void blur(int[] srcPixels, int[] dstPixels,
                      int width, int height,
                      float[] kernel, int radius) {

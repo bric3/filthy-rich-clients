@@ -1,7 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 /*
  * AnimatedGraphics.java
  *
@@ -37,10 +33,12 @@ import java.awt.event.ActionListener;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/// @author Chet
 public class AnimatedGraphics extends JComponent implements ActionListener {
 
     final Color startColor = Color.GRAY;    // where we start
@@ -49,9 +47,7 @@ public class AnimatedGraphics extends JComponent implements ActionListener {
     final int animationDuration = 2000;    // each animation will take 2 seconds
     long animStartTime;            // start time for each animation
 
-    /**
-     * Set up and start the timer
-     */
+    /// Set up and start the timer
     public AnimatedGraphics() {
         var timer = new Timer(30, this);
         // initial delay while window gets set up
@@ -60,10 +56,8 @@ public class AnimatedGraphics extends JComponent implements ActionListener {
         timer.start();
     }
 
-    /**
-     * Erase to the background color and fill an oval with the current
-     * color (which is being animated elsewhere)
-     */
+    /// Erase to the background color and fill an oval with the current
+    /// color (which is being animated elsewhere)
     public void paintComponent(Graphics g) {
         g.setColor(getBackground());
         g.fillRect(0, 0, getWidth(), getHeight());
@@ -71,11 +65,9 @@ public class AnimatedGraphics extends JComponent implements ActionListener {
         g.fillOval(0, 0, getWidth(), getHeight());
     }
 
-    /**
-     * Callback from the Swing Timer. Calculate the fraction elapsed of
-     * our desired animation duration and interpolate between our start and
-     * end colors accordingly.
-     */
+    /// Callback from the Swing Timer. Calculate the fraction elapsed of
+    /// our desired animation duration and interpolate between our start and
+    /// end colors accordingly.
     public void actionPerformed(ActionEvent ae) {
         // calculate elapsed fraction of animation
         var currentTime = System.nanoTime() / 1000000;

@@ -42,14 +42,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Access the drag-and-drop content to show a preview of the dragged image.
- * <p>
- * Note this demo does not work on macOs X (using Ventura 13.5.1 and JDK 20).
- * AS the drag-and-drop feature does not allow accessing the content during the drag.
- *
- * @author Romain Guy
- */
+/// Access the drag-and-drop content to show a preview of the dragged image.
+///
+/// Note this demo does not work on macOs X (using Ventura 13.5.1 and JDK 20).
+/// AS the drag-and-drop feature does not allow accessing the content during the drag.
+///
+/// @author Romain Guy
 public class ApplicationFrame extends JFrame {
     private final PictureGlassPane glassPane = new PictureGlassPane();
 
@@ -105,14 +103,12 @@ public class ApplicationFrame extends JFrame {
         });
     }
 
-    /**
-     * This method is called from within the constructor to
-     * initialize the form.
-     * <p>
-     * This code has been converted from Netbeans/Jdesktop code
-     * that made it to Swing's GroupLayout code in Java 1.6.
-     * It is not anymore generated.
-     */
+    /// This method is called from within the constructor to
+    /// initialize the form.
+    ///
+    /// This code has been converted from Netbeans/Jdesktop code
+    /// that made it to Swing's GroupLayout code in Java 1.6.
+    /// It is not anymore generated.
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         JLabel jLabel1;
@@ -346,9 +342,7 @@ public class ApplicationFrame extends JFrame {
         }
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     static void main(String[] args) {
         EventQueue.invokeLater(() -> new ApplicationFrame().setVisible(true));
     }

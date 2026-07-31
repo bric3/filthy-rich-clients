@@ -1,7 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 /*
  * CopyAreaPerformance.java
  *
@@ -37,10 +33,12 @@ import java.awt.event.KeyListener;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+/// @author Chet
 public class CopyAreaPerformance extends JComponent implements KeyListener {
 
     private static final int SMILEY_SIZE = 10;
@@ -56,9 +54,7 @@ public class CopyAreaPerformance extends JComponent implements KeyListener {
     int prevVX;
     int prevVY;
 
-    /**
-     * Creates a new instance of CopyAreaPerformance
-     */
+    /// Creates a new instance of CopyAreaPerformance
     public CopyAreaPerformance() {
         setOpaque(true);
     }
@@ -168,10 +164,8 @@ public class CopyAreaPerformance extends JComponent implements KeyListener {
 
     // KeyListener methods
 
-    /**
-     * Arrow keys scroll the view around. The 'c' key toggles clip area
-     * optimization. The 'a' key toggles copyArea optimization.
-     */
+    /// Arrow keys scroll the view around. The 'c' key toggles clip area
+    /// optimization. The 'a' key toggles copyArea optimization.
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             scroll(SCROLL_SIZE, 0);

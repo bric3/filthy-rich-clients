@@ -1,13 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
 /*
  * DrawShapes.java
  *
@@ -43,20 +33,26 @@ import java.util.List;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
+
+/// @author Chet
 public class DrawShapes extends JComponent {
 
     private final List<Shape> shapes = new ArrayList<>();
     private boolean getStar = true;
 
-    /**
-     * Generates a star Shape from the given location, radii, and points
-     * parameters. The Shape is created by constructing a GeneralPath
-     * that moves between the inner and outer rings.
-     */
+    /// Generates a star Shape from the given location, radii, and points
+    /// parameters. The Shape is created by constructing a GeneralPath
+    /// that moves between the inner and outer rings.
     private static Shape generateStar(double x, double y,
                                       double innerRadius, double outerRadius,
                                       int pointsCount) {
@@ -101,10 +97,8 @@ public class DrawShapes extends JComponent {
         return path;
     }
 
-    /**
-     * Generates a donut shape from the given location and radii by subtracting
-     * an inner circular Area from an outer one.
-     */
+    /// Generates a donut shape from the given location and radii by subtracting
+    /// an inner circular Area from an outer one.
     private static Shape generateDonut(double x, double y,
                                        double innerRadius, double outerRadius) {
         var a1 = new Area(new Ellipse2D.Double(x, y, outerRadius, outerRadius));
@@ -115,11 +109,9 @@ public class DrawShapes extends JComponent {
         return a1;
     }
 
-    /**
-     * This class processes mouse clicks and generates stars and donuts,
-     * alternately, in the click location. The new shape is added to the
-     * List of current shapes, then the scene is repainted.
-     */
+    /// This class processes mouse clicks and generates stars and donuts,
+    /// alternately, in the click location. The new shape is added to the
+    /// List of current shapes, then the scene is repainted.
     private class ClickReceiver extends MouseAdapter {
         public void mouseClicked(MouseEvent me) {
             var centerX = me.getX();
@@ -185,9 +177,7 @@ public class DrawShapes extends JComponent {
         }
     }
 
-    /**
-     * Creates a new instance of DrawShapes
-     */
+    /// Creates a new instance of DrawShapes
     public DrawShapes() {
         setBackground(Color.WHITE);
         addMouseListener(new ClickReceiver());

@@ -1,6 +1,3 @@
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 /*
  * SwingTimerDemo.java
  *
@@ -36,10 +33,11 @@ import java.awt.event.ActionListener;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/// @author Chet
 public class SwingTimerDemo implements ActionListener {
 
     private static long prevTime = 0;
@@ -51,13 +49,11 @@ public class SwingTimerDemo implements ActionListener {
     private static Timer timer = null;
     private boolean firstTime = true;
 
-    /**
-     * This method will be called during every tick of the Timers.
-     * We insert an artificial delay each time, to simulate some processing.
-     * The first time through, this delay is greater than the delay between
-     * timing events, so that we can see how this hiccup is handled by
-     * fixed-rate and fixed-delay timers.
-     */
+    /// This method will be called during every tick of the Timers.
+    /// We insert an artificial delay each time, to simulate some processing.
+    /// The first time through, this delay is greater than the delay between
+    /// timing events, so that we can see how this hiccup is handled by
+    /// fixed-rate and fixed-delay timers.
     public void actionPerformed(ActionEvent ae) {
         var nowTime = System.currentTimeMillis();
         var elapsedTime = nowTime - prevTime;

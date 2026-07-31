@@ -1,5 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
 /*
  * SimpleAttributes.java
  *
@@ -35,10 +33,10 @@ import java.awt.*;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+
+/// @author Chet
 public class SimpleAttributes extends JComponent {
 
     public void paintComponent(Graphics g) {

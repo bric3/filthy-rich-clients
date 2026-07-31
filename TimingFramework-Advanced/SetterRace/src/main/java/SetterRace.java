@@ -1,9 +1,3 @@
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 /*
  * SetterRace.java
  *
@@ -39,25 +33,28 @@ import java.awt.event.ActionListener;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Like BasicRace, only this version uses the property setter capabilities
- * of the framework.  Instead of manually calculating the position of the
- * car, we have the framework do it for us, based on how we set up the
- * PropertySetter object.  All of this is done at
- * construction time and we merely start or stop the animation based on
- * the Go/Stop buttons at runtime.
- *
- * @author Chet
- */
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/// Like BasicRace, only this version uses the property setter capabilities
+/// of the framework.  Instead of manually calculating the position of the
+/// car, we have the framework do it for us, based on how we set up the
+/// PropertySetter object.  All of this is done at
+/// construction time and we merely start or stop the animation based on
+/// the Go/Stop buttons at runtime.
+///
+/// @author Chet
 public class SetterRace implements ActionListener {
 
     protected final Animator timer;
     public static final int RACE_TIME = 2000;
 
 
-    /**
-     * Creates a new instance of BasicRace
-     */
+    /// Creates a new instance of BasicRace
     public SetterRace(String appName) {
         var basicGUI = new RaceGUI(appName);
 
@@ -75,9 +72,7 @@ public class SetterRace implements ActionListener {
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
 
-    /**
-     * Handles clicks on Go/Stop buttons to start/stop the animation
-     */
+    /// Handles clicks on Go/Stop buttons to start/stop the animation
     public void actionPerformed(ActionEvent ae) {
         if (ae.getActionCommand().equals("Go")) {
             if (timer != null) {

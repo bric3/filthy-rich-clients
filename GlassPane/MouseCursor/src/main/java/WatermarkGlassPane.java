@@ -36,16 +36,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class WatermarkGlassPane extends JComponent {
     private BufferedImage image = null;
 
-    /**
-     * Creates a new instance of WatermarkGlassPane
-     */
+    /// Creates a new instance of WatermarkGlassPane
     public WatermarkGlassPane() {
     }
 

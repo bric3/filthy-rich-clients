@@ -6,10 +6,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.io.IOException;
 
-/**
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class BrightnessIncreaseDemo extends JFrame {
     private final JLabel textLabel;
     private final JLabel imageLabel;

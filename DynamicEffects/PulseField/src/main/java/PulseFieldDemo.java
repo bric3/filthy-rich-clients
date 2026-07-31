@@ -38,10 +38,7 @@ import javax.swing.border.CompoundBorder;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-/**
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class PulseFieldDemo extends JFrame {
 
     public PulseFieldDemo() {

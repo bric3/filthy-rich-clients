@@ -32,15 +32,10 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class DepthButton extends JButton {
 
-    /**
-     * Creates a new instance of DepthButton
-     */
+    /// Creates a new instance of DepthButton
     public DepthButton(String text) {
         super(text);
         setContentAreaFilled(false);

@@ -37,10 +37,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
 
-/**
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class MotionDemo extends JFrame {
     private JButton rightLayoutButton;
     private JButton leftLayoutButton;

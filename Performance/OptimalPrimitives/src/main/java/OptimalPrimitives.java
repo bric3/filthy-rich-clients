@@ -1,6 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.Line2D;
 /*
  * OptimalPrimitives.java
  *
@@ -36,10 +33,11 @@ import java.awt.geom.Line2D;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Line2D;
+
+/// @author Chet
 public class OptimalPrimitives extends JComponent {
 
     private static final int LINE_X = 100;
@@ -49,9 +47,7 @@ public class OptimalPrimitives extends JComponent {
     private static final int GOOD_Y = 160;
     private static final int ITERATIONS = 1000;
 
-    /**
-     * Creates a new instance of OptimalPrimitives
-     */
+    /// Creates a new instance of OptimalPrimitives
     public OptimalPrimitives() {
     }
 

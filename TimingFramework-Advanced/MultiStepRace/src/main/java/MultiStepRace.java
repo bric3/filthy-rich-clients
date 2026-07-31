@@ -1,12 +1,3 @@
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.Animator.RepeatBehavior;
-import org.jdesktop.animation.timing.interpolation.*;
-import org.jdesktop.animation.timing.triggers.ActionTrigger;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 /*
  * MultiStepRace.java
  *
@@ -42,17 +33,25 @@ import java.awt.event.ActionListener;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * The full-blown demo with all of the bells and whistles.  This one uses
- * the facilities shown in all of the other variations, but adds
- * both multi-step and non-linear interpolation.  It does this by
- * creating a KeyFrames object to hold the times/values/splines
- * used for each segment of the race.  It also adds an animation for
- * the rotation of the car (since the car should turn as it goes around the
- * curves) and sound effects (just to go completely overboard).
- *
- * @author Chet
- */
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.Animator.RepeatBehavior;
+import org.jdesktop.animation.timing.interpolation.*;
+import org.jdesktop.animation.timing.triggers.ActionTrigger;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/// The full-blown demo with all of the bells and whistles.  This one uses
+/// the facilities shown in all of the other variations, but adds
+/// both multi-step and non-linear interpolation.  It does this by
+/// creating a KeyFrames object to hold the times/values/splines
+/// used for each segment of the race.  It also adds an animation for
+/// the rotation of the car (since the car should turn as it goes around the
+/// curves) and sound effects (just to go completely overboard).
+///
+/// @author Chet
 public class MultiStepRace {
 
     protected final Animator animator;
@@ -60,9 +59,7 @@ public class MultiStepRace {
     public static final int RACE_TIME = 10000;
 
 
-    /**
-     * Creates a new instance of BasicRace
-     */
+    /// Creates a new instance of BasicRace
     public MultiStepRace(String appName) {
         var basicGUI = new RaceGUI(appName);
 
@@ -140,9 +137,7 @@ public class MultiStepRace {
         stopButton.addActionListener(new Stopper(animator));
     }
 
-    /**
-     * Handle clicks on the Stop button to stop the race
-     */
+    /// Handle clicks on the Stop button to stop the race
     private static class Stopper implements ActionListener {
         final Animator timer;
 

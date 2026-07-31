@@ -39,11 +39,9 @@ import org.jdesktop.core.animation.timing.Animator;
 import org.jdesktop.core.animation.timing.PropertySetter;
 import org.jdesktop.core.animation.timing.TimingTarget;
 
-/**
- * Effect that resizes a component during the transition.
- *
- * @author Chet Haase
- */
+/// Effect that resizes a component during the transition.
+///
+/// @author Chet Haase
 public class Scale extends Effect {
 
     // Two property setters to animate both the width and height of
@@ -57,19 +55,15 @@ public class Scale extends Effect {
         setRenderComponent(true);
     }
 
-    /**
-     * Creates a new instance of Scale with start and end states for the component
-     */
+    /// Creates a new instance of Scale with start and end states for the component
     public Scale(ComponentState start, ComponentState end) {
         // Call default constructor to initialize important state
         this();
         setComponentStates(start, end);
     }
 
-    /**
-     * Initializes the effect, adding animation targets that will scale the component of the effect from the start to
-     * the end sizes during the course of the transition.
-     */
+    /// Initializes the effect, adding animation targets that will scale the component of the effect from the start to
+    /// the end sizes during the course of the transition.
     @Override
     public void init(Animator animator, Effect parentEffect) {
         var targetEffect = (parentEffect == null) ? this : parentEffect;
@@ -80,9 +74,7 @@ public class Scale extends Effect {
         super.init(animator, null);
     }
 
-    /**
-     * Removes the scaling targets from the animation to avoid leaking resources
-     */
+    /// Removes the scaling targets from the animation to avoid leaking resources
     @Override
     public void cleanup(Animator animator) {
         animator.removeTarget(psWidth);

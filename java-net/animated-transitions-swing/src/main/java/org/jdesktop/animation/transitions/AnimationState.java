@@ -39,37 +39,27 @@ import org.jdesktop.core.animation.timing.Animator;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * This class holds the start and/or end states for a <code>JComponent</code>. It also determines (at
- * <code>init()</code> time) the <code>Effect</code> to use during the transition and calls the appropriate Effect
- * during the {@link #paint(Graphics g)} method to cause the appropriate rendering of the component during the
- * transition.
- *
- * @author Chet Haase
- */
+/// This class holds the start and/or end states for a `JComponent`. It also determines (at
+/// `init()` time) the `Effect` to use during the transition and calls the appropriate Effect
+/// during the [#paint(Graphics g)] method to cause the appropriate rendering of the component during the
+/// transition.
+///
+/// @author Chet Haase
 class AnimationState {
 
     private final EffectsManager effectsManager;
-    /**
-     * The component for this AnimationState. There is one component per state, with either a start, an end, or both
-     * states.
-     */
+    /// The component for this AnimationState. There is one component per state, with either a start, an end, or both
+    /// states.
     private final JComponent component;
-    /**
-     * Start/end states for this AnimationState. These may be set to a non-null value or not, depending on whether the
-     * component exists in the respective start/end screen(s) of the transition.
-     */
+    /// Start/end states for this AnimationState. These may be set to a non-null value or not, depending on whether the
+    /// component exists in the respective start/end screen(s) of the transition.
     private ComponentState start;
     private ComponentState end;
-    /**
-     * Effect used to transition between the start and end states for this AnimationState. This effect is set during the
-     * init() method just prior to running the transition.
-     */
+    /// Effect used to transition between the start and end states for this AnimationState. This effect is set during the
+    /// init() method just prior to running the transition.
     private Effect effect;
 
-    /**
-     * Creates the AnimationState with the given start/end ComponentState
-     */
+    /// Creates the AnimationState with the given start/end ComponentState
     AnimationState(EffectsManager effectsManager, ComponentState state, boolean isStart) {
         this.effectsManager = effectsManager;
         component = state.getComponent();
@@ -80,9 +70,7 @@ class AnimationState {
         }
     }
 
-    /**
-     * Constructs a new AnimationState with either the start or end state for the component.
-     */
+    /// Constructs a new AnimationState with either the start or end state for the component.
     AnimationState(EffectsManager effectsManager, JComponent component, boolean isStart) {
         this.effectsManager = effectsManager;
         this.component = component;
@@ -122,12 +110,10 @@ class AnimationState {
         return end != null;
     }
 
-    /**
-     * Called just prior to running the transition. This method examines the start and end states as well as the Effect
-     * repository to determine the appropriate Effect to use during the transition for this AnimationState. If there is
-     * an existing custom effect defined for the component for this type of transition, that effect will be used,
-     * Otherwise, the system will use the appropriate default effect (fading in, fading out, or moving/resizing).
-     */
+    /// Called just prior to running the transition. This method examines the start and end states as well as the Effect
+    /// repository to determine the appropriate Effect to use during the transition for this AnimationState. If there is
+    /// an existing custom effect defined for the component for this type of transition, that effect will be used,
+    /// Otherwise, the system will use the appropriate default effect (fading in, fading out, or moving/resizing).
     void init(Animator animator) {
         if (start == null) {
             // component is appearing during transition; search for existing
@@ -194,17 +180,13 @@ class AnimationState {
         effect.init(animator, null);
     }
 
-    /**
-     * Clean up any artifacts created during the transition. This could include, for example, PropertySetter objects (or
-     * other TimingTargets) added to the animator during the init() phase.
-     */
+    /// Clean up any artifacts created during the transition. This could include, for example, PropertySetter objects (or
+    /// other TimingTargets) added to the animator during the init() phase.
     void cleanup(Animator animator) {
         effect.cleanup(animator);
     }
 
-    /**
-     * Render this AnimationState into the given Graphics object, by asking the Effect to render itself.
-     */
+    /// Render this AnimationState into the given Graphics object, by asking the Effect to render itself.
     void paint(Graphics g) {
         if (effect != null) {
             // Create/use temporary Graphics object to avoid leaking

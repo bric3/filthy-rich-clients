@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2007, Sun Microsystems, Inc
  * All rights reserved.
  * <p>
@@ -32,21 +32,17 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * The GUI used by all of the different race demos.
- * It contains a control panel (for the Go/Stop buttons) and a
- * TrackView (where the race is rendered)
- *
- * @author Chet
- */
+/// The GUI used by all of the different race demos.
+/// It contains a control panel (for the Go/Stop buttons) and a
+/// TrackView (where the race is rendered)
+///
+/// @author Chet
 public class RaceGUI {
 
     private final TrackView track;
     private final RaceControlPanel controlPanel;
 
-    /**
-     * Creates a new instance of RaceGUI
-     */
+    /// Creates a new instance of RaceGUI
     public RaceGUI(String appName) {
         UIManager.put("swing.boldMetal", Boolean.FALSE);
         var f = new JFrame(appName);

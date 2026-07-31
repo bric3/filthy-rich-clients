@@ -37,9 +37,7 @@ import java.awt.image.Kernel;
 import java.io.IOException;
 import java.util.Arrays;
 
-/**
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class BoxBlurDemo extends JFrame {
     private final BlurTestPanel blurTestPanel;
     private final JSlider radiusSlider;

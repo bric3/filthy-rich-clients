@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2007, Sun Microsystems, Inc
  * All rights reserved.
  * <p>
@@ -34,16 +34,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-/**
- * This class does the work of rendering the current view of the
- * racetrack.  It holds the car position and rotation and displays
- * the car accordingly.  The track itself is merely a background image
- * that is copied the same on every repaint.
- * Note that carPosition and carRotation are both JavaBean properties, which
- * is exploited in the SetterRace and MultiStepRace variations.
- *
- * @author Chet
- */
+/// This class does the work of rendering the current view of the
+/// racetrack.  It holds the car position and rotation and displays
+/// the car accordingly.  The track itself is merely a background image
+/// that is copied the same on every repaint.
+/// Note that carPosition and carRotation are both JavaBean properties, which
+/// is exploited in the SetterRace and MultiStepRace variations.
+///
+/// @author Chet
 public class TrackView extends JComponent {
 
     BufferedImage car;
@@ -57,7 +55,7 @@ public class TrackView extends JComponent {
     final int carWHalf;
     final int carHHalf;
 
-    /** Hard-coded positions of interest on the track */
+    /// Hard-coded positions of interest on the track
     static final Point START_POS = new Point(450, 70);
     static final Point FIRST_TURN_START = new Point(130, 70);
     static final Point FIRST_TURN_END = new Point(76, 127);
@@ -67,7 +65,7 @@ public class TrackView extends JComponent {
     static final Point THIRD_TURN_END = new Point(504, 404);
     static final Point FOURTH_TURN_START = new Point(504, 127);
 
-    /** Creates a new instance of TrackView */
+    /// Creates a new instance of TrackView
     public TrackView() {
         try {
             car = ImageIO.read(TrackView.class.getResource("images/beetle_red.gif"));
@@ -88,9 +86,7 @@ public class TrackView extends JComponent {
         return new Dimension(trackW, trackH);
     }
 
-    /**
-     * Render the track and car
-     */
+    /// Render the track and car
     public void paintComponent(Graphics g) {
         // First draw the race track
         g.drawImage(track, 0, 0, null);
@@ -107,9 +103,7 @@ public class TrackView extends JComponent {
         g2d.drawImage(car, carPosition.x - carWHalf, carPosition.y - carHHalf, null);
     }
 
-    /**
-     * Set the new position and schedule a repaint
-     */
+    /// Set the new position and schedule a repaint
     public void setCarPosition(Point newPosition) {
         repaint(0, carPosition.x - carWHalf, carPosition.y - carHHalf,
                 carW, carH);
@@ -119,9 +113,7 @@ public class TrackView extends JComponent {
                 carW, carH);
     }
 
-    /**
-     * Set the new rotation and schedule a repaint
-     */
+    /// Set the new rotation and schedule a repaint
     public void setCarRotation(double newDegrees) {
         carRotation = newDegrees;
         // repaint area accounts for larger rectangular are because rotate

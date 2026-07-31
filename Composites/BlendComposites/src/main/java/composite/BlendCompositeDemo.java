@@ -40,12 +40,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-/**
- * SwingX is now defunct {@link org.jdesktop.swingx.graphics.BlendComposite},
- * the code was copied here to {@link BlendComposite}
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// SwingX is now defunct [org.jdesktop.swingx.graphics.BlendComposite],
+/// the code was copied here to [BlendComposite]
+///
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class BlendCompositeDemo extends JFrame {
     private final CompositeTestPanel compositeTestPanel;
     private final JComboBox<BlendComposite.BlendingMode> combo;

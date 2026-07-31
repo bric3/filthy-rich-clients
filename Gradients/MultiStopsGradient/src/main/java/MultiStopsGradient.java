@@ -31,15 +31,10 @@
 
 import javax.swing.*;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class MultiStopsGradient extends JFrame {
 
-    /**
-     * Creates a new instance of MultiStopsGradient
-     */
+    /// Creates a new instance of MultiStopsGradient
     public MultiStopsGradient() {
         super("Multi-stops Gradient");
 

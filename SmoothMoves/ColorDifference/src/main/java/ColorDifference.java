@@ -1,7 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 /*
  * ColorDifference.java
  *
@@ -37,10 +33,12 @@ import java.awt.event.ActionListener;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/// @author Chet
 public class ColorDifference extends JComponent implements ActionListener {
 
     private final Color[] largeRectColors = {
@@ -53,19 +51,15 @@ public class ColorDifference extends JComponent implements ActionListener {
     private static final int FADE_X = 0;
     private static final int BLANK_X = 0;
 
-    /**
-     * Creates a new instance of ColorDifference
-     */
+    /// Creates a new instance of ColorDifference
     public ColorDifference() {
         var timer = new Timer(1000, this);
         timer.start();
         setPreferredSize(new Dimension(300, 200));
     }
 
-    /**
-     * Displays our component with the animating colors of the areas on the
-     * left and right, separated by an area of white in the middle
-     */
+    /// Displays our component with the animating colors of the areas on the
+    /// left and right, separated by an area of white in the middle
     @Override
     protected void paintComponent(Graphics g) {
         var fadeX = 0;
@@ -93,10 +87,8 @@ public class ColorDifference extends JComponent implements ActionListener {
         g.fillRect(smallRectX, smallRectY, smallRectW, smallRectH);
     }
 
-    /**
-     * Handles Timer events by toggling the colorIndex used to fill the
-     * left-side rectangle
-     */
+    /// Handles Timer events by toggling the colorIndex used to fill the
+    /// left-side rectangle
     public void actionPerformed(ActionEvent ae) {
         colorIndex++;
         colorIndex = colorIndex % 2;
@@ -113,9 +105,7 @@ public class ColorDifference extends JComponent implements ActionListener {
         f.setVisible(true);
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     static void main(String[] args) {
         Runnable doCreateAndShowGUI = ColorDifference::createAndShowGUI;
         SwingUtilities.invokeLater(doCreateAndShowGUI);

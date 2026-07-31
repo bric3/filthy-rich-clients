@@ -41,10 +41,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-/**
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class Loupe extends JComponent {
     private BufferedImage loupeImage;
     private final Point loupeLocation = new Point(0, 0);

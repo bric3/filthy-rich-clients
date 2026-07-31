@@ -7,11 +7,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * A test based on Oracle's TopLevelTransferHandlerDemo
- * <p>
- * Source :
- */
+/// A test based on Oracle's TopLevelTransferHandlerDemo
+///
+/// Source :
 void main() {
     SwingUtilities.invokeLater(() -> {
         var frame = new JFrame("Simple Drop Test");

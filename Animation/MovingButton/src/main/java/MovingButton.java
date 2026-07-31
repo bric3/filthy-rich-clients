@@ -1,7 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 /*
  * MovingButton.java
  *
@@ -37,10 +33,12 @@ import java.awt.event.ActionListener;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/// @author Chet
 public class MovingButton extends JButton implements ActionListener {
 
     final Timer timer;                        // for later start/stop actions
@@ -49,9 +47,7 @@ public class MovingButton extends JButton implements ActionListener {
     int translateY = 0;                 // y location of the button
     static final int MAX_Y = 100;
 
-    /**
-     * Creates a new instance of TranslucentButton
-     */
+    /// Creates a new instance of TranslucentButton
     public MovingButton(String label) {
         super(label);
         setOpaque(false);
@@ -59,22 +55,18 @@ public class MovingButton extends JButton implements ActionListener {
         addActionListener(this);
     }
 
-    /**
-     * Displays our component in the location (0, translateY). Note that
-     * this changes only the rendering location of the button, not the
-     * physical location of it. Note, also, that rendering into g will
-     * be clipped to the physical location of the button, so the button will
-     * disappear as it moves away from that location.
-     */
+    /// Displays our component in the location (0, translateY). Note that
+    /// this changes only the rendering location of the button, not the
+    /// physical location of it. Note, also, that rendering into g will
+    /// be clipped to the physical location of the button, so the button will
+    /// disappear as it moves away from that location.
     public void paint(Graphics g) {
         g.translate(0, translateY);
         super.paint(g);
     }
 
-    /**
-     * This method handles both button clicks, which start/stop the animation,
-     * and Swing Timer events.
-     */
+    /// This method handles both button clicks, which start/stop the animation,
+    /// and Swing Timer events.
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource().equals(this)) {
             // button click
@@ -125,9 +117,7 @@ public class MovingButton extends JButton implements ActionListener {
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
 
-    /**
-     * Paints a checkerboard background
-     */
+    /// Paints a checkerboard background
     private static class Checkerboard extends JPanel {
         private static final int DIVISIONS = 10;
         static final int CHECKER_SIZE = 60;

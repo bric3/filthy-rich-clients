@@ -35,11 +35,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-/**
- * <p>Demos of a custom buffered image operation.</p>
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// Demos of a custom buffered image operation.
+///
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class ApplicationFrame extends JFrame {
     private BufferedImage sourceImage;
     private ImagePanel imagePanel;

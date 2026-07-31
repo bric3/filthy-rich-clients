@@ -1,5 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
 /*
  * FillDraw.java
  *
@@ -35,15 +33,13 @@ import java.awt.*;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+
+/// @author Chet
 public class FillDraw extends JComponent {
 
-    /**
-     * Fill first, then draw the boundary
-     */
+    /// Fill first, then draw the boundary
     private void fillDraw(Graphics g, int x, int y, int w, int h) {
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(x, y, w, h);
@@ -51,9 +47,7 @@ public class FillDraw extends JComponent {
         g.drawRect(x, y, w, h);
     }
 
-    /**
-     * Draw the boundary, then fill
-     */
+    /// Draw the boundary, then fill
     private void drawFill(Graphics g, int x, int y, int w, int h) {
         g.setColor(Color.BLACK);
         g.drawRect(x, y, w, h);
@@ -61,9 +55,7 @@ public class FillDraw extends JComponent {
         g.fillRect(x, y, w, h);
     }
 
-    /**
-     * Fill the area only inside the boundary (no overlap)
-     */
+    /// Fill the area only inside the boundary (no overlap)
     private void fillInsideDraw(Graphics g, int x, int y, int w, int h) {
         g.setColor(Color.BLACK);
         g.drawRect(x, y, w, h);

@@ -32,10 +32,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class TextHighlightingDemo extends JFrame {
     private VistaSearchDialog dialog;
 

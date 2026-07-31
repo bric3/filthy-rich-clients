@@ -34,11 +34,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-/**
- * See {@link org.jdesktop.swingx.image.FastBlurFilter}.
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// See [org.jdesktop.swingx.image.FastBlurFilter].
+///
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class FastBlurDemo extends JFrame {
     private final BlurTestPanel blurTestPanel;
     private final JSlider radiusSlider;

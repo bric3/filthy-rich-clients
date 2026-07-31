@@ -32,15 +32,10 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class TwoStopsGradient extends JFrame {
 
-    /**
-     * Creates a new instance of TwoStopsGradient
-     */
+    /// Creates a new instance of TwoStopsGradient
     public TwoStopsGradient() {
         super("Two Stops Gradient");
 

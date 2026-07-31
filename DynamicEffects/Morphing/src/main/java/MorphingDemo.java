@@ -42,9 +42,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * @author Romain Guy <romain.guy@mac.com>
- */
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class MorphingDemo extends JFrame {
     private ImageViewer imageViewer;
 

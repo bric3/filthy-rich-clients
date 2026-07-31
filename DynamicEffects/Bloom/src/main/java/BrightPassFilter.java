@@ -32,9 +32,7 @@
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
 
-/**
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class BrightPassFilter extends AbstractFilter {
     private final float brightnessThreshold;
 

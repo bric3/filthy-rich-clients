@@ -36,27 +36,20 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ColorModel;
 
-/**
- * <p>Provides an abstract implementation of the <code>BufferedImageOp</code>
- * interface. This class can be used to created new image filters based
- * on <code>BufferedImageOp</code>.</p>
- *
- * @author Romain Guy <romain.guy@mac.com>
- */
-
+/// Provides an abstract implementation of the `BufferedImageOp`
+/// interface. This class can be used to created new image filters based
+/// on `BufferedImageOp`.
+///
+/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public abstract class AbstractFilter implements BufferedImageOp {
     public abstract BufferedImage filter(BufferedImage src, BufferedImage dest);
 
-    /**
-     * {@inheritDoc}
-     */
+    /// {@inheritDoc}
     public Rectangle2D getBounds2D(BufferedImage src) {
         return new Rectangle(0, 0, src.getWidth(), src.getHeight());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /// {@inheritDoc}
     public BufferedImage createCompatibleDestImage(BufferedImage src,
                                                    ColorModel destCM) {
         if (destCM == null) {
@@ -69,16 +62,12 @@ public abstract class AbstractFilter implements BufferedImageOp {
                 destCM.isAlphaPremultiplied(), null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /// {@inheritDoc}
     public Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
         return (Point2D) srcPt.clone();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /// {@inheritDoc}
     public RenderingHints getRenderingHints() {
         return null;
     }

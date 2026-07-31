@@ -31,15 +31,10 @@
 
 import javax.swing.*;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class ReflectionApp extends JFrame {
 
-    /**
-     * Creates a new instance of ReflectionApp
-     */
+    /// Creates a new instance of ReflectionApp
     public ReflectionApp() {
         super("Reflections");
 

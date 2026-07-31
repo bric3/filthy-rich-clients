@@ -32,9 +32,7 @@
 
 import javax.swing.*;
 
-/**
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class SafeRepaint extends JFrame {
     private final SafeComponent safeComponent;
 

@@ -1,8 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 /*
  * FadingButton.java
  *
@@ -38,10 +33,13 @@ import java.awt.image.BufferedImage;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+
+/// @author Chet
 public class FadingButton extends JButton implements ActionListener {
 
     float alpha = 1.0f;                 // current opacity of button
@@ -50,9 +48,7 @@ public class FadingButton extends JButton implements ActionListener {
     long animationStartTime;            // start time for each animation
     BufferedImage buttonImage = null;
 
-    /**
-     * Creates a new instance of FadingButton
-     */
+    /// Creates a new instance of FadingButton
     public FadingButton(String label) {
         super(label);
         setOpaque(false);
@@ -83,10 +79,8 @@ public class FadingButton extends JButton implements ActionListener {
         g2d.drawImage(buttonImage, 0, 0, null);
     }
 
-    /**
-     * This method receives both click events (which start and stop the
-     * animation) and Timer events (which animate the alpha of the button).
-     */
+    /// This method receives both click events (which start and stop the
+    /// animation) and Timer events (which animate the alpha of the button).
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource().equals(this)) {
             // button click
@@ -133,9 +127,7 @@ public class FadingButton extends JButton implements ActionListener {
         SwingUtilities.invokeLater(doCreateAndShowGUI);
     }
 
-    /**
-     * Displays checkerboard background
-     */
+    /// Displays checkerboard background
     private static class Checkerboard extends JPanel {
         private static final int DIVISIONS = 10;
         static final int CHECKER_SIZE = 60;

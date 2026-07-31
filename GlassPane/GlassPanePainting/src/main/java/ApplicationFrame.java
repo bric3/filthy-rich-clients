@@ -34,9 +34,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-/**
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class ApplicationFrame extends JFrame {
     private static final int MAX_DELAY = 300;
 
@@ -47,16 +45,14 @@ public class ApplicationFrame extends JFrame {
         setGlassPane(glassPane = new ProgressGlassPane());
     }
 
-    /**
-     * This method is called from within the constructor to
-     * initialize the form.
-     * <p>
-     * This code has been converted from Netbeans/Jdesktop code
-     * that made it to Swing's GroupLayout code in Java 1.6.
-     * It is not anymore generated.
-     * <p>
-     * And now it's updated with later constructs like var
-     */
+    /// This method is called from within the constructor to
+    /// initialize the form.
+    ///
+    /// This code has been converted from Netbeans/Jdesktop code
+    /// that made it to Swing's GroupLayout code in Java 1.6.
+    /// It is not anymore generated.
+    ///
+    /// And now it's updated with later constructs like var
     private void initComponents() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Glass Pane Painting");
@@ -141,9 +137,7 @@ public class ApplicationFrame extends JFrame {
         downloader.start();
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    /// @param args the command line arguments
     static void main(String... args) {
         EventQueue.invokeLater(() -> new ApplicationFrame().setVisible(true));
     }

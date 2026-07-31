@@ -35,9 +35,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class SwingThreadingWait extends JFrame implements ActionListener {
     private final JLabel counter;
     private long start = 0;

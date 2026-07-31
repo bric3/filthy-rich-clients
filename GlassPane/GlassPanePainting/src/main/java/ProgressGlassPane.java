@@ -32,10 +32,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-/**
- *
- * @author Romain Guy
- */
+/// @author Romain Guy
 public class ProgressGlassPane extends JComponent {
     private static final int BAR_WIDTH = 200;
     private static final int BAR_HEIGHT = 10;

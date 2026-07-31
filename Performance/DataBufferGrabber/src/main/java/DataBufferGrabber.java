@@ -1,9 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.awt.image.Raster;
-import java.util.Arrays;
 /*
  * DataBufferGrabber.java
  *
@@ -39,25 +33,25 @@ import java.util.Arrays;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Raster;
+import java.util.Arrays;
+
+/// @author Chet
 public class DataBufferGrabber extends JComponent {
 
     private final int SWATCH_SIZE = 500;
 
-    /**
-     * Creates a new instance of DataBufferGrabber
-     */
+    /// Creates a new instance of DataBufferGrabber
     public DataBufferGrabber() {
         setPreferredSize(new Dimension(2 * SWATCH_SIZE, SWATCH_SIZE));
     }
 
-    /**
-     * Perform and time several drawImage() calls with the given parameters
-     * and return the number of milliseconds that the operation took.
-     */
+    /// Perform and time several drawImage() calls with the given parameters
+    /// and return the number of milliseconds that the operation took.
     private long copyImage(Graphics g, BufferedImage image, int x, int y) {
         var startTime = System.nanoTime();
         // Do the operation several times to make the timings more significant

@@ -1,7 +1,3 @@
-import org.jdesktop.animation.timing.triggers.*;
-
-import javax.swing.*;
-import java.awt.*;
 /*
  * Triggers.java
  *
@@ -37,10 +33,12 @@ import java.awt.*;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import org.jdesktop.animation.timing.triggers.*;
+
+import javax.swing.*;
+import java.awt.*;
+
+/// @author Chet
 public class Triggers extends JComponent {
 
     final SpherePanel armed;
@@ -50,9 +48,7 @@ public class Triggers extends JComponent {
     final SpherePanel timing;
     static JButton triggerButton;
 
-    /**
-     * Creates a new instance of Triggers
-     */
+    /// Creates a new instance of Triggers
     public Triggers() {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         action = new SpherePanel("yellow-sphere.png");

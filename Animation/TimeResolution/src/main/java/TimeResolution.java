@@ -1,6 +1,3 @@
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 /*
  * TimeResolution.java
  *
@@ -36,24 +33,23 @@ import java.awt.event.ActionListener;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *
- * @author Chet
- */
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+/// @author Chet
 public class TimeResolution implements ActionListener {
 
     private static final int INCREMENT = 5;
     private static final int MAX = 50;
 
-    /**
-     * Measures how much time has elapsed according to both currentTimeMillis()
-     * and nanoTime() at each interval. Note that the time reported for
-     * sleep() may not be accurate since the internal sleep timer may not
-     * have the appropriate resolution to sleep for the requested time.
-     * The main utility of this function is to compare the two timing
-     * functions, although it is also interesting to see how the measured
-     * time varies from the sleep() time.
-     */
+    /// Measures how much time has elapsed according to both currentTimeMillis()
+    /// and nanoTime() at each interval. Note that the time reported for
+    /// sleep() may not be accurate since the internal sleep timer may not
+    /// have the appropriate resolution to sleep for the requested time.
+    /// The main utility of this function is to compare the two timing
+    /// functions, although it is also interesting to see how the measured
+    /// time varies from the sleep() time.
     private void measureTimeFunctions(int increment, int max) {
         var startTime = System.currentTimeMillis();
         var startNanos = System.nanoTime();
@@ -76,12 +72,10 @@ public class TimeResolution implements ActionListener {
         }
     }
 
-    /**
-     * This method measures the actual time slept, compared to the requested
-     * sleep() time. We run many iterations for each value of sleep() to
-     * get more accurate timing values; this accounts for possible
-     * inaccuracies of our nanoTime() method for small time differences.
-     */
+    /// This method measures the actual time slept, compared to the requested
+    /// sleep() time. We run many iterations for each value of sleep() to
+    /// get more accurate timing values; this accounts for possible
+    /// inaccuracies of our nanoTime() method for small time differences.
     private void measureSleep() {
         System.out.print("                                 measured\n");
         System.out.print("sleep time   iterations   total time   per-sleep\n");
@@ -102,10 +96,8 @@ public class TimeResolution implements ActionListener {
         }
     }
 
-    /**
-     * This method is like the measureSleep() method above, only for the
-     * wait() method instead of sleep().
-     */
+    /// This method is like the measureSleep() method above, only for the
+    /// wait() method instead of sleep().
     private synchronized void measureWait() {
         System.out.print("                                measured\n");
         System.out.print("wait time   iterations   total time   per-wait\n");
@@ -135,9 +127,7 @@ public class TimeResolution implements ActionListener {
     long startTime, endTime;
     int sleepTime;
 
-    /**
-     * This method is called during the execution of the Swing timer.
-     */
+    /// This method is called during the execution of the Swing timer.
     public void actionPerformed(ActionEvent ae) {
         if (++timerIteration > iterations) {
             timer.stop();
@@ -150,13 +140,11 @@ public class TimeResolution implements ActionListener {
         }
     }
 
-    /**
-     * This method measures the accuracy of the Swing timer, which is
-     * internally dependent upon both the internal timing mechanisms
-     * (either currentTimeMillis() or nanoTime()) and the wait() method.
-     * So the results we see here should be predictable from the results
-     * we see in the other measurement methods.
-     */
+    /// This method measures the accuracy of the Swing timer, which is
+    /// internally dependent upon both the internal timing mechanisms
+    /// (either currentTimeMillis() or nanoTime()) and the wait() method.
+    /// So the results we see here should be predictable from the results
+    /// we see in the other measurement methods.
     public void measureTimer() {
         System.out.print("                                  measured\n");
         System.out.print("timer delay   iterations   total time   per-delay\n");
@@ -175,9 +163,7 @@ public class TimeResolution implements ActionListener {
         }
     }
 
-    /**
-     * Execute the various timer resolution tests.
-     */
+    /// Execute the various timer resolution tests.
     static void main(String[] args) {
         var timeResolution = new TimeResolution();
         timeResolution.measureTimer();

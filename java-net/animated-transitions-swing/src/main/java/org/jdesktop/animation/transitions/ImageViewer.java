@@ -36,19 +36,15 @@ package org.jdesktop.animation.transitions;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * This class is a debugging too. If you create an ImageViewer with an image, it will pop up a separate window
- * displaying that image. This is useful for debugging issues, for example, with the transition images.
- *
- * @author Chet Haase
- */
+/// This class is a debugging too. If you create an ImageViewer with an image, it will pop up a separate window
+/// displaying that image. This is useful for debugging issues, for example, with the transition images.
+///
+/// @author Chet Haase
 class ImageViewer extends JFrame {
 
     private final Image image;
 
-    /**
-     * Creates a simple JFrame that displays the given image in it
-     */
+    /// Creates a simple JFrame that displays the given image in it
     public ImageViewer(Image image) {
         this.image = image;
         this.setSize(image.getWidth(null) + 10, image.getHeight(null) + 30);
@@ -59,9 +55,7 @@ class ImageViewer extends JFrame {
         setVisible(true);
     }
 
-    /**
-     * Private custom component class that displays the image of ImageViewer in the component during the paint method
-     */
+    /// Private custom component class that displays the image of ImageViewer in the component during the paint method
     private class ImageViewerComponent extends JComponent {
 
         @Override
