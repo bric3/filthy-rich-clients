@@ -31,22 +31,22 @@
 
 package org.progx.artemis.ui;
 
-import org.jdesktop.animation.timing.Cycle;
-import org.jdesktop.animation.timing.Envelope;
-import org.jdesktop.animation.timing.TimingController;
-import org.jdesktop.animation.timing.interpolation.ObjectModifier;
-import org.jdesktop.animation.timing.interpolation.PropertyRange;
+import org.jdesktop.core.animation.timing.Animator;
+import org.jdesktop.core.animation.timing.PropertySetter;
+import org.jdesktop.swing.animation.timing.sources.SwingTimerTimingSource;
 import org.progx.artemis.Application;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.TimeUnit;
 
 public class MainFrame extends JFrame {
     private StepLabel stepLabel;
     private BufferedImage image;
     private final ProgressGlassPane waitPanel;
-    private TimingController timer;
+    private final SwingTimerTimingSource timingSource = createTimingSource();
+    private Animator timer;
     private SizeStepPanel sizeStep;
     private DragAndDropStepPanel dragAndDropStep;
     private DoneStepPanel doneStep;
@@ -64,6 +64,12 @@ public class MainFrame extends JFrame {
         setSize(640, 480);
         setResizable(false);
         setLocationRelativeTo(null);
+    }
+
+    private static SwingTimerTimingSource createTimingSource() {
+        var timingSource = new SwingTimerTimingSource(33, TimeUnit.MILLISECONDS);
+        timingSource.init();
+        return timingSource;
     }
 
     private void buildContentPane() {
@@ -121,13 +127,12 @@ public class MainFrame extends JFrame {
     }
 
     public void showWaitGlassPane() {
-        var cycle = new Cycle(2500, 33);
-        var envelope = new Envelope(TimingController.INFINITE, 0,
-                Envelope.RepeatBehavior.REVERSE,
-                Envelope.EndBehavior.HOLD);
-        var fadeRange = PropertyRange.createPropertyRangeInt("progress", 0, 100); // NON-NLS
-        timer = new TimingController(cycle, envelope,
-                new ObjectModifier(waitPanel, fadeRange));
+        timer = new Animator.Builder(timingSource)
+                .setDuration(2500, TimeUnit.MILLISECONDS)
+                .setRepeatCount(Animator.INFINITE)
+                .setRepeatBehavior(Animator.RepeatBehavior.REVERSE)
+                .addTarget(PropertySetter.getTarget(waitPanel, "progress", 0, 100))
+                .build();
 
         waitPanel.setProgress(0);
         waitPanel.setVisible(true);

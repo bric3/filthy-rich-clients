@@ -29,16 +29,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.jdesktop.animation.timing.triggers.ActionTrigger;
+import org.jdesktop.core.animation.timing.Animator;
+import org.jdesktop.core.animation.timing.PropertySetter;
+import org.jdesktop.core.animation.timing.interpolators.AccelerationInterpolator;
+import org.jdesktop.swing.animation.timing.sources.SwingTimerTimingSource;
+import org.jdesktop.swing.animation.timing.triggers.TriggerUtility;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class MotionDemo extends JFrame {
+    private static final SwingTimerTimingSource TIMING_SOURCE = createTimingSource();
+
     private JButton rightLayoutButton;
     private JButton leftLayoutButton;
 
@@ -60,33 +65,38 @@ public class MotionDemo extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    private static SwingTimerTimingSource createTimingSource() {
+        var timingSource = new SwingTimerTimingSource();
+        timingSource.init();
+        return timingSource;
+    }
+
     private void configureAnimations() {
-        var leftAnimator = new Animator(200);
-        leftAnimator.setAcceleration(0.3f);
-        leftAnimator.setDeceleration(0.2f);
-        leftAnimator.addTarget(new PropertySetter(
-                saveButton, "location",
-                new Point(16, 16)));
-        leftAnimator.addTarget(new PropertySetter(
-                openButton, "location",
-                new Point(16, openButton.getY())));
-        leftAnimator.addTarget(new PropertySetter(
-                textArea, "location",
-                new Point(16 + saveButton.getWidth() + 6, 16)));
+        var leftAnimator = new Animator.Builder(TIMING_SOURCE)
+                .setDuration(200, TimeUnit.MILLISECONDS)
+                .setInterpolator(new AccelerationInterpolator(.3f, .2f))
+                .addTarget(PropertySetter.getTargetTo(
+                        saveButton, "location", new Point(16, 16)))
+                .addTarget(PropertySetter.getTargetTo(
+                        openButton, "location", new Point(16, openButton.getY())))
+                .addTarget(PropertySetter.getTargetTo(
+                        textArea, "location", new Point(16 + saveButton.getWidth() + 6, 16)))
+                .build();
 
-        ActionTrigger.addTrigger(leftLayoutButton, leftAnimator);
+        TriggerUtility.addActionTrigger(leftLayoutButton, leftAnimator);
 
-        var rightAnimator = new Animator(200);
-        rightAnimator.setAcceleration(0.3f);
-        rightAnimator.setDeceleration(0.2f);
-        rightAnimator.addTarget(new PropertySetter(
-                saveButton, "location", saveButton.getLocation()));
-        rightAnimator.addTarget(new PropertySetter(
-                openButton, "location", openButton.getLocation()));
-        rightAnimator.addTarget(new PropertySetter(
-                textArea, "location", textArea.getLocation()));
+        var rightAnimator = new Animator.Builder(TIMING_SOURCE)
+                .setDuration(200, TimeUnit.MILLISECONDS)
+                .setInterpolator(new AccelerationInterpolator(.3f, .2f))
+                .addTarget(PropertySetter.getTargetTo(
+                        saveButton, "location", saveButton.getLocation()))
+                .addTarget(PropertySetter.getTargetTo(
+                        openButton, "location", openButton.getLocation()))
+                .addTarget(PropertySetter.getTargetTo(
+                        textArea, "location", textArea.getLocation()))
+                .build();
 
-        ActionTrigger.addTrigger(rightLayoutButton, rightAnimator);
+        TriggerUtility.addActionTrigger(rightLayoutButton, rightAnimator);
     }
 
     private JComponent buildContentPane() {

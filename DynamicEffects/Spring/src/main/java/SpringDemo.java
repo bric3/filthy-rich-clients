@@ -29,16 +29,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.core.animation.timing.Animator;
+import org.jdesktop.core.animation.timing.PropertySetter;
+import org.jdesktop.core.animation.timing.interpolators.AccelerationInterpolator;
+import org.jdesktop.swing.animation.timing.sources.SwingTimerTimingSource;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class SpringDemo extends JFrame {
+    private static final SwingTimerTimingSource TIMING_SOURCE = createTimingSource();
+
     private JList<Application> list;
     private SpringGlassPane glassPane;
 
@@ -57,6 +63,12 @@ public class SpringDemo extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
+    private static SwingTimerTimingSource createTimingSource() {
+        var timingSource = new SwingTimerTimingSource();
+        timingSource.init();
+        return timingSource;
     }
 
     private void setupGlassPane() {
@@ -144,10 +156,12 @@ public class SpringDemo extends JFrame {
             this.bounds = bounds;
             this.image = image;
 
-            var animator = PropertySetter.createAnimator(250, this,
-                    "zoom", 0.0f, 1.0f);
-            animator.setAcceleration(0.2f);
-            animator.setDeceleration(0.4f);
+            var animator = new Animator.Builder(TIMING_SOURCE)
+                    .setDuration(250, TimeUnit.MILLISECONDS)
+                    .setInterpolator(new AccelerationInterpolator(.2f, .4f))
+                    .addTarget(PropertySetter.getTarget(
+                            this, "zoom", 0.0f, 1.0f))
+                    .build();
             animator.start();
 
             repaint();

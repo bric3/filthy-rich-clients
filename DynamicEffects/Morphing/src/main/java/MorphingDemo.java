@@ -29,10 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.jdesktop.animation.timing.triggers.MouseTrigger;
-import org.jdesktop.animation.timing.triggers.MouseTriggerEvent;
+import org.jdesktop.core.animation.timing.Animator;
+import org.jdesktop.core.animation.timing.PropertySetter;
+import org.jdesktop.core.animation.timing.interpolators.AccelerationInterpolator;
+import org.jdesktop.core.animation.timing.triggers.MouseTriggerEvent;
+import org.jdesktop.swing.animation.timing.sources.SwingTimerTimingSource;
+import org.jdesktop.swing.animation.timing.triggers.TriggerUtility;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,9 +43,12 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class MorphingDemo extends JFrame {
+    private static final SwingTimerTimingSource TIMING_SOURCE = createTimingSource();
+
     private ImageViewer imageViewer;
 
     public MorphingDemo() {
@@ -55,6 +60,12 @@ public class MorphingDemo extends JFrame {
         pack();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+    }
+
+    private static SwingTimerTimingSource createTimingSource() {
+        var timingSource = new SwingTimerTimingSource();
+        timingSource.init();
+        return timingSource;
     }
 
     private JComponent buildImageViewer() {
@@ -97,11 +108,13 @@ public class MorphingDemo extends JFrame {
         }
 
         private void setupTriggers() {
-            var animator = PropertySetter.createAnimator(
-                    150, this, "morphing", 0.0f, 1.0f);
-            animator.setAcceleration(0.2f);
-            animator.setDeceleration(0.3f);
-            MouseTrigger.addTrigger(this, animator, MouseTriggerEvent.ENTER, true);
+            var animator = new Animator.Builder(TIMING_SOURCE)
+                    .setDuration(150, TimeUnit.MILLISECONDS)
+                    .setInterpolator(new AccelerationInterpolator(.2f, .3f))
+                    .addTarget(PropertySetter.getTarget(
+                            this, "morphing", 0.0f, 1.0f))
+                    .build();
+            TriggerUtility.addMouseTrigger(this, animator, MouseTriggerEvent.ENTER, true);
         }
 
         private Morphing2D createMorph() {
@@ -214,18 +227,20 @@ public class MorphingDemo extends JFrame {
         }
 
         public void next() {
-            var animator = new Animator(500);
-            animator.addTarget(new PropertySetter(this, "alpha", 1.0f));
-            animator.setAcceleration(0.2f);
-            animator.setDeceleration(0.4f);
+            var animator = new Animator.Builder(TIMING_SOURCE)
+                    .setDuration(500, TimeUnit.MILLISECONDS)
+                    .setInterpolator(new AccelerationInterpolator(.2f, .4f))
+                    .addTarget(PropertySetter.getTargetTo(this, "alpha", 1.0f))
+                    .build();
             animator.start();
         }
 
         public void previous() {
-            var animator = new Animator(500);
-            animator.addTarget(new PropertySetter(this, "alpha", 0.0f));
-            animator.setAcceleration(0.2f);
-            animator.setDeceleration(0.4f);
+            var animator = new Animator.Builder(TIMING_SOURCE)
+                    .setDuration(500, TimeUnit.MILLISECONDS)
+                    .setInterpolator(new AccelerationInterpolator(.2f, .4f))
+                    .addTarget(PropertySetter.getTargetTo(this, "alpha", 0.0f))
+                    .build();
             animator.start();
         }
 

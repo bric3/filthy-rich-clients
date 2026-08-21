@@ -33,19 +33,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.jdesktop.animation.transitions.Effect;
 import org.jdesktop.animation.transitions.EffectsManager;
 import org.jdesktop.animation.transitions.ScreenTransition;
 import org.jdesktop.animation.transitions.TransitionTarget;
 import org.jdesktop.animation.transitions.effects.CompositeEffect;
 import org.jdesktop.animation.transitions.effects.FadeIn;
+import org.jdesktop.animation.transitions.effects.MoveIn;
+import org.jdesktop.core.animation.timing.Animator;
+import org.jdesktop.core.animation.timing.interpolators.AccelerationInterpolator;
+import org.jdesktop.swing.animation.timing.sources.SwingTimerTimingSource;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
 
 /// @author Chet
 public class SearchTransition extends JComponent implements TransitionTarget, ActionListener {
@@ -80,13 +82,20 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
     //
     // Animation variables
     //
-    private final Animator animator = new Animator(500);    // Animate for half-second
+    private final SwingTimerTimingSource timingSource = createTimingSource();
+    private final Animator animator = new Animator.Builder(timingSource)
+            .setDuration(500, TimeUnit.MILLISECONDS)
+            .setInterpolator(new AccelerationInterpolator(.2f, .4f))
+            .build();
+    private final EffectsManager effectsManager = new EffectsManager();
     // Setup transition with:
     //      "this" as the transition container
     //      "this" as the TransitionTarget callback object
     //      animator as the animator that drives the transition
-    private final ScreenTransition transition = new ScreenTransition(this,
-            this, animator);
+    private final ScreenTransition transition = new ScreenTransition.Builder(this, this)
+            .setAnimator(animator)
+            .setEffectsManager(effectsManager)
+            .build();
     private CompositeEffect moverFader = null;
 
     // 
@@ -102,14 +111,16 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
     public SearchTransition() {
         results.setEditable(false);
 
-        // Setup the animation parameters
-        animator.setAcceleration(.2f);  // Accelerate for first 20%
-        animator.setDeceleration(.4f);  // Decelerate for last 40%
-
         // Set this as the listener for entries in the search field
         searchField.addActionListener(this);
 
         instructions.setFont(instructions.getFont().deriveFont(15f));
+    }
+
+    private static SwingTimerTimingSource createTimingSource() {
+        var timingSource = new SwingTimerTimingSource();
+        timingSource.init();
+        return timingSource;
     }
 
     @Override
@@ -171,7 +182,7 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
         var fader = new FadeIn();
         moverFader = new CompositeEffect(mover);
         moverFader.addEffect(fader);
-        EffectsManager.setEffect(scroller, moverFader, EffectsManager.TransitionType.APPEARING);
+        effectsManager.setEffect(scroller, moverFader, EffectsManager.TransitionType.APPEARING);
         prevHeight = getHeight();
     }
 
@@ -232,32 +243,5 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
             ex.printStackTrace();
         }
         SwingUtilities.invokeLater(SearchTransition::createAndShowGUI);
-    }
-}
-
-/// Custom effect: moves a component in to its end location
-/// from a specified starting point
-class MoveIn extends Effect {
-
-    private final Point startLocation = new Point();
-
-    public MoveIn(int x, int y) {
-        startLocation.x = x;
-        startLocation.y = y;
-    }
-
-    /// Handles setup of animation that will vary the location during the
-    /// transition
-    @Override
-    public void init(Animator animator, Effect parentEffect) {
-        var targetEffect = (parentEffect == null) ?
-                this :
-                parentEffect;
-        var ps = new PropertySetter(targetEffect,
-                "location",
-                startLocation,
-                new Point(getEnd().getX(), getEnd().getY()));
-        animator.addTarget(ps);
-        super.init(animator, parentEffect);
     }
 }
