@@ -3,9 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation(files("lib/TimingFramework.jar"))
-    // implementation(libs.timingframework.swing)
-    // implementation(libs.jdesktop.animation.timing)
+    implementation(libs.timingframework.swing)
 }
 
 application {

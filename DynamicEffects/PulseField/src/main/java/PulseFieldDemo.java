@@ -29,17 +29,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.core.animation.timing.Animator;
+import org.jdesktop.core.animation.timing.PropertySetter;
+import org.jdesktop.swing.animation.timing.sources.SwingTimerTimingSource;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.concurrent.TimeUnit;
 
 /// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class PulseFieldDemo extends JFrame {
+    private static final SwingTimerTimingSource TIMING_SOURCE = createTimingSource();
 
     public PulseFieldDemo() {
         super("PulseField Demo");
@@ -51,15 +54,25 @@ public class PulseFieldDemo extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    private static SwingTimerTimingSource createTimingSource() {
+        var timingSource = new SwingTimerTimingSource();
+        timingSource.init();
+        return timingSource;
+    }
+
     private JComponent buildPulsatingField() {
         var field = new JTextField(20);
 
         var border = new PulsatingBorder(field);
         field.setBorder(new CompoundBorder(field.getBorder(), border));
 
-        var setter = new PropertySetter(border, "thickness", 0.0f, 1.0f);
-        var animator = new Animator(900, Animator.INFINITE,
-                Animator.RepeatBehavior.REVERSE, setter);
+        var setter = PropertySetter.getTarget(border, "thickness", 0.0f, 1.0f);
+        var animator = new Animator.Builder(TIMING_SOURCE)
+                .setDuration(900, TimeUnit.MILLISECONDS)
+                .setRepeatCount(Animator.INFINITE)
+                .setRepeatBehavior(Animator.RepeatBehavior.REVERSE)
+                .addTarget(setter)
+                .build();
         animator.start();
 
         var panel = new JPanel(new FlowLayout());

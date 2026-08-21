@@ -15,12 +15,14 @@ The separate location makes their third-party provenance explicit and provides a
 
 - inspect and debug code that was previously available only as a checked-in binary;
 - adapt the library to current Java and Timing Framework APIs;
-- eventually replace the duplicated `AnimatedTransitions.jar` files with a Gradle project dependency.
 
 ## Current status
 
-Gradle includes this directory as the
-`:java-net:animated-transitions-swing` project. It builds against the maintained Timing Framework for Swing.
+This Gradle project includes this directory as the `:java-net:animated-transitions-swing` project. It builds against 
+Timing Framework 7.4.3 for Swing, and both Animated Transitions examples depend on this project instead of bundled JARs.
+
+The repository-level [animation libraries note](../../ANIMATION_LIBRARIES.md) explains how these libraries differ and
+evaluates newer Timing Framework coordinates, Radiance Animation, and `javax.swing.Timer` as follow-up options.
 
 This module should be understood as a vendored migration copy, not as source that was present in the original examples
 repository.

@@ -29,11 +29,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
-import org.jdesktop.animation.timing.interpolation.KeyFrames;
-import org.jdesktop.animation.timing.interpolation.KeyValues;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.core.animation.timing.Animator;
+import org.jdesktop.core.animation.timing.KeyFrames;
+import org.jdesktop.core.animation.timing.PropertySetter;
+import org.jdesktop.core.animation.timing.TimingTargetAdapter;
+import org.jdesktop.core.animation.timing.interpolators.AccelerationInterpolator;
+import org.jdesktop.swing.animation.timing.sources.SwingTimerTimingSource;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
@@ -42,9 +43,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class FadingDemo extends JFrame {
+    private static final SwingTimerTimingSource TIMING_SOURCE = createTimingSource();
+
     private ImageViewer imageViewer;
 
     private JButton nextButton;
@@ -79,25 +83,36 @@ public class FadingDemo extends JFrame {
                                          final String text) {
         var c = textComponent.getForeground();
 
-        var keyFrames = new KeyFrames(KeyValues.create(
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 255),
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 0),
-                new Color(c.getRed(), c.getGreen(), c.getBlue(), 255)
-        ));
-        var setter = new PropertySetter(textComponent, "foreground", keyFrames);
+        var opaque = new Color(c.getRed(), c.getGreen(), c.getBlue(), 255);
+        var transparent = new Color(c.getRed(), c.getGreen(), c.getBlue(), 0);
+        var keyFrames = new KeyFrames.Builder<>(opaque)
+                .addFrame(transparent)
+                .addFrame(opaque)
+                .build();
+        var setter = PropertySetter.getTarget(textComponent, "foreground", keyFrames);
 
-        var animator = new Animator(200, setter);
-        animator.addTarget(new TimingTargetAdapter() {
-            private boolean textSet = false;
+        var animator = new Animator.Builder(TIMING_SOURCE)
+                .setDuration(200, TimeUnit.MILLISECONDS)
+                .addTarget(setter)
+                .addTarget(new TimingTargetAdapter() {
+                    private boolean textSet = false;
 
-            public void timingEvent(float fraction) {
-                if (fraction >= 0.5f && !textSet) {
-                    textComponent.setText(text);
-                    textSet = true;
-                }
-            }
-        });
+                    @Override
+                    public void timingEvent(Animator source, double fraction) {
+                        if (fraction >= 0.5 && !textSet) {
+                            textComponent.setText(text);
+                            textSet = true;
+                        }
+                    }
+                })
+                .build();
         animator.start();
+    }
+
+    private static SwingTimerTimingSource createTimingSource() {
+        var timingSource = new SwingTimerTimingSource();
+        timingSource.init();
+        return timingSource;
     }
 
     private JComponent buildControls() {
@@ -115,10 +130,11 @@ public class FadingDemo extends JFrame {
             setTextAndAnimate(titleField, "Shanghai");
 
             if (glass.isVisible()) {
-                var animator = new Animator(200);
-                animator.addTarget(new PropertySetter(glass, "alpha", 0.0f));
-                animator.setAcceleration(0.2f);
-                animator.setDeceleration(0.4f);
+                var animator = new Animator.Builder(TIMING_SOURCE)
+                        .setDuration(200, TimeUnit.MILLISECONDS)
+                        .setInterpolator(new AccelerationInterpolator(.2f, .4f))
+                        .addTarget(PropertySetter.getTargetTo(glass, "alpha", 0.0f))
+                        .build();
                 animator.start();
             }
         });
@@ -144,11 +160,12 @@ public class FadingDemo extends JFrame {
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    var animator = new Animator(200);
-                    animator.addTarget(new PropertySetter(
-                            HelpGlassPane.this, "alpha", 0.0f));
-                    animator.setAcceleration(0.2f);
-                    animator.setDeceleration(0.4f);
+                    var animator = new Animator.Builder(TIMING_SOURCE)
+                            .setDuration(200, TimeUnit.MILLISECONDS)
+                            .setInterpolator(new AccelerationInterpolator(.2f, .4f))
+                            .addTarget(PropertySetter.getTargetTo(
+                                    HelpGlassPane.this, "alpha", 0.0f))
+                            .build();
                     animator.start();
                 }
             });
@@ -205,18 +222,20 @@ public class FadingDemo extends JFrame {
         }
 
         public void next() {
-            var animator = new Animator(1000);
-            animator.addTarget(new PropertySetter(this, "alpha", 1.0f));
-            animator.setAcceleration(0.2f);
-            animator.setDeceleration(0.4f);
+            var animator = new Animator.Builder(TIMING_SOURCE)
+                    .setDuration(1000, TimeUnit.MILLISECONDS)
+                    .setInterpolator(new AccelerationInterpolator(.2f, .4f))
+                    .addTarget(PropertySetter.getTargetTo(this, "alpha", 1.0f))
+                    .build();
             animator.start();
         }
 
         public void previous() {
-            var animator = new Animator(1000);
-            animator.addTarget(new PropertySetter(this, "alpha", 0.0f));
-            animator.setAcceleration(0.2f);
-            animator.setDeceleration(0.4f);
+            var animator = new Animator.Builder(TIMING_SOURCE)
+                    .setDuration(1000, TimeUnit.MILLISECONDS)
+                    .setInterpolator(new AccelerationInterpolator(.2f, .4f))
+                    .addTarget(PropertySetter.getTargetTo(this, "alpha", 0.0f))
+                    .build();
             animator.start();
         }
 

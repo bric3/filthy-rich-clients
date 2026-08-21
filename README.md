@@ -187,7 +187,7 @@ https://web.archive.org/web/20220118193103/http://filthyrichclients.org/)
 >
 > </details>
 
-## Moved project descriptor to Gradlew
+## Moved project descriptor to Gradle
 
 The original code required an old Netbeans distribution; also the projects had jars directly under the project structure
 (under `lib/`), sources and resources under the same `src` folder. Some classes were using Netbeans/JDesktop classes
@@ -198,8 +198,10 @@ This fork is now configured with Gradle, using standard Java project structure (
 as well as Java 25. Now uses the Swing's `GroupLayout` and `SwingWorker` instead of Netbeans/JDesktop and th swing
 worker jar.
 
-Note, however, dependency sources were on the defunct http://java.net, and are hard to come by in the same version. For
-now the jars are left in place.
+The animation samples use Timing Framework 7.4.3 from Maven Central and the in-tree
+`java-net:animated-transitions-swing` "port", so no legacy animation JARs are bundled, and appearing in sources.
+See [Animation libraries](ANIMATION_LIBRARIES.md) for the migration rationale, the libraries' roles, and possible 
+modern replacements.
 
 Now one can run an example this way
 
@@ -212,19 +214,3 @@ To discover the available projects, use
 ```bash
 ./gradlew projects
 ```
-
-### TODO
-
-* [ ] Remove jars
-    * [ ] AnimatedTransitions/ImageBrowser/lib/AnimatedTransitions.jar
-    * [ ] AnimatedTransitions/ImageBrowser/lib/TimingFramework-0.55.jar
-    * [ ] AnimatedTransitions/SearchTransition/lib/AnimatedTransitions.jar
-    * [ ] AnimatedTransitions/SearchTransition/lib/TimingFramework-0.55.jar
-    * [ ] DynamicEffects/Fading/lib/TimingFramework-0.54.jar
-    * [ ] DynamicEffects/Morphing/lib/TimingFramework-0.54.jar
-    * [ ] DynamicEffects/Motion/lib/TimingFramework-0.54.jar
-    * [ ] DynamicEffects/Pulse/lib/TimingFramework-0.54.jar
-    * [ ] DynamicEffects/PulseField/lib/TimingFramework-0.54.jar
-    * [ ] DynamicEffects/Spring/lib/TimingFramework-0.54.jar
-    * [ ] StaticEffects/Blur/lib/TimingFramework.jar
- 

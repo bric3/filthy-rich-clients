@@ -29,8 +29,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.core.animation.timing.Animator;
+import org.jdesktop.core.animation.timing.PropertySetter;
+import org.jdesktop.swing.animation.timing.sources.SwingTimerTimingSource;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,9 +40,11 @@ import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
 public class PulseDemo extends JFrame {
+    private static final SwingTimerTimingSource TIMING_SOURCE = createTimingSource();
 
     public PulseDemo() {
         super("Pulse Demo");
@@ -53,6 +56,12 @@ public class PulseDemo extends JFrame {
 
         setSize(320, 280);
         setLocationRelativeTo(null);
+    }
+
+    private static SwingTimerTimingSource createTimingSource() {
+        var timingSource = new SwingTimerTimingSource();
+        timingSource.init();
+        return timingSource;
     }
 
     private JComponent buildBlackPanel() {
@@ -125,9 +134,13 @@ public class PulseDemo extends JFrame {
         }
 
         private void startAnimator() {
-            var setter = new PropertySetter(this, "alpha", 0.0f, 1.0f);
-            var animator = new Animator(600, Animator.INFINITE,
-                    Animator.RepeatBehavior.REVERSE, setter);
+            var setter = PropertySetter.getTarget(this, "alpha", 0.0f, 1.0f);
+            var animator = new Animator.Builder(TIMING_SOURCE)
+                    .setDuration(600, TimeUnit.MILLISECONDS)
+                    .setRepeatCount(Animator.INFINITE)
+                    .setRepeatBehavior(Animator.RepeatBehavior.REVERSE)
+                    .addTarget(setter)
+                    .build();
             animator.start();
         }
 
