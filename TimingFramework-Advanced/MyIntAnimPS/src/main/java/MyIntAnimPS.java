@@ -61,7 +61,8 @@ public class MyIntAnimPS {
         // and process quits
         try {
             Thread.sleep(2000);
-        } catch (Exception _) {
+        } catch (InterruptedException _) {
+            Thread.currentThread().interrupt();
         }
     }
 }

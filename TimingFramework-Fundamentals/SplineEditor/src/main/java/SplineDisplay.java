@@ -104,7 +104,7 @@ public class SplineDisplay extends EquationDisplay {
         repaint();
     }
 
-    synchronized void saveAsTemplate(OutputStream out) {
+    synchronized void saveAsTemplate(OutputStream out) throws IOException {
         var image = Java2dHelper.createCompatibleImage(getWidth(), getHeight());
         var g = image.getGraphics();
         isSaving = true;
@@ -120,13 +120,12 @@ public class SplineDisplay extends EquationDisplay {
                 (int) (yPositionToPixel(0.0) - yPositionToPixel(1.0)) + 1);
 
         try {
-            ImageIO.write(subImage, "PNG", out);
-        } catch (IOException _) {
+            if (!ImageIO.write(subImage, "PNG", out)) {
+                throw new IOException("No PNG image writer is available");
+            }
+        } finally {
+            image.flush();
         }
-
-        image.flush();
-        subImage = null;
-        image = null;
     }
 
     @Override

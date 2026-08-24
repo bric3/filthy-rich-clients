@@ -70,7 +70,9 @@ public class SwingTimerDemo implements ActionListener {
             } else {
                 Thread.sleep(PROCESSING_TIME);
             }
-        } catch (Exception _) {
+        } catch (InterruptedException _) {
+            Thread.currentThread().interrupt();
+            timer.stop();
         }
     }
 
@@ -87,7 +89,10 @@ public class SwingTimerDemo implements ActionListener {
         // Sleep for long enough that the first timer ends
         try {
             Thread.sleep(DURATION * 2);
-        } catch (Exception _) {
+        } catch (InterruptedException _) {
+            Thread.currentThread().interrupt();
+            timer.stop();
+            return;
         }
 
         // Run a timer with no coalescing to get fixed-rate behavior

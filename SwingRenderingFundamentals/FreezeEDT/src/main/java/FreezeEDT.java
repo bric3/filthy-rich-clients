@@ -15,6 +15,7 @@ public class FreezeEDT extends JFrame implements ActionListener {
         try {
             Thread.sleep(4000);
         } catch (InterruptedException _) {
+            Thread.currentThread().interrupt();
         }
     }
 

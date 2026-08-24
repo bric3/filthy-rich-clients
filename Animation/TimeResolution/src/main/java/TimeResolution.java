@@ -60,7 +60,9 @@ public class TimeResolution implements ActionListener {
         while (elapsedTimeActual < max) {
             try {
                 Thread.sleep(increment);
-            } catch (Exception _) {
+            } catch (InterruptedException _) {
+                Thread.currentThread().interrupt();
+                return;
             }
             var currentTime = System.currentTimeMillis();
             var currentNanos = System.nanoTime();
@@ -85,7 +87,9 @@ public class TimeResolution implements ActionListener {
             for (var i = 0; i < iterations; ++i) {
                 try {
                     Thread.sleep(sleepTime);
-                } catch (Exception _) {
+                } catch (InterruptedException _) {
+                    Thread.currentThread().interrupt();
+                    return;
                 }
             }
             var endTime = System.nanoTime();
@@ -107,9 +111,9 @@ public class TimeResolution implements ActionListener {
             for (var i = 0; i < iterations; ++i) {
                 try {
                     wait(sleepTime);
-                } catch (Exception e) {
-                    System.out.println("Exception: " + e);
-                    Thread.dumpStack();
+                } catch (InterruptedException _) {
+                    Thread.currentThread().interrupt();
+                    return;
                 }
             }
             var endTime = System.nanoTime();
@@ -157,7 +161,10 @@ public class TimeResolution implements ActionListener {
             while (timerIteration > 0) {
                 try {
                     Thread.sleep(1000);
-                } catch (Exception _) {
+                } catch (InterruptedException _) {
+                    Thread.currentThread().interrupt();
+                    timer.stop();
+                    return;
                 }
             }
         }

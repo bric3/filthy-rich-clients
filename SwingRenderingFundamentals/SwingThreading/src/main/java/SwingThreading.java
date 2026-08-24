@@ -82,6 +82,8 @@ public class SwingThreading extends JFrame implements ActionListener {
                     try {
                         Thread.sleep(300);
                     } catch (InterruptedException _) {
+                        Thread.currentThread().interrupt();
+                        return;
                     }
                     edt.incrementLabel();
                 }

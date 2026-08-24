@@ -2,6 +2,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -156,10 +157,13 @@ public class TestDragNDropFiles {
                         if (transferData != null && !transferData.isEmpty()) {
                             importFiles(transferData);
                             dtde.dropComplete(true);
+                        } else {
+                            dtde.dropComplete(false);
                         }
 
-                    } catch (Exception ex) {
+                    } catch (UnsupportedFlavorException | IOException ex) {
                         ex.printStackTrace();
+                        dtde.dropComplete(false);
                     }
                 } else {
                     dtde.rejectDrop();

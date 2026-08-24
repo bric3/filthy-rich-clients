@@ -65,7 +65,8 @@ public class SplineEditor extends JFrame {
             } catch (ClassNotFoundException
                      | InstantiationException
                      | IllegalAccessException
-                     | UnsupportedLookAndFeelException _) {
+                     | UnsupportedLookAndFeelException e) {
+                System.err.println("Could not set the system look and feel: " + e);
             }
 
             new SplineEditor().setVisible(true);

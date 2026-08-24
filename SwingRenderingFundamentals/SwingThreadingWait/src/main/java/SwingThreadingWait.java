@@ -64,6 +64,8 @@ public class SwingThreadingWait extends JFrame implements ActionListener {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException _) {
+                    Thread.currentThread().interrupt();
+                    return;
                 }
 
                 final var elapsed = (int) ((System.currentTimeMillis() - start) / 1000);
@@ -79,7 +81,11 @@ public class SwingThreadingWait extends JFrame implements ActionListener {
                         if (answer[0] == JOptionPane.YES_OPTION) {
                             return;
                         }
-                    } catch (InterruptedException | InvocationTargetException _) {
+                    } catch (InterruptedException _) {
+                        Thread.currentThread().interrupt();
+                        return;
+                    } catch (InvocationTargetException ex) {
+                        throw new IllegalStateException("Could not show the abort dialog", ex.getCause());
                     }
                 }
             }

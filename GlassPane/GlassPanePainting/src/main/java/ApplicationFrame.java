@@ -125,8 +125,11 @@ public class ApplicationFrame extends JFrame {
             do {
                 try {
                     Thread.sleep(30 + (int) (Math.random() * MAX_DELAY));
-                } catch (InterruptedException ex) {
-                    // who cares here?
+                } catch (InterruptedException _) {
+                    Thread.currentThread().interrupt();
+                    glassPane.setVisible(false);
+                    glassPane.setProgress(0);
+                    return;
                 }
                 i += (int) (Math.random() * 5);
                 glassPane.setProgress(i);

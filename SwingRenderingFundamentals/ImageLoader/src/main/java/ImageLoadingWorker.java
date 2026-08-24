@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 // Final result is a list of Image
 // Intermediate result is a message as a String
@@ -25,7 +27,13 @@ public class ImageLoadingWorker extends SwingWorker<List<Image>, String> {
                 viewer.add(new JLabel(new ImageIcon(image)));
                 viewer.revalidate();
             }
-        } catch (Exception _) {
+        } catch (InterruptedException _) {
+            Thread.currentThread().interrupt();
+            log.append("Image loading interrupted\n");
+        } catch (CancellationException _) {
+            log.append("Image loading cancelled\n");
+        } catch (ExecutionException e) {
+            log.append("Image loading failed: " + e.getCause() + "\n");
         }
     }
 

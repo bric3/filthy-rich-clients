@@ -70,7 +70,9 @@ public class UtilTimerDemo extends TimerTask {
             } else {
                 Thread.sleep(PROCESSING_TIME);
             }
-        } catch (Exception _) {
+        } catch (InterruptedException _) {
+            Thread.currentThread().interrupt();
+            timer.cancel();
         }
     }
 
@@ -87,7 +89,10 @@ public class UtilTimerDemo extends TimerTask {
         // Sleep long enough to let the first timer finish
         try {
             Thread.sleep(DURATION * 2);
-        } catch (Exception _) {
+        } catch (InterruptedException _) {
+            Thread.currentThread().interrupt();
+            timer.cancel();
+            return;
         }
 
         // Start and run a fixed-rate timer
@@ -97,4 +102,3 @@ public class UtilTimerDemo extends TimerTask {
         timer.scheduleAtFixedRate(new UtilTimerDemo(), DELAY, DELAY);
     }
 }
-

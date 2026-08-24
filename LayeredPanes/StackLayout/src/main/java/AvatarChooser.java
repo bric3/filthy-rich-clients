@@ -548,7 +548,8 @@ public class AvatarChooser extends JPanel {
                     startFader();
                 }
             }
-        } catch (IOException _) {
+        } catch (IOException e) {
+            System.err.println("Could not load avatar images: " + e);
         }
 
         loadingDone = true;

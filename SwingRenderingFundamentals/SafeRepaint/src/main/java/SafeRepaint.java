@@ -53,6 +53,8 @@ public class SafeRepaint extends JFrame {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException _) {
+                    Thread.currentThread().interrupt();
+                    return;
                 }
             }
         }).start();
