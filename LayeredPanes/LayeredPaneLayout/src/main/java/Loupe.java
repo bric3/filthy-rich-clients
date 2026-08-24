@@ -32,8 +32,8 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Area;
@@ -61,19 +61,15 @@ public class Loupe extends JComponent {
                 setLocation(location);
             }
         });
-        addComponentListener(new ComponentListener() {
+        addComponentListener(new ComponentAdapter() {
+            @Override
             public void componentHidden(ComponentEvent componentEvent) {
                 resetBuffer();
             }
 
-            public void componentMoved(ComponentEvent componentEvent) {
-            }
-
+            @Override
             public void componentResized(ComponentEvent componentEvent) {
                 resetBuffer();
-            }
-
-            public void componentShown(ComponentEvent componentEvent) {
             }
         });
     }

@@ -253,8 +253,8 @@ public class AvatarChooser extends JPanel {
 
         var text_x = (float) ((getWidth() - bounds.getWidth()) / 2.0);
         var text_y = (float) (y + (bulletHeight - layout.getAscent() -
-                                   layout.getDescent()) / 2.0) +
-                     layout.getAscent() - layout.getLeading();
+                layout.getDescent()) / 2.0) +
+                layout.getAscent() - layout.getLeading();
 
         g2.setColor(Color.BLACK);
         layout.draw(g2, text_x, text_y + 1);
@@ -308,7 +308,7 @@ public class AvatarChooser extends JPanel {
         var avatarPosition = this.avatarPosition + spacing;
 
         if (avatarIndex + offset < 0 ||
-            avatarIndex + offset >= avatars.size()) {
+                avatarIndex + offset >= avatars.size()) {
             return;
         }
 
@@ -401,7 +401,7 @@ public class AvatarChooser extends JPanel {
     private void findAvatars() {
         avatars = new ArrayList<>();
 
-        picturesFinder = new Thread(new PicturesFinderThread());
+        picturesFinder = new Thread(this::loadPictures);
         picturesFinder.start();
     }
 
@@ -533,50 +533,48 @@ public class AvatarChooser extends JPanel {
         return null;
     }
 
-    private class PicturesFinderThread implements Runnable {
-        public void run() {
-            try {
-                var files = findPictures();
-                for (var i = 0; i < files.size(); i++) {
-                    BufferedImage image;
-                    try (var stream = Files.newInputStream(files.get(i))) {
-                        image = ImageIO.read(stream);
-                    }
-                    avatars.add(createReflectedPicture(image));
-
-                    if (i == (files.size() / 2) + avatarAmount / 2) {
-                        setAvatarIndex(i - avatarAmount / 2);
-                        startFader();
-                    }
+    private void loadPictures() {
+        try {
+            var files = findPictures();
+            for (var i = 0; i < files.size(); i++) {
+                BufferedImage image;
+                try (var stream = Files.newInputStream(files.get(i))) {
+                    image = ImageIO.read(stream);
                 }
-            } catch (IOException _) {
-            }
+                avatars.add(createReflectedPicture(image));
 
-            loadingDone = true;
+                if (i == (files.size() / 2) + avatarAmount / 2) {
+                    setAvatarIndex(i - avatarAmount / 2);
+                    startFader();
+                }
+            }
+        } catch (IOException _) {
         }
 
-        private List<Path> findPictures() throws IOException {
-            var resource = getClass().getClassLoader().getResource("images");
-            if (resource == null) {
-                throw new IOException("Could not find images");
-            }
+        loadingDone = true;
+    }
 
-            try {
-                return findPictures(Path.of(resource.toURI()));
-            } catch (URISyntaxException e) {
-                throw new IOException("Bad images location", e);
-            }
+    private List<Path> findPictures() throws IOException {
+        var resource = getClass().getClassLoader().getResource("images");
+        if (resource == null) {
+            throw new IOException("Could not find images");
         }
 
-        private List<Path> findPictures(Path imagesDirectory) throws IOException {
-            var matcher = imagesDirectory.getFileSystem().getPathMatcher("glob:*.jpg");
-            try (var paths = Files.find(
-                    imagesDirectory,
-                    Integer.MAX_VALUE,
-                    (path, attributes) ->
-                            attributes.isRegularFile() && matcher.matches(path.getFileName()))) {
-                return paths.sorted().toList();
-            }
+        try {
+            return findPictures(Path.of(resource.toURI()));
+        } catch (URISyntaxException e) {
+            throw new IOException("Bad images location", e);
+        }
+    }
+
+    private List<Path> findPictures(Path imagesDirectory) throws IOException {
+        var matcher = imagesDirectory.getFileSystem().getPathMatcher("glob:*.jpg");
+        try (var paths = Files.find(
+                imagesDirectory,
+                Integer.MAX_VALUE,
+                (path, attributes) ->
+                        attributes.isRegularFile() && matcher.matches(path.getFileName()))) {
+            return paths.sorted().toList();
         }
     }
 
@@ -679,26 +677,12 @@ public class AvatarChooser extends JPanel {
         public void keyPressed(KeyEvent e) {
             var keyCode = e.getKeyCode();
             switch (keyCode) {
-                case KeyEvent.VK_LEFT:
-                case KeyEvent.VK_UP:
-                    scrollAndAnimateBy(-1);
-                    break;
-                case KeyEvent.VK_RIGHT:
-                case KeyEvent.VK_DOWN:
-                    scrollAndAnimateBy(1);
-                    break;
-                case KeyEvent.VK_END:
-                    scrollBy(avatars.size() - avatarIndex - 1);
-                    break;
-                case KeyEvent.VK_HOME:
-                    scrollBy(-avatarIndex - 1);
-                    break;
-                case KeyEvent.VK_PAGE_UP:
-                    scrollAndAnimateBy(-avatarAmount / 2);
-                    break;
-                case KeyEvent.VK_PAGE_DOWN:
-                    scrollAndAnimateBy(avatarAmount / 2);
-                    break;
+                case KeyEvent.VK_LEFT, KeyEvent.VK_UP -> scrollAndAnimateBy(-1);
+                case KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN -> scrollAndAnimateBy(1);
+                case KeyEvent.VK_END -> scrollBy(avatars.size() - avatarIndex - 1);
+                case KeyEvent.VK_HOME -> scrollBy(-avatarIndex - 1);
+                case KeyEvent.VK_PAGE_UP -> scrollAndAnimateBy(-avatarAmount / 2);
+                case KeyEvent.VK_PAGE_DOWN -> scrollAndAnimateBy(avatarAmount / 2);
             }
         }
     }
@@ -714,8 +698,8 @@ public class AvatarChooser extends JPanel {
         @Override
         public void mouseClicked(MouseEvent e) {
             if ((faderTimer != null && faderTimer.isRunning()) ||
-                (scrollerTimer != null && scrollerTimer.isRunning()) ||
-                drawableAvatars == null) {
+                    (scrollerTimer != null && scrollerTimer.isRunning()) ||
+                    drawableAvatars == null) {
                 return;
             }
 
@@ -780,7 +764,7 @@ public class AvatarChooser extends JPanel {
         @Override
         public void mouseMoved(MouseEvent e) {
             if ((scrollerTimer != null && scrollerTimer.isRunning()) ||
-                drawableAvatars == null) {
+                    drawableAvatars == null) {
                 return;
             }
 

@@ -176,12 +176,12 @@ public class ReflectionPanel extends JPanel {
             var lastDeltaY = c.getY();
 
             var parent = c.getParent();
-            while (parent instanceof JComponent) {
-                if (!parent.isVisible()) {
+            while (parent instanceof JComponent parentComponent) {
+                if (!parentComponent.isVisible()) {
                     return;
                 }
 
-                if (parent instanceof ReflectionPanel) {
+                if (parentComponent instanceof ReflectionPanel reflectionPanel) {
                     x += lastDeltaX;
                     y += lastDeltaY;
 
@@ -190,13 +190,13 @@ public class ReflectionPanel extends JPanel {
 
                     lastDeltaX = lastDeltaY = 0;
 
-                    c = (JComponent) parent;
+                    c = reflectionPanel;
                 }
 
-                lastDeltaX += parent.getX();
-                lastDeltaY += parent.getY();
+                lastDeltaX += parentComponent.getX();
+                lastDeltaY += parentComponent.getY();
 
-                parent = parent.getParent();
+                parent = parentComponent.getParent();
             }
 
             super.addDirtyRegion(c, x, y, w, h);

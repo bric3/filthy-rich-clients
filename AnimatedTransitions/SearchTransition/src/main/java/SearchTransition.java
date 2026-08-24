@@ -51,6 +51,11 @@ import java.util.concurrent.TimeUnit;
 
 /// @author Chet
 public class SearchTransition extends JComponent implements TransitionTarget, ActionListener {
+    private enum Screen {
+        SEARCH,
+        RESULTS
+    }
+
     //
     // GUI components used in the application screens
     //
@@ -101,7 +106,7 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
     // 
     // Misc other instance variables
     //
-    private int currentScreen = 0;      // Which screen are we on?
+    private Screen currentScreen = Screen.SEARCH;
     private int prevHeight = -1;
     private Paint bgGradient = null;
     private int prevW, prevH;
@@ -202,14 +207,8 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
         // Clear out current GUI state
         removeAll();
         switch (currentScreen) {
-            case 0:
-                setupSearchScreen();
-                break;
-            case 1:
-                setupResultsScreen();
-                break;
-            default:
-                break;
+            case SEARCH -> setupSearchScreen();
+            case RESULTS -> setupResultsScreen();
         }
     }
 
@@ -219,7 +218,7 @@ public class SearchTransition extends JComponent implements TransitionTarget, Ac
             setupBackgroundAndEffect();
         }
         // Change currentScreen, used later in setupNextScreen() callback
-        currentScreen = (currentScreen == 0) ? 1 : 0;
+        currentScreen = currentScreen == Screen.SEARCH ? Screen.RESULTS : Screen.SEARCH;
         transition.start();
     }
 

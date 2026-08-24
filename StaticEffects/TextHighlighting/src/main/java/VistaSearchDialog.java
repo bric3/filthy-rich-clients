@@ -245,9 +245,9 @@ public class VistaSearchDialog extends JComponent {
         private void drawText(Graphics2D g2, int size, float opacity) {
             var oldComposite = g2.getComposite();
             var preAlpha = 1.0f;
-            if (oldComposite instanceof AlphaComposite &&
-                ((AlphaComposite) oldComposite).getRule() == AlphaComposite.SRC_OVER) {
-                preAlpha = ((AlphaComposite) oldComposite).getAlpha();
+            if (oldComposite instanceof AlphaComposite alphaComposite &&
+                alphaComposite.getRule() == AlphaComposite.SRC_OVER) {
+                preAlpha = alphaComposite.getAlpha();
             }
 
             g2.setFont(getFont());
