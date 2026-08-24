@@ -36,7 +36,7 @@ import java.io.IOException;
 
 /// See [org.jdesktop.swingx.image.FastBlurFilter].
 ///
-/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com>
 public class FastBlurDemo extends JFrame {
     private final BlurTestPanel blurTestPanel;
     private final JSlider radiusSlider;

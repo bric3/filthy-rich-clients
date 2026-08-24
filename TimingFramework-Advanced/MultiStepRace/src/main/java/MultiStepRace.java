@@ -138,13 +138,7 @@ public class MultiStepRace {
     }
 
     /// Handle clicks on the Stop button to stop the race
-    private static class Stopper implements ActionListener {
-        final Animator timer;
-
-        Stopper(Animator timer) {
-            this.timer = timer;
-        }
-
+    private record Stopper(Animator timer) implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
             timer.stop();
         }

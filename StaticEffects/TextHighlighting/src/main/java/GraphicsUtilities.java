@@ -69,7 +69,7 @@ import java.net.URL;
 /// These methods try to avoid unmanaging the image in order to keep good
 /// performance.
 ///
-/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com>
 public class GraphicsUtilities {
     private GraphicsUtilities() {
     }

@@ -40,7 +40,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.concurrent.TimeUnit;
 
-/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com>
 public class PulseFieldDemo extends JFrame {
     private static final SwingTimerTimingSource TIMING_SOURCE = createTimingSource();
 

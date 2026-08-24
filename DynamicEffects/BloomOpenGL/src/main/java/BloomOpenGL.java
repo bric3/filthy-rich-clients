@@ -52,7 +52,6 @@ import java.nio.ByteBuffer;
 /// but you can do it by reading the texture data from frameBufferTexture2.
 ///
 /// @author Romain Guy <romain.guy@mac.com>
-/// </romain.guy@mac.com>
 /// @see <a href="https://jogamp.org/">jogamp</a>
 public class BloomOpenGL extends GLJPanel implements GLEventListener {
     private int frameBufferObject1 = -1;

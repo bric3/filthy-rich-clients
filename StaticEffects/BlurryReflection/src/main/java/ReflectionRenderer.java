@@ -103,7 +103,7 @@ import java.beans.PropertyChangeSupport;
 ///
 /// `ReflectionRenderer` is not guaranteed to be thread-safe.
 ///
-/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com>
 public class ReflectionRenderer {
     /// Identifies a change to the opacity used to render the reflection.
     public static final String OPACITY_CHANGED_PROPERTY = "reflection_opacity";

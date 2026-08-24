@@ -76,7 +76,6 @@ import java.beans.PropertyChangeSupport;
 /// `ShadowRenderer` is not guaranteed to be thread-safe.
 ///
 /// @author Romain Guy <romain.guy@mac.com>
-/// </romain.guy@mac.com>
 /// @author Sebastien Petrucci
 public class ShadowRenderer {
     /// Identifies a change to the size used to render the shadow.

@@ -40,7 +40,7 @@ import java.awt.*;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com>
 public class MotionDemo extends JFrame {
     private static final SwingTimerTimingSource TIMING_SOURCE = createTimingSource();
 

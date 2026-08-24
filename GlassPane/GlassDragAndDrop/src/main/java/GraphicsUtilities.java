@@ -71,7 +71,6 @@ import java.util.Optional;
 /// performance.
 ///
 /// @author Romain Guy <romain.guy@mac.com>
-/// </romain.guy@mac.com>
 /// @author rbair
 public class GraphicsUtilities {
     private GraphicsUtilities() {

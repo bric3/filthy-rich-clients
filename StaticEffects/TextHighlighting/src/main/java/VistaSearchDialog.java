@@ -170,7 +170,8 @@ public class VistaSearchDialog extends JComponent {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
         var tk = Toolkit.getDefaultToolkit();
-        var desktopHints = (Map) (tk.getDesktopProperty("awt.font.desktophints"));
+        @SuppressWarnings("unchecked")
+        var desktopHints = (Map<RenderingHints.Key, Object>) tk.getDesktopProperty("awt.font.desktophints");
         if (desktopHints != null) {
             g2.addRenderingHints(desktopHints);
         }

@@ -38,7 +38,7 @@ import org.progx.artemis.graphics.GraphicsUtilities;
 
 import java.awt.image.BufferedImage;
 
-/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com>
 public class FastBlurFilter extends AbstractFilter {
     private final int radius;
 

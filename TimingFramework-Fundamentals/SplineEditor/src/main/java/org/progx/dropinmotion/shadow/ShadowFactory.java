@@ -127,8 +127,7 @@ import java.util.HashMap;
 /// `ShadowFactory` is not guaranteed to be thread-safe.
 ///
 /// @author Romain Guy <romain.guy@mac.com>
-/// </romain.guy@mac.com>
-/// @author Sébastien Petrucci <sebastien_petrucci@yahoo.fr></sebastien_petrucci@yahoo.fr>
+/// @author Sébastien Petrucci <sebastien_petrucci@yahoo.fr>
 public class ShadowFactory {
     /// Key for the blur quality rendering hint.
     public static final String KEY_BLUR_QUALITY = "blur_quality";

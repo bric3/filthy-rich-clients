@@ -58,7 +58,7 @@ import java.awt.image.BufferedImage;
 ///   - `cM`: the solid color to mix with the source image
 ///   - `mixValue`: strength of the mix, a value between 0.0 and 1.0
 ///
-/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com>
 public class ColorTintFilter extends AbstractFilter {
     private final Color mixColor;
     private final float mixValue;

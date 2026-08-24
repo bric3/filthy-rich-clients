@@ -32,7 +32,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com>
 public class DummyPanel extends JPanel {
 
     /// Creates new form DummyPanel

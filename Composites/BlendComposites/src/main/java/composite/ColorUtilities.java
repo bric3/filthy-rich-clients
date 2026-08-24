@@ -39,7 +39,7 @@ import java.awt.*;
 /// `ColorUtilities` contains a set of tools to perform
 /// common color operations easily.
 ///
-/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com>
 public class ColorUtilities {
     private ColorUtilities() {
     }

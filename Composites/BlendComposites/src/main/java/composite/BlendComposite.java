@@ -88,16 +88,22 @@ import java.awt.image.*;
 ///
 /// TThe blending mode _SoftLight_ has not been implemented yet.
 ///
+/// @param mode The blending mode of this composite.
+/// @param alpha The alpha or the opacity of this composite.
+///              If no opacity has been defined, 1.0 is returned.
+///
 /// @author Romain Guy <romain.guy@mac.com>
-/// </romain.guy@mac.com>
 /// @see Graphics2D
 /// @see Composite
 /// @see AlphaComposite
-public final class BlendComposite implements Composite {
+public record BlendComposite(
+        BlendingMode mode,
+        float alpha
+) implements Composite {
     /// A blending mode defines the compositing rule of a
     /// [BlendComposite].
     ///
-    /// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+    /// @author Romain Guy <romain.guy@mac.com>
     public enum BlendingMode {
         AVERAGE,
         MULTIPLY,
@@ -164,21 +170,15 @@ public final class BlendComposite implements Composite {
     public static final BlendComposite Color = new BlendComposite(BlendingMode.COLOR);
     public static final BlendComposite Luminosity = new BlendComposite(BlendingMode.LUMINOSITY);
 
-    private final float alpha;
-    private final BlendingMode mode;
-
     private BlendComposite(BlendingMode mode) {
         this(mode, 1.0f);
     }
 
-    private BlendComposite(BlendingMode mode, float alpha) {
-        this.mode = mode;
-
+    public BlendComposite {
         if (alpha < 0.0f || alpha > 1.0f) {
             throw new IllegalArgumentException(
                     "alpha must be comprised between 0.0f and 1.0f");
         }
-        this.alpha = alpha;
     }
 
     /// Creates a new composite based on the blending mode passed
@@ -213,7 +213,7 @@ public final class BlendComposite implements Composite {
     /// @return a `BlendComposite` object derived from this object,
     /// that uses the specified blending mode
     public BlendComposite derive(BlendingMode mode) {
-        return this.mode == mode ? this : new BlendComposite(mode, getAlpha());
+        return this.mode == mode ? this : new BlendComposite(mode, alpha());
     }
 
     /// Returns a `BlendComposite` object that uses the specified
@@ -227,36 +227,7 @@ public final class BlendComposite implements Composite {
     /// @throws IllegalArgumentException if the opacity is less than 0.0 or
     ///                                  greater than 1.0
     public BlendComposite derive(float alpha) {
-        return this.alpha == alpha ? this : new BlendComposite(getMode(), alpha);
-    }
-
-    /// Returns the opacity of this composite. If no opacity has been defined,
-    /// 1.0 is returned.
-    ///
-    /// @return the alpha value, or opacity, of this object
-    public float getAlpha() {
-        return alpha;
-    }
-
-    /// Returns the blending mode of this composite.
-    ///
-    /// @return the blending mode used by this object
-    public BlendingMode getMode() {
-        return mode;
-    }
-
-    @Override
-    public int hashCode() {
-        return Float.floatToIntBits(alpha) * 31 + mode.ordinal();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof BlendComposite bc)) {
-            return false;
-        }
-
-        return mode == bc.mode && alpha == bc.alpha;
+        return this.alpha == alpha ? this : new BlendComposite(mode(), alpha);
     }
 
     private static boolean checkComponentsOrder(ColorModel cm) {
@@ -301,7 +272,7 @@ public final class BlendComposite implements Composite {
             var width = Math.min(src.getWidth(), dstIn.getWidth());
             var height = Math.min(src.getHeight(), dstIn.getHeight());
 
-            var alpha = composite.getAlpha();
+            var alpha = composite.alpha();
 
             var result = new int[4];
             var srcPixel = new int[4];
@@ -344,7 +315,7 @@ public final class BlendComposite implements Composite {
         public abstract void blend(int[] src, int[] dst, int[] result);
 
         public static Blender getBlenderFor(BlendComposite composite) {
-            return switch (composite.getMode()) {
+            return switch (composite.mode()) {
                 case ADD -> new Blender() {
                     @Override
                     public void blend(int[] src, int[] dst, int[] result) {

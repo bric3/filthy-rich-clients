@@ -31,7 +31,7 @@
 
 import java.awt.image.BufferedImage;
 
-/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com>
 public class UnsharpMaskFilter extends AbstractFilter {
     private final float amount;
     private final int radius;

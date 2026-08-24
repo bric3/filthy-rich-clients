@@ -40,12 +40,13 @@ import java.util.Map;
 /// @author Chet
 public class FontHints extends JComponent {
 
-    final Map desktopHints;
+    final Map<RenderingHints.Key, Object> desktopHints;
 
     /// Creates a new instance of FontHints
+    @SuppressWarnings("unchecked")
     public FontHints() {
         var tk = Toolkit.getDefaultToolkit();
-        desktopHints = (Map) (tk.getDesktopProperty("awt.font.desktophints"));
+        desktopHints = (Map<RenderingHints.Key, Object>) tk.getDesktopProperty("awt.font.desktophints");
     }
 
     protected void paintComponent(Graphics g) {

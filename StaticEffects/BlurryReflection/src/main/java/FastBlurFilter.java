@@ -43,7 +43,7 @@ import java.awt.image.BufferedImage;
 /// to avoid artifacts at the edges. The performance of this filter are
 /// independant from the radius.
 ///
-/// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com>
 public class FastBlurFilter extends AbstractFilter {
     private final int radius;
 

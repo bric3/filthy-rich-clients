@@ -176,7 +176,7 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
         if (equation != null) {
             DrawableEquation toRemove = null;
             for (var drawable : equations) {
-                if (drawable.getEquation() == equation) {
+                if (drawable.equation() == equation) {
                     toRemove = drawable;
                     break;
                 }
@@ -241,8 +241,8 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
 
     private void drawEquations(Graphics2D g2) {
         for (var drawable : equations) {
-            g2.setColor(drawable.getColor());
-            drawEquation(g2, drawable.getEquation());
+            g2.setColor(drawable.color());
+            drawEquation(g2, drawable.equation());
         }
     }
 
@@ -419,22 +419,10 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
         g2.fill(g2.getClipBounds());
     }
 
-    private static class DrawableEquation {
-        private final AbstractEquation equation;
-        private final Color color;
-
-        DrawableEquation(AbstractEquation equation, Color color) {
-            this.equation = equation;
-            this.color = color;
-        }
-
-        AbstractEquation getEquation() {
-            return equation;
-        }
-
-        Color getColor() {
-            return color;
-        }
+    private record DrawableEquation(
+            AbstractEquation equation,
+            Color color
+    ) {
     }
 
     private class ZoomHandler implements MouseWheelListener {
@@ -476,12 +464,12 @@ public class EquationDisplay extends JComponent implements PropertyChangeListene
             var dragEnd = e.getPoint();
 
             var distance = xPixelToPosition(dragEnd.getX()) -
-                           xPixelToPosition(dragStart.getX());
+                    xPixelToPosition(dragStart.getX());
             minX -= distance;
             maxX -= distance;
 
             distance = yPixelToPosition(dragEnd.getY()) -
-                       yPixelToPosition(dragStart.getY());
+                    yPixelToPosition(dragStart.getY());
             minY -= distance;
             maxY -= distance;
 

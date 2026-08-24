@@ -86,16 +86,22 @@ import java.awt.image.*;
 ///
 /// TThe blending mode _SoftLight_ has not been implemented yet.
 ///
+/// @param mode The blending mode of this composite.
+/// @param alpha The alpha or the opacity of this composite.
+///              If no opacity has been defined, 1.0 is returned.
+///
 /// @author Romain Guy <romain.guy@mac.com>
-/// </romain.guy@mac.com>
 /// @see java.awt.Graphics2D
 /// @see Composite
 /// @see AlphaComposite
-public final class BlendComposite implements Composite {
+public record BlendComposite(
+        BlendingMode mode,
+        float alpha
+) implements Composite {
     /// A blending mode defines the compositing rule of a
     /// [BlendComposite].
     ///
-    /// @author Romain Guy <romain.guy@mac.com></romain.guy@mac.com>
+    /// @author Romain Guy <romain.guy@mac.com>
     public enum BlendingMode {
         AVERAGE,
         MULTIPLY,
@@ -162,21 +168,15 @@ public final class BlendComposite implements Composite {
     public static final BlendComposite Color = new BlendComposite(BlendingMode.COLOR);
     public static final BlendComposite Luminosity = new BlendComposite(BlendingMode.LUMINOSITY);
 
-    private final float alpha;
-    private final BlendingMode mode;
-
     private BlendComposite(BlendingMode mode) {
         this(mode, 1.0f);
     }
 
-    private BlendComposite(BlendingMode mode, float alpha) {
-        this.mode = mode;
-
+    public BlendComposite {
         if (alpha < 0.0f || alpha > 1.0f) {
             throw new IllegalArgumentException(
                     "alpha must be comprised between 0.0f and 1.0f");
         }
-        this.alpha = alpha;
     }
 
     /// Creates a new composite based on the blending mode passed
@@ -226,37 +226,6 @@ public final class BlendComposite implements Composite {
     ///                                  greater than 1.0
     public BlendComposite derive(float alpha) {
         return this.alpha == alpha ? this : new BlendComposite(mode(), alpha);
-    }
-
-    /// Returns the opacity of this composite. If no opacity has been defined,
-    /// 1.0 is returned.
-    ///
-    /// @return the alpha value, or opacity, of this object
-    public float alpha() {
-        return alpha;
-    }
-
-    /// Returns the blending mode of this composite.
-    ///
-    /// @return the blending mode used by this object
-    public BlendingMode mode() {
-        return mode;
-    }
-
-    /// {@inheritDoc}
-    @Override
-    public int hashCode() {
-        return Float.floatToIntBits(alpha) * 31 + mode.ordinal();
-    }
-
-    /// {@inheritDoc}
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof BlendComposite bc)) {
-            return false;
-        }
-
-        return mode == bc.mode && alpha == bc.alpha;
     }
 
     private static boolean checkComponentsOrder(ColorModel cm) {
@@ -672,9 +641,9 @@ public final class BlendComposite implements Composite {
                 case STAMP -> new Blender() {
                     @Override
                     public void blend(int[] src, int[] dst, int[] result) {
-                        result[0] = Math.clamp(dst[0] + 2 * src[0] - 256, 0, 255);
-                        result[1] = Math.clamp(dst[1] + 2 * src[1] - 256, 0, 255);
-                        result[2] = Math.clamp(dst[2] + 2 * src[2] - 256, 0, 255);
+                        result[0] = Math.clamp(dst[0] + 2L * src[0] - 256, 0, 255);
+                        result[1] = Math.clamp(dst[1] + 2L * src[1] - 256, 0, 255);
+                        result[2] = Math.clamp(dst[2] + 2L * src[2] - 256, 0, 255);
                         result[3] = Math.min(255, src[3] + dst[3] - (src[3] * dst[3]) / 255);
                     }
                 };

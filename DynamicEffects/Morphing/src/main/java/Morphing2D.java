@@ -19,7 +19,7 @@ import java.awt.geom.*;
 /// Both shapes must have the same winding rule.
 ///
 /// @author Jim Graham
-/// @author Romain Guy <romain.guy@mac.com> (Maintainer)</romain.guy@mac.com>
+/// @author Romain Guy <romain.guy@mac.com> (Maintainer)
 public class Morphing2D implements Shape {
     private double morph;
     private final Geometry startGeometry;
